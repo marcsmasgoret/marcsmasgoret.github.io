@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const here = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".site-nav a").forEach((link) => {
+  document.querySelectorAll(".site-nav > a, .site-nav > .nav-item > a").forEach((link) => {
     const target = link.getAttribute("href").split("/").pop().split("#")[0] || "index.html";
     if (target === here) link.classList.add("active");
   });

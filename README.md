@@ -5,12 +5,17 @@ Personal portfolio site — plain HTML/CSS/JS, no build tools, hosted on GitHub 
 ## Structure
 
 ```
-index.html                 home page (hero, project grid, about, contact)
-projects/                  one HTML page per project
+index.html                 home page (hero, stacked project list, about, contact)
+projects/index.html        all projects, one page, full write-up per project stacked top to bottom
 assets/css/style.css       shared styles
-assets/js/main.js          mobile nav toggle + active link highlighting
+assets/js/main.js          mobile nav toggle, active link highlighting, hover interactions
 assets/img/projects/       project images
 ```
+
+Only two HTML pages. The project list on the home page links to the matching
+section on `projects/index.html` via an anchor (e.g. `projects/index.html#baja-split-drive-shaft`),
+and the "Projects" dropdown in the nav does the same. Clicking the "Projects"
+label itself (not a dropdown item) goes to the top of that page.
 
 ## Local preview
 
@@ -30,7 +35,11 @@ The site will be live at `https://marcsmasgoret.github.io`.
 
 ## Adding a project
 
-1. Copy `projects/baja-split-drive-shaft.html` as a starting point.
-2. Update the title, meta, eyebrow, meta row, body sections, and gallery.
-3. Add a card for it in `index.html` under `#projects`.
-4. Drop images in `assets/img/projects/`.
+1. In `projects/index.html`, copy one existing project block (the `<section class="project-hero" id="...">`
+   through the following `<nav class="project-nav">`) and update the id, eyebrow, title, meta row,
+   body content, and gallery.
+2. Fix the "Next:" link on the project before it, and the one on the new project, so the chain
+   still points to the right next section.
+3. Add a matching `<a class="project-row">` block to the list on `index.html`.
+4. Add a matching entry to the nav dropdown in **both** `index.html` and `projects/index.html`.
+5. Drop images in `assets/img/projects/`.
