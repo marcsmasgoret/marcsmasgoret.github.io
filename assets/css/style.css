@@ -21,32 +21,6 @@
   --radius-sm: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1b1815;
-    --surface: #221e1a;
-    --border: #332e27;
-    --text: #f0ece3;
-    --text-muted: #a39a8c;
-    --accent: #7fa6f0;
-    --accent-soft: rgba(127, 166, 240, 0.16);
-    --accent-text: #1b1815;
-    --code-bg: #2a251f;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #1b1815;
-  --surface: #221e1a;
-  --border: #332e27;
-  --text: #f0ece3;
-  --text-muted: #a39a8c;
-  --accent: #7fa6f0;
-  --accent-soft: rgba(127, 166, 240, 0.16);
-  --accent-text: #1b1815;
-  --code-bg: #2a251f;
-}
-
 /* ==========================================================================
    Reset & base
    ========================================================================== */
