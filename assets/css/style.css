@@ -2,16 +2,16 @@
    Design tokens — "drafting sheet" system
    ========================================================================== */
 :root {
-  --bg: #f6f8fb;
+  --bg: #f9f6f0;
   --surface: #ffffff;
-  --border: #dde4ef;
-  --grid-line: rgba(74, 114, 201, 0.07);
-  --text: #1b2433;
-  --text-muted: #667085;
+  --border: #e7e0d2;
+  --grid-line: rgba(120, 100, 70, 0.045);
+  --text: #241f1a;
+  --text-muted: #7d7566;
   --accent: #4a72c9;
-  --accent-soft: rgba(74, 114, 201, 0.14);
+  --accent-soft: rgba(74, 114, 201, 0.13);
   --accent-text: #ffffff;
-  --code-bg: #edf1f8;
+  --code-bg: #f1ece1;
 
   --font-display: "Big Shoulders", "Arial Narrow", var(--font-sans);
   --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -24,30 +24,30 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #10151f;
-    --surface: #171f2c;
-    --border: #2a3446;
-    --grid-line: rgba(127, 166, 240, 0.06);
-    --text: #edf1f8;
-    --text-muted: #909cb0;
+    --bg: #1c1712;
+    --surface: #241e17;
+    --border: #3a3126;
+    --grid-line: rgba(245, 239, 228, 0.045);
+    --text: #f5efe4;
+    --text-muted: #a89b89;
     --accent: #7fa6f0;
     --accent-soft: rgba(127, 166, 240, 0.16);
-    --accent-text: #10151f;
-    --code-bg: #1c2637;
+    --accent-text: #1c1712;
+    --code-bg: #2c251c;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #10151f;
-  --surface: #171f2c;
-  --border: #2a3446;
-  --grid-line: rgba(127, 166, 240, 0.06);
-  --text: #edf1f8;
-  --text-muted: #909cb0;
+  --bg: #1c1712;
+  --surface: #241e17;
+  --border: #3a3126;
+  --grid-line: rgba(245, 239, 228, 0.045);
+  --text: #f5efe4;
+  --text-muted: #a89b89;
   --accent: #7fa6f0;
   --accent-soft: rgba(127, 166, 240, 0.16);
-  --accent-text: #10151f;
-  --code-bg: #1c2637;
+  --accent-text: #1c1712;
+  --code-bg: #2c251c;
 }
 
 /* ==========================================================================
@@ -155,6 +155,58 @@ h1, h2, h3 {
   color: var(--accent);
 }
 
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-item > a::after {
+  content: "\25BE";
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.7em;
+  transform: translateY(-1px);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: -14px;
+  min-width: 240px;
+  padding: 8px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 28px rgba(36, 31, 26, 0.1);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.nav-item:hover .dropdown,
+.nav-item:focus-within .dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown a {
+  padding: 8px 10px !important;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.dropdown a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .nav-toggle {
   display: none;
   background: none;
@@ -187,6 +239,29 @@ h1, h2, h3 {
 
   .site-nav a {
     padding: 12px 24px;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dropdown {
+    position: static;
+    display: flex;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    margin: 0 0 4px;
+    padding: 0 0 0 16px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .dropdown a {
+    color: var(--text-muted);
+    font-size: 0.78rem;
   }
 }
 
@@ -427,6 +502,91 @@ h1, h2, h3 {
   color: var(--accent);
   background: transparent;
   border: 1px solid var(--accent);
+}
+
+/* ==========================================================================
+   Project rows — stacked hub layout (projects/index.html)
+   ========================================================================== */
+.project-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 340px) 1fr;
+  gap: 36px;
+  align-items: center;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.project-row:first-child { padding-top: 4px; }
+.project-row:last-child { border-bottom: none; }
+
+.project-row .card-thumb {
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;
+}
+
+.project-row::before {
+  content: "";
+  position: absolute;
+  inset: -8px -16px;
+  z-index: 0;
+  border-radius: var(--radius);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
+  pointer-events: none;
+}
+
+.project-row:hover::before { opacity: 1; }
+
+.project-row-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.project-row-body h3 {
+  font-family: var(--font-sans);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.project-row-body p {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  max-width: 56ch;
+  margin: 0;
+}
+
+.project-row-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  margin-top: 4px;
+}
+
+.project-row:hover .project-row-link { text-decoration: underline; }
+
+@media (max-width: 720px) {
+  .project-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
 }
 
 /* ==========================================================================
