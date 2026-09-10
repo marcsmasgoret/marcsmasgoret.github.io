@@ -589,18 +589,26 @@ h1, h2, h3 {
 .project-gallery .card-thumb { border-radius: var(--radius); }
 
 .model-viewer-embed {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 560px;
+  display: block;
+  width: 50%;
+  aspect-ratio: 3 / 4;
+  max-height: 640px;
   background-color: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin: 4px 0;
+  margin: 4px auto;
 }
 
 .model-viewer-embed-large {
-  aspect-ratio: 16 / 10;
-  max-height: 900px;
+  width: 60%;
+  max-height: 820px;
+}
+
+@media (max-width: 640px) {
+  .model-viewer-embed,
+  .model-viewer-embed-large {
+    width: 85%;
+  }
 }
 
 .model-viewer-embed [slot="poster"] {
