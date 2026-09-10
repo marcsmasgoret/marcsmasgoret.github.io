@@ -81,14 +81,39 @@
       <h3>Arm Subsystem Design</h3>
       <p>More info coming soon — joint layout, actuation, and range-of-motion decisions.</p>
 
+      <h3>Right Arm Assembly — Interactive CAD Model</h3>
+      <p>
+        The full right arm assembly, viewable below. Drag to rotate, scroll
+        or pinch to zoom.
+      </p>
+      <model-viewer
+        src="../assets/models/right-arm-assem.glb"
+        alt="3D model of the humanoid's full right arm assembly"
+        orientation="0deg -90deg 0deg"
+        camera-controls
+        touch-action="pan-y"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="18deg"
+        shadow-intensity="1"
+        environment-image="neutral"
+        loading="lazy"
+        class="model-viewer-embed model-viewer-embed-large">
+        <div slot="progress-bar"></div>
+        <span slot="poster">Loading 3D model…</span>
+      </model-viewer>
+      <p class="model-caption">Right Arm Assembly — SolidWorks, exported and compressed for web viewing.</p>
+
       <h3>Elbow Assembly — Interactive CAD Model</h3>
       <p>
         The elbow joint assembly (V4), viewable below. Drag to rotate, scroll
-        or pinch to zoom.
+        or pinch to zoom. <em>(Older model — kept for comparison while you
+        decide which to use.)</em>
       </p>
       <model-viewer
         src="../assets/models/elbow-assem-v4.glb"
         alt="3D model of the humanoid arm's elbow assembly, version 4"
+        orientation="0deg -90deg 0deg"
         camera-controls
         touch-action="pan-y"
         auto-rotate

@@ -598,6 +598,11 @@ h1, h2, h3 {
   margin: 4px 0;
 }
 
+.model-viewer-embed-large {
+  aspect-ratio: 16 / 10;
+  max-height: 900px;
+}
+
 .model-viewer-embed [slot="poster"] {
   display: flex;
   align-items: center;
