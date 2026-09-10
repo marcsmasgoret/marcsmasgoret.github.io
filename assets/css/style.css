@@ -12,10 +12,10 @@
   --accent-text: #ffffff;
   --code-bg: #eae4d8;
 
-  --font-display: "Big Shoulders", "Arial Narrow", var(--font-sans);
-  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  --font-signature: "Caveat Brush", cursive;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: Arial, Helvetica, sans-serif;
+  --font-signature: "SignPainter-HouseScript", "SignPainter", "Caveat Brush", cursive;
 
   --max-width: 940px;
   --radius: 14px;
@@ -346,47 +346,8 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
-   Project grid / cards
+   Project thumbnails (used inside project-row and project-gallery)
    ========================================================================== */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.2s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
-  will-change: transform;
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
-  pointer-events: none;
-}
-
-.card:hover {
-  border-color: var(--accent);
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
 .card-thumb {
   position: relative;
   aspect-ratio: 16 / 10;
@@ -427,32 +388,6 @@ h1, h2, h3 {
   border-radius: 999px;
 }
 
-.card-body {
-  position: relative;
-  z-index: 2;
-  padding: 16px 18px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-}
-
-.card-body h3 {
-  font-family: var(--font-sans);
-  text-transform: none;
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin: 0;
-  letter-spacing: normal;
-}
-
-.card-body p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin: 0;
-  flex: 1;
-}
-
 .tag-row {
   display: flex;
   flex-wrap: wrap;
@@ -491,10 +426,13 @@ h1, h2, h3 {
   grid-template-columns: minmax(0, 340px) 1fr;
   gap: 36px;
   align-items: center;
-  padding: 36px 0;
+  margin: 0 -16px;
+  padding: 36px 16px;
   border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
   text-decoration: none;
   color: inherit;
+  transition: background-color 0.2s ease;
 }
 
 .project-row:first-child { padding-top: 4px; }
@@ -505,19 +443,9 @@ h1, h2, h3 {
   aspect-ratio: 4 / 3;
 }
 
-.project-row::before {
-  content: "";
-  position: absolute;
-  inset: -8px -16px;
-  z-index: 0;
-  border-radius: var(--radius);
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%);
-  pointer-events: none;
+.project-row:hover {
+  background-color: var(--surface);
 }
-
-.project-row:hover::before { opacity: 1; }
 
 .project-row-body {
   position: relative;
