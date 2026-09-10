@@ -591,8 +591,8 @@ h1, h2, h3 {
 .model-viewer-embed {
   display: block;
   width: 50%;
-  aspect-ratio: 3 / 4;
-  max-height: 640px;
+  aspect-ratio: 1 / 4;
+  max-height: 1920px;
   background-color: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -601,7 +601,7 @@ h1, h2, h3 {
 
 .model-viewer-embed-large {
   width: 60%;
-  max-height: 820px;
+  max-height: 2460px;
 }
 
 @media (max-width: 640px) {
