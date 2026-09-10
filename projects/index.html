@@ -9,6 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <script>
+    self.ModelViewerElement = self.ModelViewerElement || {};
+    self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
+  </script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
 
@@ -21,8 +26,8 @@
         <div class="nav-item">
           <a href="index.html">Projects</a>
           <div class="dropdown">
-            <a href="index.html#baja-split-drive-shaft">Baja — Drive Shaft</a>
             <a href="index.html#humanoid-ta-robot">Humanoid TA Robot</a>
+            <a href="index.html#baja-split-drive-shaft">Baja — Drive Shaft</a>
             <a href="index.html#seawater-splitting-catalysts">Seawater Catalysts</a>
             <a href="index.html#maze-solving-robot">Maze-Solving Robot</a>
             <a href="index.html#mechatronics-sorting-system">Sorting System</a>
@@ -48,9 +53,88 @@
   </section>
 
   <!-- P.01 -->
+  <section class="project-hero" id="humanoid-ta-robot">
+    <div class="wrap">
+      <p class="eyebrow">P.01 — Student Team, dir. Dr. Mark Baker</p>
+      <h2>Humanoid AI Teaching Assistant Robot</h2>
+      <div class="project-meta">
+        <div><strong>Role</strong>Arm Subsystem Lead, Manufacturing Lead (Full Robot)</div>
+        <div><strong>Timeline</strong>March — September 2026</div>
+        <div><strong>Tools</strong>SolidWorks, Altium Designer, 3D Printing</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-body">
+    <div class="wrap">
+      <h3>Overview</h3>
+      <p>
+        Part of a student team commissioned by Dr. Mark Baker to design and
+        build a life-sized (waist-up) humanoid robot as an AI-powered teaching
+        assistant, meant to enhance lecture delivery and student engagement.
+        I led the full mechanical and electrical development of the arm
+        subsystem, from design through fabrication and integration, and
+        assisted in fabricating and assembling the neck, face, and torso
+        subsystems.
+      </p>
+
+      <h3>Arm Subsystem Design</h3>
+      <p>More info coming soon — joint layout, actuation, and range-of-motion decisions.</p>
+
+      <h3>Elbow Assembly — Interactive CAD Model</h3>
+      <p>
+        The elbow joint assembly (V4), viewable below. Drag to rotate, scroll
+        or pinch to zoom.
+      </p>
+      <model-viewer
+        src="../assets/models/elbow-assem-v4.glb"
+        alt="3D model of the humanoid arm's elbow assembly, version 4"
+        camera-controls
+        touch-action="pan-y"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="18deg"
+        shadow-intensity="1"
+        environment-image="neutral"
+        loading="lazy"
+        class="model-viewer-embed">
+        <div slot="progress-bar"></div>
+        <span slot="poster">Loading 3D model…</span>
+      </model-viewer>
+      <p class="model-caption">Elbow Assembly V4 — SolidWorks, exported and compressed for web viewing.</p>
+
+      <h3>Electrical &amp; Manufacturing</h3>
+      <p>More info coming soon — wiring, control electronics, and fabrication notes.</p>
+
+      <h3>CAD &amp; Renders</h3>
+      <div class="project-gallery">
+        <div class="card-thumb">image coming soon</div>
+        <div class="card-thumb">image coming soon</div>
+        <div class="card-thumb">image coming soon</div>
+      </div>
+
+      <h3>Build Photos</h3>
+      <div class="project-gallery">
+        <div class="card-thumb">image coming soon</div>
+        <div class="card-thumb">image coming soon</div>
+      </div>
+
+      <h3>Status</h3>
+      <p>More info coming soon — current state of the build and next steps.</p>
+    </div>
+  </section>
+
+  <nav class="project-nav">
+    <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+      <a href="#top">&uarr; Back to top</a>
+      <a href="#baja-split-drive-shaft">Next: Baja Split Drive Shaft &rarr;</a>
+    </div>
+  </nav>
+
+  <!-- P.02 -->
   <section class="project-hero" id="baja-split-drive-shaft">
     <div class="wrap">
-      <p class="eyebrow">P.01 — Western Engineering Baja Racing</p>
+      <p class="eyebrow">P.02 — Western Engineering Baja Racing</p>
       <h2>Split Drive Shaft — Powertrain Subsystem</h2>
       <div class="project-meta">
         <div><strong>Role</strong>Mechanical Design &amp; Assembly</div>
@@ -99,34 +183,6 @@
         <div class="card-thumb">image coming soon</div>
         <div class="card-thumb">image coming soon</div>
         <div class="card-thumb">image coming soon</div>
-      </div>
-    </div>
-  </section>
-
-  <nav class="project-nav">
-    <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
-      <a href="#top">&uarr; Back to top</a>
-      <a href="#humanoid-ta-robot">Next: Humanoid TA Robot &rarr;</a>
-    </div>
-  </nav>
-
-  <!-- P.02 -->
-  <section class="project-hero" id="humanoid-ta-robot">
-    <div class="wrap">
-      <p class="eyebrow">P.02 — Student Team, dir. Dr. Mark Baker</p>
-      <h2>Humanoid AI Teaching Assistant Robot</h2>
-      <div class="project-meta">
-        <div><strong>Status</strong>Write-up in progress</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="project-body">
-    <div class="wrap">
-      <div class="wip-note">
-        Full write-up for this project is coming soon. In the meantime, see the
-        <a href="../index.html#about">About</a> section or my
-        <a href="mailto:mmasgore@uwo.ca">email</a> for more details.
       </div>
     </div>
   </section>
@@ -302,7 +358,7 @@
   <nav class="project-nav">
     <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
       <a href="#top">&uarr; Back to top</a>
-      <a href="#baja-split-drive-shaft">Back to start: Baja Split Drive Shaft &rarr;</a>
+      <a href="#humanoid-ta-robot">Back to start: Humanoid TA Robot &rarr;</a>
     </div>
   </nav>
 
