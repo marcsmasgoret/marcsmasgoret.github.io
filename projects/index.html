@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=6" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -81,14 +81,14 @@
       <h3>Arm Subsystem Design</h3>
       <p>More info coming soon — joint layout, actuation, and range-of-motion decisions.</p>
 
-      <h3>Right Arm Assembly — Interactive CAD Model</h3>
+      <h3>Full Arm Assembly — Interactive CAD Model</h3>
       <p>
-        The full right arm assembly, viewable below. Drag to rotate, scroll
+        The complete arm assembly, viewable below. Drag to rotate, scroll
         or pinch to zoom.
       </p>
       <model-viewer
-        src="../assets/models/right-arm-assem.glb"
-        alt="3D model of the humanoid's full right arm assembly"
+        src="../assets/models/full-arm-assem.glb"
+        alt="3D model of the humanoid's full arm assembly"
         orientation="0deg 90deg 0deg"
         camera-orbit="0deg 75deg 84%"
         camera-controls
@@ -97,38 +97,15 @@
         auto-rotate-delay="0"
         rotation-per-second="18deg"
         shadow-intensity="1"
-        environment-image="neutral"
+        environment-image="../assets/env/aircraft_workshop_1k.hdr"
+        exposure="1.15"
+        tone-mapping="neutral"
         loading="lazy"
         class="model-viewer-embed model-viewer-embed-large">
         <div slot="progress-bar"></div>
         <span slot="poster">Loading 3D model…</span>
       </model-viewer>
-      <p class="model-caption">Right Arm Assembly — SolidWorks, exported and compressed for web viewing.</p>
-
-      <h3>Elbow Assembly — Interactive CAD Model</h3>
-      <p>
-        The elbow joint assembly (V4), viewable below. Drag to rotate, scroll
-        or pinch to zoom. <em>(Older model — kept for comparison while you
-        decide which to use.)</em>
-      </p>
-      <model-viewer
-        src="../assets/models/elbow-assem-v4.glb"
-        alt="3D model of the humanoid arm's elbow assembly, version 4"
-        orientation="0deg 90deg 0deg"
-        camera-orbit="0deg 75deg 84%"
-        camera-controls
-        touch-action="pan-y"
-        auto-rotate
-        auto-rotate-delay="0"
-        rotation-per-second="18deg"
-        shadow-intensity="1"
-        environment-image="neutral"
-        loading="lazy"
-        class="model-viewer-embed">
-        <div slot="progress-bar"></div>
-        <span slot="poster">Loading 3D model…</span>
-      </model-viewer>
-      <p class="model-caption">Elbow Assembly V4 — SolidWorks, exported and compressed for web viewing.</p>
+      <p class="model-caption">Full Arm Assembly — SolidWorks, exported and compressed for web viewing.</p>
 
       <h3>Electrical &amp; Manufacturing</h3>
       <p>More info coming soon — wiring, control electronics, and fabrication notes.</p>
