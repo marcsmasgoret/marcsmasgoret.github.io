@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=7" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -56,35 +56,63 @@
   <section class="project-hero" id="humanoid-ta-robot">
     <div class="wrap">
       <p class="eyebrow">P.01 — Student Team, dir. Dr. Mark Baker</p>
-      <h2>Humanoid AI Teaching Assistant Robot</h2>
+      <h2>Humanoid AI Teaching Assistant Robot ("Baker Bot")</h2>
       <div class="project-meta">
-        <div><strong>Role</strong>Arm Subsystem Lead, Manufacturing Lead (Full Robot)</div>
-        <div><strong>Timeline</strong>March — September 2026</div>
-        <div><strong>Tools</strong>SolidWorks, Altium Designer, 3D Printing</div>
+        <div><strong>Role</strong>Arm Subsystem Lead &middot; Manufacturing Lead (Full Robot)</div>
+        <div><strong>Timeline</strong>March to September 2026</div>
+        <div><strong>Tools</strong>SolidWorks, 3D Printing, DC Motor Control</div>
       </div>
+      <p class="lede">
+        A life-sized, waist-up humanoid robot built by a 16-person student team to
+        serve as an AI-powered teaching assistant, commissioned by a physics
+        professor at Western University.
+      </p>
     </div>
   </section>
 
   <section class="project-body">
     <div class="wrap">
+
+      <div class="figure">
+        <img src="../assets/img/projects/baker-bot/hero.jpg" alt="Fully assembled Baker Bot humanoid robot standing on a workbench, with a white 3D-printed head, aluminum-framed torso, and both arms extended." loading="lazy" />
+        <p class="figure-caption">The finished robot: waist-up humanoid with a moving head, animated face, and two gesturing arms.</p>
+      </div>
+
       <h3>Overview</h3>
       <p>
-        Part of a student team commissioned by Dr. Mark Baker to design and
-        build a life-sized (waist-up) humanoid robot as an AI-powered teaching
-        assistant, meant to enhance lecture delivery and student engagement.
-        I led the full mechanical and electrical development of the arm
-        subsystem, from design through fabrication and integration, and
-        assisted in fabricating and assembling the neck, face, and torso
-        subsystems.
+        Baker Bot is a waist-up humanoid robot commissioned by Dr. Mark Baker, a
+        first- and second-year physics professor at Western University, to act
+        as an AI-powered teaching assistant that answers questions and reacts
+        during lectures. A team of 16 students split the build across six
+        subsystems: software, electrical, arms, head, neck, and torso. The
+        finished robot turns and tilts its head, moves its eyelids and jaw, and
+        gestures with both arms while responding to spoken questions. The full
+        build came in under $2,000.
+      </p>
+      <p>
+        I led the arm subsystem, a two-person team, and served as manufacturing
+        lead for the whole robot, doing the bulk of the mechanical fabrication
+        and final assembly.
       </p>
 
-      <h3>Arm Subsystem Design</h3>
-      <p>More info coming soon — joint layout, actuation, and range-of-motion decisions.</p>
+      <div class="figure">
+        <img src="../assets/img/projects/baker-bot/full-cad.jpg" alt="Full CAD render of the Baker Bot showing the head, torso frame, battery, control boards, and both red and blue arm assemblies." loading="lazy" />
+        <p class="figure-caption">Full assembly CAD. The waist-up frame houses the compute, power, and both arm subsystems.</p>
+      </div>
 
-      <h3>Full Arm Assembly — Interactive CAD Model</h3>
+      <h3>My Contributions</h3>
+      <ul class="contrib-list">
+        <li>Designed the elbow joint end to end in SolidWorks: actuation, housing, feedback, and homing.</li>
+        <li>Led the shoulder and hand designs, teaching my teammate through the CAD as active mentoring rather than handing off finished specs.</li>
+        <li>Handled all arm electrical work: motor drivers, limit-switch homing, and potentiometer position feedback.</li>
+        <li>Fabricated the entire arm subsystem and assembled the mechanical structure of the whole robot.</li>
+        <li>As manufacturing lead, set the print and design-for-manufacturing standards used on every printed part across the robot.</li>
+      </ul>
+
+      <h3>Interactive CAD Model</h3>
       <p>
-        The complete arm assembly, viewable below. Drag to rotate, scroll
-        or pinch to zoom.
+        The full arm assembly, exported from SolidWorks as a GLB and embedded
+        below. Drag to rotate, scroll or pinch to zoom.
       </p>
       <model-viewer
         src="../assets/models/full-arm-assem.glb"
@@ -107,24 +135,206 @@
       </model-viewer>
       <p class="model-caption">Full Arm Assembly — SolidWorks, exported and compressed for web viewing.</p>
 
-      <h3>Electrical &amp; Manufacturing</h3>
-      <p>More info coming soon — wiring, control electronics, and fabrication notes.</p>
+      <h3>Arm Subsystem</h3>
+      <p>
+        Each arm has three functional stages: a manually indexed shoulder that
+        sets the working height, a powered elbow that provides the main range
+        of motion, and a swappable hand on the end of a carbon fiber forearm.
+        The design assumes the robot sits at a desk in front of students, so
+        the arm's job is to gesture expressively within reach of the tabletop,
+        not to lift heavy loads.
+      </p>
 
-      <h3>CAD &amp; Renders</h3>
-      <div class="project-gallery">
-        <div class="card-thumb">image coming soon</div>
-        <div class="card-thumb">image coming soon</div>
-        <div class="card-thumb">image coming soon</div>
+      <h4>Shoulder: Five-Position Indexed Pivot</h4>
+      <p>
+        The shoulder pivots on a single large bolt fixed to the torso. An
+        aluminum plate on the arm carries five holes, and a spring-loaded
+        indexing plunger in the body drops into the chosen hole to lock the
+        shoulder at one of five angles. Because the robot works seated at a
+        desk, this lets the operator set each arm's height to match the table
+        before a session, freeing the powered elbow to handle the expressive
+        motion. Two cut-and-drilled aluminum sheets per arm carry the load into
+        the pivot.
+      </p>
+      <p>
+        Indexing the shoulder by hand keeps it simple, strong, and power-free,
+        which spends the actuation budget where it matters: the elbow.
+      </p>
+
+      <div class="media-row">
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/shoulder-cad.jpg" alt="Transparent CAD render of the shoulder pivot, showing the central mounting bolt, internal plates, tie rods, and indexing hardware." loading="lazy" />
+          <p class="figure-caption">Shoulder pivot internals. The arm rotates on a fixed bolt and locks at one of five indexed angles.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/shoulder-real.jpg" alt="3D-printed shoulder housing held in hand, with a knurled indexing plunger knob and the edge of the aluminum indexing plate visible." loading="lazy" />
+          <p class="figure-caption">Printed shoulder housing with the pull-knob indexing plunger.</p>
+        </div>
       </div>
 
-      <h3>Build Photos</h3>
-      <div class="project-gallery">
-        <div class="card-thumb">image coming soon</div>
-        <div class="card-thumb">image coming soon</div>
+      <h4>Elbow: Non-Backdrivable Powered Joint</h4>
+      <p>
+        The elbow is the only powered joint in the arm and carries roughly 110
+        degrees of range. It is driven by a 12V DC worm gear motor. The worm
+        drive is non-backdrivable by design, so the elbow holds any angle at
+        zero holding current: the arm draws no power and generates no heat
+        while posed, which matters for a robot that spends most of a lecture
+        holding a gesture. A potentiometer built into the joint reports elbow
+        angle in real time, so the controller always knows where the forearm
+        is.
+      </p>
+
+      <div class="media-row">
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/elbow-cad.jpg" alt="CAD render of the left and right elbow assemblies in red and blue, showing the gear motor, a limit switch, a potentiometer, and the carbon fiber forearm tube." loading="lazy" />
+          <p class="figure-caption">Elbow CAD. Worm gear motor, limit switch for homing, and an in-joint potentiometer for live position.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/elbows-real.jpg" alt="Two assembled black 3D-printed elbow modules with gear motors and wiring, sitting on a workbench." loading="lazy" />
+          <p class="figure-caption">Both assembled elbow modules before integration.</p>
+        </div>
       </div>
 
-      <h3>Status</h3>
-      <p>More info coming soon — current state of the build and next steps.</p>
+      <div class="callout">
+        <p class="eyebrow">Sizing the Elbow</p>
+        <p>
+          The forearm and hand hang off the elbow as a cantilever, so the joint
+          only has to hold their weight at full extension.
+        </p>
+        <ul>
+          <li>Carbon fiber forearm tube (10mm outer diameter, 8mm inner, 420mm long): about 20 g</li>
+          <li>Printed hand: about 200 g</li>
+          <li>Static holding moment at full extension: about 0.9 N&middot;m</li>
+        </ul>
+        <p>
+          The selected worm gear motor is rated near 3 N&middot;m, giving
+          roughly a 3x safety factor on the static hold, with the
+          non-backdrivable worm carrying the load at rest instead of the
+          motor.
+        </p>
+        <p>
+          A same-size aluminum forearm would weigh close to double. Keeping the
+          forearm light with carbon fiber keeps the elbow moment low, which is
+          what lets a small, low-power motor hold position for a full lecture.
+          Tip deflection of the carbon tube under the hand's weight is only
+          about 2 to 3 mm, so the arm stays visually rigid while gesturing.
+        </p>
+      </div>
+
+      <h4>Forearm and Swappable Hands</h4>
+      <p>
+        The forearm is a carbon fiber tube, chosen for stiffness at low
+        weight. The hand mounts to the end through a quick-swap interface: a
+        keyed turn-to-lock collar with a magnet that holds the hand seated.
+        This lets the robot change hands for context, an open pointing hand
+        for gesturing and explaining, and a closed hand that can hold an
+        object. The hands themselves are printed and fixed rather than
+        actuated, a deliberate scope cut to stay on budget without losing the
+        expressive value of a posed hand. The open pointing hand doubles as
+        the physics right-hand-rule gesture, a fitting default for a physics
+        TA.
+      </p>
+
+      <div class="figure">
+        <img src="../assets/img/projects/baker-bot/hand-mechanism.jpg" alt="3D-printed cylindrical hand mount held in hand, showing a magnet at the top, a keyed slot for the turn-to-lock, and mounting screws." loading="lazy" />
+        <p class="figure-caption">Quick-swap hand mount: turn to lock, held seated by a magnet.</p>
+      </div>
+
+      <h4>Homing, Feedback, and Gesture Control</h4>
+      <p>
+        I handled all of the arm's electrical work and integrated it into the
+        robot's shared control system. At startup, a homing routine sweeps
+        each arm until limit switches trigger, establishing the elbow's zero
+        reference and the height of the table in front of the robot. During
+        use, the in-joint potentiometer provides live elbow position. The
+        arm's 12V worm gear motors run through a DC motor driver commanded by
+        the system's ESP32-WROOM-32 controller, with the elbow potentiometer
+        and limit switches wired back to that same board. Power comes from a
+        12.8V LiFePO4 battery, stepped down through buck converters on the
+        electrical subsystem's power distribution board.
+      </p>
+      <p>
+        Gestures tie into the AI pipeline. An onboard Jetson Orin Nano handles
+        speech-to-text and text-to-speech and passes each question to an
+        external AI model, which returns a response plus an emotional tag.
+        The robot speaks the answer while the arms play the gesture mapped to
+        that emotion. Head and neck servos are driven separately through a
+        PCA9685 PWM controller.
+      </p>
+
+      <h3>Design for Manufacturing</h3>
+      <p>
+        Every structural part on the robot was 3D printed, so I set a
+        manufacturing standard that made parts come off the printer ready to
+        assemble, with no cleanup and no failed fits. Details I built into
+        every part:
+      </p>
+      <ul>
+        <li>Chamfered bottom edges to cancel elephant's foot, so parts sit flat without filing the first layer.</li>
+        <li>Teardrop-shaped horizontal holes, so they print cleanly without support and hold their diameter.</li>
+        <li>Chamfered heat-set insert holes, giving the plastic displaced during insertion somewhere to go and keeping the surface flush.</li>
+        <li>Tuned clearances for press fits and fasteners, with printed test-fit coupons for every critical interface before committing to a final part.</li>
+      </ul>
+
+      <div class="figure">
+        <img src="../assets/img/projects/baker-bot/dfm-details.jpg" alt="Close-up CAD render of a printed part showing a chamfered heat-set insert boss, a teardrop-shaped horizontal hole, and a chamfered bottom edge." loading="lazy" />
+        <p class="figure-caption">The manufacturing details built into every part: chamfered insert bosses, teardrop horizontal holes, and elephant's-foot chamfers.</p>
+      </div>
+
+      <h3>Manufacturing the Full Robot</h3>
+      <p>
+        As manufacturing lead I printed and assembled the complete arm
+        subsystem and printed and assembled parts of the head and neck. I
+        prototyped in PLA to iterate cheaply, then reprinted final parts in
+        PETG for strength and temperature tolerance. Across the robot this
+        came to roughly 50 unique printed parts. The non-printed structure I
+        fabricated by hand: cutting and drilling the aluminum upper-arm tubes
+        and shoulder plates, and cutting the carbon fiber forearms to length.
+      </p>
+
+      <h3>Leading the Subsystem</h3>
+      <p>
+        Leading a subsystem taught me to break a build into realistic
+        long-term and short-term goals: near-term targets that keep a
+        teammate learning and shipping at a steady pace, set early enough to
+        leave room for team review and revision before integration. Rather
+        than handing my teammate finished specs, I taught the shoulder and
+        hand designs through the CAD itself, so the knowledge stuck and the
+        work held up. Balancing my own design and fabrication load against
+        mentoring and whole-robot assembly was the core challenge, and it is
+        the part of the project I would point to for any team-based
+        engineering role.
+      </p>
+
+      <h3>Arm Subsystem Bill of Materials</h3>
+      <div class="bom-table-wrap">
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th class="num">Qty</th>
+              <th class="num">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>PETG filament, OVERTURE 2 kg (white)</td><td class="num">1</td><td class="num">$36.99</td></tr>
+            <tr><td>Carbon fiber forearm tube, 8 x 10 x 420 mm</td><td class="num">2</td><td class="num">$35.98</td></tr>
+            <tr><td>Aluminum upper-arm tube, 34 x 40 x 300 mm</td><td class="num">2</td><td class="num">$21.58</td></tr>
+            <tr><td>12V DC worm gear motor, 16 RPM</td><td class="num">2</td><td class="num">$92.04</td></tr>
+            <tr><td>DC motor driver</td><td class="num">1</td><td class="num">$10.99</td></tr>
+            <tr><td>Bearings</td><td class="num">1</td><td class="num">$17.89</td></tr>
+            <tr><td>8 mm hub with set screw</td><td class="num">1</td><td class="num">$13.99</td></tr>
+            <tr><td>M8 spring indexing plunger</td><td class="num">1</td><td class="num">$16.99</td></tr>
+            <tr><td>Fasteners, heat-set inserts, and hardware</td><td class="num"></td><td class="num">$89.27</td></tr>
+            <tr class="total"><td>Total</td><td class="num"></td><td class="num">$335.72</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The arm subsystem came in at $335.72, part of a whole-robot build kept
+        under $2,000.
+      </p>
+
     </div>
   </section>
 

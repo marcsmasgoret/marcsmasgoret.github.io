@@ -635,6 +635,134 @@ h1, h2, h3 {
   margin-top: 8px !important;
 }
 
+/* ==========================================================================
+   Case-study extras — figures, media rows, callouts, contrib list, BOM
+   ========================================================================== */
+.project-body h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: 1.05rem;
+  margin: 28px 0 10px;
+  color: var(--text);
+}
+
+.project-body h4:first-child { margin-top: 0; }
+
+.figure {
+  margin: 16px 0 24px;
+}
+
+.figure img {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.figure-caption {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.media-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 16px 0 24px;
+  align-items: start;
+}
+
+.media-row .figure {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .media-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.callout {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 16px 0 24px;
+}
+
+.callout .eyebrow { margin-bottom: 14px; }
+
+.callout p:last-child,
+.callout ul:last-child { margin-bottom: 0; }
+
+.contrib-list {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+@media (min-width: 640px) {
+  .contrib-list {
+    column-count: 2;
+    column-gap: 32px;
+  }
+}
+
+.contrib-list li {
+  break-inside: avoid;
+  margin-bottom: 10px;
+  padding-right: 8px;
+}
+
+.bom-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0 8px;
+}
+
+.bom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  min-width: 420px;
+}
+
+.bom-table th,
+.bom-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.bom-table th {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.bom-table td.num,
+.bom-table th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.bom-table tr.total td {
+  font-weight: 700;
+  border-top: 2px solid var(--text);
+  border-bottom: none;
+}
+
+.project-hero .lede {
+  max-width: 62ch;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin: 18px 0 0;
+}
+
 .project-nav {
   display: flex;
   justify-content: space-between;
