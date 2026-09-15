@@ -7,8 +7,8 @@
   <meta name="description" content="All projects — robotics, manufacturing, and research work by Marc Masgoret." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=7" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=8" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -419,20 +419,116 @@
       <p class="eyebrow">P.03 — Dept. of Physics, Western University</p>
       <h2>High-Entropy Alloy Catalysts for Seawater Splitting</h2>
       <div class="project-meta">
-        <div><strong>Status</strong>Write-up in progress</div>
+        <div><strong>Role</strong>Undergraduate Research Intern</div>
+        <div><strong>Timeline</strong>May to August 2026</div>
+        <div><strong>Tools</strong>Electrodeposition, Hydrothermal Synthesis, XRD/UV-Vis, Potentiostat Testing</div>
       </div>
+      <p class="lede">
+        A noble-metal-free high-entropy alloy catalyst engineered for overall
+        alkaline seawater splitting, developed under Dr. Amir Mirzaei in
+        Western's Department of Physics.
+      </p>
     </div>
   </section>
 
   <section class="project-body">
     <div class="wrap">
-      <div class="wip-note">
-        Full write-up for this project is coming soon. In the meantime, see the
-        <a href="../index.html#about">About</a> section or my
-        <a href="mailto:mmasgore@uwo.ca">email</a> for more details.
+
+      <h3>Overview</h3>
+      <p>
+        About 95% of hydrogen production today still relies on fossil fuels,
+        and the catalysts that make green hydrogen viable through water
+        electrolysis are usually made from platinum, iridium, or ruthenium,
+        some of the rarest and most expensive metals on Earth. Scaling green
+        hydrogen means replacing them with catalysts made from abundant,
+        affordable elements, and doing it with seawater rather than
+        freshwater, since freshwater is a limited resource while seawater is
+        effectively infinite. My project, under Dr. Amir Mirzaei in the
+        Department of Physics, was to design and optimize exactly that: a
+        bifunctional catalyst for overall alkaline seawater splitting built
+        entirely from earth-abundant metals. In parallel, the lab also had me
+        working on high-entropy oxide semiconductors for photocatalytic
+        hydrogen evolution, a related but separate thread not covered in the
+        presentation below.
+      </p>
+      <p>
+        The catalyst is a high-entropy alloy (HEA), NiFeCoMoCr, electrodeposited
+        onto nickel foam for high surface area. HEAs combine five or more
+        elements into one alloy, which produces electronic and structural
+        properties, the "cocktail effect", that none of the individual metals
+        have on their own. I used AI and machine learning to process
+        literature and experimental datasets and narrow down which metal
+        combinations were most promising before committing lab time to them.
+        Once the composition was set, I ran a systematic, iterative
+        optimization of the fabrication process: testing nickel foam against
+        titanium oxide nanotubes and carbon paper as substrates, sweeping
+        electrodeposition pulse counts to tune coating thickness, and finally
+        applying a hydrothermal ammonium fluoride treatment to reconstruct the
+        surface and expose more active area. Each stage was evaluated by
+        electrodepositing samples and testing them with linear sweep
+        voltammetry, cyclic voltammetry, and Tafel analysis on a potentiostat,
+        narrowing in on nickel foam, 6,000 electrodeposition pulses, and a
+        mild 0.05M fluorination step as the best-performing combination.
+      </p>
+      <p>
+        I validated the optimized catalyst in simulated alkaline seawater
+        (1M KOH with 0.5M NaCl added to approximate natural seawater
+        chlorides) rather than just clean freshwater electrolyte, and it held
+        up: strong resistance to chloride-driven corrosion and a stable
+        potential over extended chronopotentiometry testing. Benchmarked
+        against five recent high-entropy alloy catalysts from the literature
+        and against noble-metal standards (RuO<sub>2</sub> and Pt/C), the
+        final catalyst matched the best oxygen-evolution performance and
+        exceeded every catalyst in the comparison, noble metals included, on
+        hydrogen evolution. I presented these results at Western's 2026 USRI
+        Research Conference, and they're now being carried forward for
+        publication, with an incoming student continuing the work in the lab.
+      </p>
+
+      <h3>Presentation</h3>
+      <p>My full end-of-internship USRI presentation, slide by slide.</p>
+      <div class="figure">
+        <button type="button" class="figure-clickable" data-viewer-open="ppt-viewer-seawater" aria-haspopup="dialog">
+          <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Title slide of the presentation: High-Entropy Alloy Development for Overall Seawater Splitting, by Marc Masgoret, supervised by Dr. Amir Mirzaei." loading="lazy" />
+        </button>
+        <p class="figure-caption">Click to view the full presentation.</p>
       </div>
+
     </div>
   </section>
+
+  <div class="ppt-viewer-overlay" id="ppt-viewer-seawater" aria-hidden="true" role="dialog" aria-label="High-Entropy Alloy Development for Overall Seawater Splitting — full presentation">
+    <div class="ppt-viewer-backdrop" data-viewer-close></div>
+    <div class="ppt-viewer-panel">
+      <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close presentation viewer">&times;</button>
+      <div class="ppt-viewer-scroll">
+        <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Slide 1" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-02.jpg" alt="Slide 2" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-03.jpg" alt="Slide 3" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-04.jpg" alt="Slide 4" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-05.jpg" alt="Slide 5" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-06.jpg" alt="Slide 6" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-07.jpg" alt="Slide 7" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-08.jpg" alt="Slide 8" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-09.jpg" alt="Slide 9" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-10.jpg" alt="Slide 10" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-11.jpg" alt="Slide 11" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-12.jpg" alt="Slide 12" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-13.jpg" alt="Slide 13" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-14.jpg" alt="Slide 14" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-15.jpg" alt="Slide 15" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-16.jpg" alt="Slide 16" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-17.jpg" alt="Slide 17" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-18.jpg" alt="Slide 18" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-19.jpg" alt="Slide 19" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-20.jpg" alt="Slide 20" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-21.jpg" alt="Slide 21" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-22.jpg" alt="Slide 22" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-23.jpg" alt="Slide 23" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-24.jpg" alt="Slide 24" loading="lazy" />
+      </div>
+    </div>
+  </div>
 
   <nav class="project-nav">
     <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
@@ -590,6 +686,6 @@
     </div>
   </footer>
 
-  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/main.js?v=2"></script>
 </body>
 </html>

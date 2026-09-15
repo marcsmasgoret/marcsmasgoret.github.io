@@ -15,7 +15,7 @@
   --font-display: Georgia, "Times New Roman", serif;
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: Arial, Helvetica, sans-serif;
-  --font-signature: "SignPainter-HouseScript", "SignPainter", "Caveat Brush", cursive;
+  --font-signature: "SignPainter-HouseScript", "SignPainter", "Caveat", cursive;
 
   --max-width: 940px;
   --radius: 14px;
@@ -97,7 +97,7 @@ h1, h2, h3 {
 
 .site-title {
   font-family: var(--font-signature);
-  font-weight: 400;
+  font-weight: 700;
   text-transform: none;
   letter-spacing: 0.01em;
   text-decoration: none;
@@ -869,6 +869,136 @@ h1, h2, h3 {
   color: var(--text-muted);
   font-size: 1.05rem;
   margin: 18px 0 0;
+}
+
+/* ==========================================================================
+   Presentation viewer — clickable trigger + full-screen slide overlay
+   ========================================================================== */
+.figure-clickable {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.figure-clickable img {
+  transition: opacity 0.15s ease;
+}
+
+.figure-clickable:hover img,
+.figure-clickable:focus-visible img {
+  opacity: 0.88;
+}
+
+.figure-clickable::after {
+  content: "View Presentation \2192";
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(20, 18, 15, 0.85);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+}
+
+.figure-clickable:hover::after,
+.figure-clickable:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ppt-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.ppt-viewer-overlay.is-open {
+  display: block;
+}
+
+body.viewer-open {
+  overflow: hidden;
+}
+
+.ppt-viewer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 18, 15, 0.78);
+}
+
+.ppt-viewer-panel {
+  position: relative;
+  z-index: 1;
+  width: min(880px, calc(100% - 32px));
+  height: calc(100vh - 64px);
+  margin: 32px auto;
+  background: #111;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.ppt-viewer-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ppt-viewer-close:hover,
+.ppt-viewer-close:focus-visible {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.ppt-viewer-scroll {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 16px 32px;
+}
+
+.ppt-viewer-scroll img {
+  width: 100%;
+  max-width: 840px;
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 640px) {
+  .ppt-viewer-panel {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
 }
 
 .project-nav {
