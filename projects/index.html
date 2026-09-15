@@ -60,7 +60,7 @@
       <div class="project-meta">
         <div><strong>Role</strong>Arm Subsystem Lead &middot; Manufacturing Lead (Full Robot)</div>
         <div><strong>Timeline</strong>March to September 2026</div>
-        <div><strong>Tools</strong>SolidWorks, 3D Printing, DC Motor Control</div>
+        <div><strong>Tools</strong>SolidWorks, 3D Printing (PLA/PETG), DC Motor Control, Embedded C++ (ESP32)</div>
       </div>
       <p class="lede">
         A life-sized, waist-up humanoid robot built by a 16-person student team to
@@ -73,9 +73,15 @@
   <section class="project-body">
     <div class="wrap">
 
-      <div class="figure">
-        <img src="../assets/img/projects/baker-bot/hero.jpg" alt="Fully assembled Baker Bot humanoid robot standing on a workbench, with a white 3D-printed head, aluminum-framed torso, and both arms extended." loading="lazy" />
-        <p class="figure-caption">The finished robot: waist-up humanoid with a moving head, animated face, and two gesturing arms.</p>
+      <div class="media-row media-row-narrow">
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/hero.jpg" alt="Fully assembled Baker Bot humanoid robot standing on a workbench, with a white 3D-printed head, aluminum-framed torso, and both arms extended." loading="lazy" />
+          <p class="figure-caption">The finished robot: waist-up humanoid with a moving head, animated face, and two gesturing arms.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/full-cad.jpg" alt="Full CAD render of the Baker Bot showing the head, torso frame, battery, control boards, and both red and blue arm assemblies." loading="lazy" />
+          <p class="figure-caption">Full assembly CAD. The waist-up frame houses the compute, power, and both arm subsystems.</p>
+        </div>
       </div>
 
       <h3>Overview</h3>
@@ -95,11 +101,6 @@
         and final assembly.
       </p>
 
-      <div class="figure">
-        <img src="../assets/img/projects/baker-bot/full-cad.jpg" alt="Full CAD render of the Baker Bot showing the head, torso frame, battery, control boards, and both red and blue arm assemblies." loading="lazy" />
-        <p class="figure-caption">Full assembly CAD. The waist-up frame houses the compute, power, and both arm subsystems.</p>
-      </div>
-
       <h3>My Contributions</h3>
       <ul class="contrib-list">
         <li>Designed the elbow joint end to end in SolidWorks: actuation, housing, feedback, and homing.</li>
@@ -110,10 +111,6 @@
       </ul>
 
       <h3>Interactive CAD Model</h3>
-      <p>
-        The full arm assembly, exported from SolidWorks as a GLB and embedded
-        below. Drag to rotate, scroll or pinch to zoom.
-      </p>
       <model-viewer
         src="../assets/models/full-arm-assem.glb"
         alt="3D model of the humanoid's full arm assembly"
@@ -161,7 +158,7 @@
         which spends the actuation budget where it matters: the elbow.
       </p>
 
-      <div class="media-row">
+      <div class="media-row media-row-match">
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/shoulder-cad.jpg" alt="Transparent CAD render of the shoulder pivot, showing the central mounting bolt, internal plates, tie rods, and indexing hardware." loading="lazy" />
           <p class="figure-caption">Shoulder pivot internals. The arm rotates on a fixed bolt and locks at one of five indexed angles.</p>
@@ -173,23 +170,25 @@
       </div>
 
       <h4>Elbow: Non-Backdrivable Powered Joint</h4>
-      <p>
-        The elbow is the only powered joint in the arm and carries roughly 110
-        degrees of range. It is driven by a 12V DC worm gear motor. The worm
-        drive is non-backdrivable by design, so the elbow holds any angle at
-        zero holding current: the arm draws no power and generates no heat
-        while posed, which matters for a robot that spends most of a lecture
-        holding a gesture. A potentiometer built into the joint reports elbow
-        angle in real time, so the controller always knows where the forearm
-        is.
-      </p>
 
-      <div class="media-row">
-        <div class="figure">
-          <img src="../assets/img/projects/baker-bot/elbow-cad.jpg" alt="CAD render of the left and right elbow assemblies in red and blue, showing the gear motor, a limit switch, a potentiometer, and the carbon fiber forearm tube." loading="lazy" />
-          <p class="figure-caption">Elbow CAD. Worm gear motor, limit switch for homing, and an in-joint potentiometer for live position.</p>
+      <div class="split-row">
+        <div class="split-row-main">
+          <p>
+            The elbow is the only powered joint in the arm and carries roughly
+            110 degrees of range. It is driven by a 12V DC worm gear motor.
+            The worm drive is non-backdrivable by design, so the elbow holds
+            any angle at zero holding current: the arm draws no power and
+            generates no heat while posed, which matters for a robot that
+            spends most of a lecture holding a gesture. A potentiometer built
+            into the joint reports elbow angle in real time, so the
+            controller always knows where the forearm is.
+          </p>
+          <div class="figure">
+            <img src="../assets/img/projects/baker-bot/elbow-cad.jpg" alt="CAD render of the left and right elbow assemblies in red and blue, showing the gear motor, a limit switch, a potentiometer, and the carbon fiber forearm tube." loading="lazy" />
+            <p class="figure-caption">Elbow CAD. Worm gear motor, limit switch for homing, and an in-joint potentiometer for live position.</p>
+          </div>
         </div>
-        <div class="figure">
+        <div class="figure split-row-side">
           <img src="../assets/img/projects/baker-bot/elbows-real.jpg" alt="Two assembled black 3D-printed elbow modules with gear motors and wiring, sitting on a workbench." loading="lazy" />
           <p class="figure-caption">Both assembled elbow modules before integration.</p>
         </div>
@@ -222,22 +221,25 @@
       </div>
 
       <h4>Forearm and Swappable Hands</h4>
-      <p>
-        The forearm is a carbon fiber tube, chosen for stiffness at low
-        weight. The hand mounts to the end through a quick-swap interface: a
-        keyed turn-to-lock collar with a magnet that holds the hand seated.
-        This lets the robot change hands for context, an open pointing hand
-        for gesturing and explaining, and a closed hand that can hold an
-        object. The hands themselves are printed and fixed rather than
-        actuated, a deliberate scope cut to stay on budget without losing the
-        expressive value of a posed hand. The open pointing hand doubles as
-        the physics right-hand-rule gesture, a fitting default for a physics
-        TA.
-      </p>
-
-      <div class="figure">
-        <img src="../assets/img/projects/baker-bot/hand-mechanism.jpg" alt="3D-printed cylindrical hand mount held in hand, showing a magnet at the top, a keyed slot for the turn-to-lock, and mounting screws." loading="lazy" />
-        <p class="figure-caption">Quick-swap hand mount: turn to lock, held seated by a magnet.</p>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            The forearm is a carbon fiber tube, chosen for stiffness at low
+            weight. The hand mounts to the end through a quick-swap interface: a
+            keyed turn-to-lock collar with a magnet that holds the hand seated.
+            This lets the robot change hands for context, an open pointing hand
+            for gesturing and explaining, and a closed hand that can hold an
+            object. The hands themselves are printed and fixed rather than
+            actuated, a deliberate scope cut to stay on budget without losing the
+            expressive value of a posed hand. The open pointing hand doubles as
+            the physics right-hand-rule gesture, a fitting default for a physics
+            TA.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/hand-mechanism.jpg" alt="3D-printed cylindrical hand mount held in hand, showing a magnet at the top, a keyed slot for the turn-to-lock, and mounting screws." loading="lazy" />
+          <p class="figure-caption">Quick-swap hand mount: turn to lock, held seated by a magnet.</p>
+        </div>
       </div>
 
       <h4>Homing, Feedback, and Gesture Control</h4>
@@ -263,22 +265,25 @@
       </p>
 
       <h3>Design for Manufacturing</h3>
-      <p>
-        Every structural part on the robot was 3D printed, so I set a
-        manufacturing standard that made parts come off the printer ready to
-        assemble, with no cleanup and no failed fits. Details I built into
-        every part:
-      </p>
-      <ul>
-        <li>Chamfered bottom edges to cancel elephant's foot, so parts sit flat without filing the first layer.</li>
-        <li>Teardrop-shaped horizontal holes, so they print cleanly without support and hold their diameter.</li>
-        <li>Chamfered heat-set insert holes, giving the plastic displaced during insertion somewhere to go and keeping the surface flush.</li>
-        <li>Tuned clearances for press fits and fasteners, with printed test-fit coupons for every critical interface before committing to a final part.</li>
-      </ul>
-
-      <div class="figure">
-        <img src="../assets/img/projects/baker-bot/dfm-details.jpg" alt="Close-up CAD render of a printed part showing a chamfered heat-set insert boss, a teardrop-shaped horizontal hole, and a chamfered bottom edge." loading="lazy" />
-        <p class="figure-caption">The manufacturing details built into every part: chamfered insert bosses, teardrop horizontal holes, and elephant's-foot chamfers.</p>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            Every structural part on the robot was 3D printed, so I set a
+            manufacturing standard that made parts come off the printer ready to
+            assemble, with no cleanup and no failed fits. Details I built into
+            every part:
+          </p>
+          <ul>
+            <li>Chamfered bottom edges to cancel elephant's foot, so parts sit flat without filing the first layer.</li>
+            <li>Teardrop-shaped horizontal holes, so they print cleanly without support and hold their diameter.</li>
+            <li>Chamfered heat-set insert holes, giving the plastic displaced during insertion somewhere to go and keeping the surface flush.</li>
+            <li>Tuned clearances for press fits and fasteners, with printed test-fit coupons for every critical interface before committing to a final part.</li>
+          </ul>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baker-bot/dfm-details.jpg" alt="Close-up CAD render of a printed part showing a chamfered heat-set insert boss, a teardrop-shaped horizontal hole, and a chamfered bottom edge." loading="lazy" />
+          <p class="figure-caption">The manufacturing details built into every part: chamfered insert bosses, teardrop horizontal holes, and elephant's-foot chamfers.</p>
+        </div>
       </div>
 
       <h3>Manufacturing the Full Robot</h3>
@@ -317,7 +322,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>PETG filament, OVERTURE 2 kg (white)</td><td class="num">1</td><td class="num">$36.99</td></tr>
+            <tr><td>PETG filament, OVERTURE 2 kg (black)</td><td class="num">1</td><td class="num">$36.99</td></tr>
             <tr><td>Carbon fiber forearm tube, 8 x 10 x 420 mm</td><td class="num">2</td><td class="num">$35.98</td></tr>
             <tr><td>Aluminum upper-arm tube, 34 x 40 x 300 mm</td><td class="num">2</td><td class="num">$21.58</td></tr>
             <tr><td>12V DC worm gear motor, 16 RPM</td><td class="num">2</td><td class="num">$92.04</td></tr>
