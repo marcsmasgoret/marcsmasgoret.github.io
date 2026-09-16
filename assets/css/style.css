@@ -370,6 +370,10 @@ h1, h2, h3 {
   object-fit: cover;
 }
 
+.card-thumb video {
+  object-position: center bottom;
+}
+
 .thumb-placeholder {
   position: relative;
   z-index: 0;
@@ -604,8 +608,8 @@ h1, h2, h3 {
 }
 
 .model-viewer-embed-large {
-  width: 60%;
-  height: 733px !important;
+  width: 40%;
+  height: 480px !important;
 }
 
 @media (max-width: 720px) {
@@ -691,7 +695,7 @@ h1, h2, h3 {
 }
 
 .media-row-narrow {
-  width: 60%;
+  width: 85%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -775,6 +779,14 @@ h1, h2, h3 {
   margin-bottom: 0;
 }
 
+.text-figure-row-2fr {
+  grid-template-columns: 2fr 1fr;
+}
+
+.text-figure-row-3col {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
 .text-figure-row .figure {
   margin: 0;
   display: flex;
@@ -831,26 +843,27 @@ h1, h2, h3 {
 
 .bom-table-wrap {
   overflow-x: auto;
+  max-width: 480px;
   margin: 16px 0 8px;
 }
 
 .bom-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.92rem;
-  min-width: 420px;
+  font-size: 0.76rem;
+  min-width: 380px;
 }
 
 .bom-table th,
 .bom-table td {
-  padding: 10px 12px;
+  padding: 5px 8px;
   border-bottom: 1px solid var(--border);
   text-align: left;
 }
 
 .bom-table th {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
@@ -907,8 +920,8 @@ h1, h2, h3 {
   line-height: 1;
 }
 
-.hp-sign-neg { left: 30%; }
-.hp-sign-pos { left: 72%; }
+.hp-sign-neg { left: 37%; }
+.hp-sign-pos { left: 68%; }
 
 .hp-label {
   position: absolute;
@@ -930,8 +943,8 @@ h1, h2, h3 {
   color: var(--accent);
 }
 
-.hp-label-hydrogen { left: 30%; }
-.hp-label-oxygen { left: 72%; }
+.hp-label-hydrogen { left: 37%; }
+.hp-label-oxygen { left: 68%; }
 
 /* ==========================================================================
    Presentation viewer — clickable trigger + full-screen slide overlay
