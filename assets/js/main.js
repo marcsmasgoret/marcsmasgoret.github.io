@@ -51,6 +51,59 @@ document.addEventListener("DOMContentLoaded", () => {
     if (openOverlay) closeViewer(openOverlay);
   });
 
+  // Scroll so a project's title lands at the top of the viewport, not the
+  // bottom. Native anchor jumps can land short/long here because late-loading
+  // images and the 3D model viewer shift page height after the initial jump,
+  // so we drive the scroll ourselves and re-correct once everything settles.
+  function scrollHashTargetToTop(hash) {
+    if (!hash) return;
+    const id = hash.startsWith("#") ? hash.slice(1) : hash;
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+  }
+
+  if (location.hash) {
+    scrollHashTargetToTop(location.hash);
+    window.addEventListener("load", () => {
+      scrollHashTargetToTop(location.hash);
+      setTimeout(() => scrollHashTargetToTop(location.hash), 300);
+      setTimeout(() => scrollHashTargetToTop(location.hash), 900);
+    });
+  }
+
+  document.querySelectorAll('a[href*="#"]').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      let url;
+      try {
+        url = new URL(link.getAttribute("href"), location.href);
+      } catch (err) {
+        return;
+      }
+      if (url.pathname !== location.pathname || !url.hash) return;
+      const target = document.getElementById(url.hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      history.pushState(null, "", url.hash);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  // Auto-hiding scrollbar: show it while the page is scrolling, fade it back
+  // out shortly after scrolling stops.
+  let scrollHideTimer;
+  window.addEventListener(
+    "scroll",
+    () => {
+      document.documentElement.classList.add("is-scrolling");
+      clearTimeout(scrollHideTimer);
+      scrollHideTimer = setTimeout(() => {
+        document.documentElement.classList.remove("is-scrolling");
+      }, 900);
+    },
+    { passive: true }
+  );
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) return;
 
