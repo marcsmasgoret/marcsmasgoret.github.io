@@ -784,16 +784,26 @@ h1, h2, h3 {
 }
 
 .text-figure-row-3col {
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2.1fr 1fr 0.95fr;
 }
 
-.text-figure-row .figure {
+.text-figure-row-3col .figure:nth-child(2) img {
+  aspect-ratio: 1.12 / 1;
+}
+
+.text-figure-row-3col .figure:nth-child(3) img {
+  aspect-ratio: 0.95 / 1;
+}
+
+.text-figure-row .figure,
+.figure-stack .figure {
   margin: 0;
   display: flex;
   flex-direction: column;
 }
 
-.text-figure-row .figure img {
+.text-figure-row .figure img,
+.figure-stack .figure img {
   flex: 1 1 auto;
   object-fit: cover;
   min-height: 0;
@@ -804,7 +814,8 @@ h1, h2, h3 {
     grid-template-columns: 1fr;
   }
 
-  .text-figure-row .figure img {
+  .text-figure-row .figure img,
+  .figure-stack .figure img {
     aspect-ratio: 4 / 3;
     flex: none;
   }
@@ -893,8 +904,9 @@ h1, h2, h3 {
    Annotated hydrogen/oxygen electrolysis video
    ========================================================================== */
 .hp-video {
-  max-width: 320px;
-  margin: 16px auto 24px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 .hp-video-media {
@@ -906,7 +918,7 @@ h1, h2, h3 {
 
 .hp-video-row {
   position: relative;
-  height: 44px;
+  height: 58px;
 }
 
 .hp-sign {
@@ -925,20 +937,21 @@ h1, h2, h3 {
 
 .hp-label {
   position: absolute;
-  top: 2px;
+  top: 6px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 1rem;
+  line-height: 1.1;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
 .hp-label-arrow {
-  font-size: 1rem;
+  font-size: 1.3rem;
   line-height: 1;
   color: var(--accent);
 }
