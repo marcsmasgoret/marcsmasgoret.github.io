@@ -320,6 +320,8 @@ h1, h2, h3 {
   color: var(--accent-text);
 }
 
+.btn-icon { flex: none; display: block; }
+
 .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 .btn-accent:hover { color: var(--accent-text); background: var(--accent); opacity: 0.9; }
 
@@ -459,7 +461,9 @@ h1, h2, h3 {
   transition: background-color 0.2s ease;
 }
 
-.project-row:first-child { padding-top: 4px; }
+/* Even vertical padding on every row, so the hover panel sits symmetrically
+   around the thumbnail; the section head loses its own gap to compensate. */
+.project-list { margin-top: -32px; }
 .project-row:last-child { border-bottom: none; }
 
 .project-row .card-thumb {

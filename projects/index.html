@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=8" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=9" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -474,12 +474,23 @@
         <div class="text-figure-row-text">
           <h4>Feeding: Alternating Vibration</h4>
           <p>
-            Two vibration motors sit under the black feed platform, and rather
-            than running both continuously, the firmware alternates them: motor
-            one for 500 ms, then motor two for 500 ms, with no gap between. The
-            alternating side-to-side pulse walks erasers down the incline and
-            breaks up the clumps that form when a whole scoop-load lands at
-            once. Running both together just buzzed the pile in place.
+            Two vibration motors sit under the black feed platform, and neither
+            of them is a vibration motor. Each one is an ordinary DC gearmotor
+            with a hex nut glued to the encoder disc on the back of the motor
+            shaft &mdash; upstream of the gearbox, where the shaft still turns
+            at the motor's own speed rather than the reduced output speed. An
+            offset mass spinning that fast is the entire working principle of a
+            vibration motor, and putting it before the reduction is what makes
+            it work at all: the geared output turns far too slowly to shake
+            anything. Two nuts and some glue stood in for a part we did not
+            have.
+          </p>
+          <p>
+            Rather than running both continuously, the firmware alternates
+            them: motor one for 500 ms, then motor two for 500 ms, with no gap
+            between. The alternating side-to-side pulse walks erasers down the
+            incline and breaks up the clumps that form when a whole scoop-load
+            lands at once. Running both together just buzzed the pile in place.
           </p>
           <p>
             Both motors run on 20 kHz PWM, deliberately above the audible range
@@ -503,6 +514,45 @@
           <p class="figure-caption">The station running: erasers vibrating into single file, getting read one by one, and the chute swinging to divert the green ones.</p>
         </div>
       </div>
+
+      <h4>Indexing: The Part That Fought Back</h4>
+      <p>
+        Nearly every hard problem on this machine sits upstream of the sensor.
+        Classifying is the easy half: given one eraser, held still, under fixed
+        light, calling it green or not green is close to solved. Getting
+        exactly one eraser to arrive, alone, is what took the iterations.
+      </p>
+      <p>
+        Erasers are close to a worst case for a feeder. They are rectangular
+        blocks with flat faces and square edges, so they neither roll nor flow
+        &mdash; a heap of them interlocks like masonry rather than pouring like
+        gravel, and it will bridge across the full width of the ramp and sit
+        there indefinitely. The faces are also large relative to the mass
+        behind them, so two erasers in contact have a great deal of surface
+        holding them together and very little weight trying to pull them apart.
+      </p>
+      <p>
+        Then there is the rubber itself, which is engineered to grip. Erasers
+        stick to the platform, stick to each other, hold static, and shed dust
+        that makes the surface grippier as a run goes on. That leaves the ramp
+        angle with no good setting: shallow enough to meter erasers out
+        individually and the pile simply stops moving, steep enough that it
+        always moves and the whole clump slides down as one body. Gravity and
+        geometry alone never separated them. The separation had to come from
+        vibration, which is why the feed ended up as two offset masses taking
+        turns instead of one steady buzz &mdash; a single continuous shake
+        packs a sticky pile tighter, while an alternating one keeps shearing it
+        sideways.
+      </p>
+      <p>
+        This is also where the residual error lives. On single erasers the
+        classifier does not miss; in full runs the system sorts at 90&ndash;92%.
+        Essentially all of that gap is the feed rather than the sensor &mdash;
+        when a whole scoop-load lands at once, two erasers occasionally reach
+        the aperture stuck together and the sensor reads a blend of the two.
+        Every improvement we made to sorting accuracy after the first week was
+        an improvement to feeding, not to the algorithm.
+      </p>
 
       <h4>Classifying: Six Gates, Not One Threshold</h4>
       <p>
@@ -610,6 +660,48 @@
         <p class="figure-caption">A full autonomous run: the scavenger sweeps a collection pass, reverses to base, and empties into the sorting station.</p>
       </div>
 
+      <h3>Designing in Iterations</h3>
+      <p>
+        Eight weeks was never enough time to get either machine right on paper,
+        and we stopped trying early. What replaced it was a short loop: model a
+        version in SolidWorks, print it that night, break it on the bench the
+        next morning, and change the model the same day. Almost nothing on the
+        finished system is a first revision, and the parts that decided whether
+        the system worked &mdash; the scoop, the feed platform, the chute
+        &mdash; went through several each.
+      </p>
+
+      <div class="media-row media-row-match">
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/scavenger-early.jpg" alt="Early SolidWorks render of the scavenger: a flat open printed deck on four wheels with a fixed ramp, a brush bar across one end, and the control board sitting exposed on the deck." loading="lazy" />
+          <p class="figure-caption">Where the scavenger started: a flat open deck with a fixed ramp and no way to lift or tip a load. The shipped robot added the servo-driven scoop, retaining walls, and a brush that reverses on the way home.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/sorter-early.jpg" alt="Early SolidWorks render of the sorting station: a large tilted green funnel bowl with an internal cone, driven from below and held up by a tripod stand." loading="lazy" />
+          <p class="figure-caption">Where the sorter started: a tilted rotating funnel meant to spin a scoop-load up its wall and release erasers one at a time at the rim. It became the vibrating inclined platform instead.</p>
+        </div>
+      </div>
+
+      <p>
+        Neither machine resembles its first model. The rotating funnel above is
+        a centrifugal bowl feeder in miniature, and it is a completely
+        reasonable way to single-file parts &mdash; for parts that slide. Once
+        there were printed erasers-and-plastic tests on the bench it was obvious
+        that no amount of spin walks a sticky rubber block up a smooth wall in
+        an orderly line. The flat scavenger deck failed the same way: it looked
+        fine in CAD and had nowhere to put a load the moment the robot had to
+        carry one back.
+      </p>
+      <p>
+        That is the part worth keeping from this project. The binding constraint
+        was not CAD time, it was how many times we could afford to be wrong
+        before the deadline, so we optimised for that: keep every part cheap to
+        print, keep the models easy to re-cut, and never let a single idea carry
+        so much work that killing it hurts. A wrong design cost us an evening
+        instead of a week, and the machine that placed 2nd is essentially the
+        one that survived the most rewrites.
+      </p>
+
       <h3>Firmware Architecture</h3>
       <p>
         Both programs are built the same way: a single non-blocking loop driving
@@ -671,41 +763,19 @@
         </table>
       </div>
 
-      <h3>Limitations and What I'd Change</h3>
-      <p>
-        Two weaknesses showed up consistently in testing. When a full scoop
-        landed on the feed platform at once, erasers would occasionally cluster
-        and reach the sensor two at a time, which is the main source of the
-        8&ndash;10% sorting error: the classifier is accurate on a single
-        eraser, so nearly every miss traces back to the feed presenting it with
-        more than one. A metering gate that releases one eraser at a time,
-        rather than relying on vibration alone to separate them, would close
-        most of that gap.
-      </p>
-      <p>
-        The second is navigation. Dead reckoning worked because the arena was
-        fixed and we could tune the timings against it, but the approach does
-        not survive a change in floor surface or battery voltage, and the drift
-        accumulates across three passes. The guide rails cover for it at the
-        base, but a robot that had to hit an arbitrary target rather than a
-        funnel would need real heading feedback.
-      </p>
-      <p>
-        The broader lesson I took from it is where to spend reliability effort.
-        The two changes that most improved this system &mdash; normalizing the
-        colour channels and requiring a one-second confirmation &mdash; were
-        both software, cost nothing, and mattered more than any mechanical
-        refinement we made. But the single most reliable part of the whole
-        machine is a pair of passive plastic rails that do not sense anything at
-        all.
-      </p>
-
       <h3>Source and Documentation</h3>
       <p>
         Full firmware for both machines, CAD, engineering drawings, circuit
-        schematics, and the complete design report are on GitHub:
-        <a href="https://github.com/marcsmasgoret/Autonomous-Sorting-Robot" target="_blank" rel="noopener">marcsmasgoret/Autonomous-Sorting-Robot</a>.
+        schematics, and the complete design report are on GitHub.
       </p>
+      <div class="hero-links">
+        <a class="btn" href="https://github.com/marcsmasgoret/Autonomous-Sorting-Robot" target="_blank" rel="noopener">
+          <svg class="btn-icon" viewBox="0 0 16 16" width="17" height="17" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
 
     </div>
   </section>
