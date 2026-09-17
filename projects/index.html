@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=9" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=15" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -1031,22 +1031,349 @@
   <!-- P.06 -->
   <section class="project-hero" id="3d-printer-enclosure">
     <div class="wrap">
-      <h2>Open-Source 3D Printer Enclosure</h2>
+      <h2>Open-Source 3D Printer Enclosure ("Flush Factory")</h2>
       <div class="project-meta">
-        <div><strong>Status</strong>Write-up in progress</div>
+        <div><strong>Role</strong>Team Lead &middot; Design, Filtration &amp; Documentation</div>
+        <div><strong>Timeline</strong>January to April 2025</div>
+        <div><strong>Tools</strong>SolidWorks, 3D Printing (PLA), Arduino Uno, Acrylic Fabrication</div>
       </div>
+      <p class="lede">
+        An enclosure for the Prusa XL that anyone can build for about $162 in
+        parts: every bracket printed on the printer it encloses, every panel a
+        plain rectangle of hardware-store acrylic, and an active filtration
+        unit running on a $5 filter. Placed 1st in Western's First-Year
+        Engineering Design Competition.
+      </p>
     </div>
   </section>
 
   <section class="project-body">
     <div class="wrap">
-      <div class="wip-note">
-        Full write-up for this project is coming soon. In the meantime, see the
-        <a href="../index.html#about">About</a> section or my
-        <a href="mailto:mmasgore@uwo.ca">email</a> for more details.
+
+      <div class="media-row media-row-lead">
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/enclosure-cad.jpg" alt="CAD assembly of the enclosure: clear acrylic panels held together by red 3D printed brackets, with black printed hinges on the front doors, a printed handle, and the red filtration unit mounted on the lower right panel." loading="lazy" />
+          <p class="figure-caption">The full assembly. Everything red or black is printed; everything clear is a flat rectangle of acrylic.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/display-table.jpg" alt="The team's display table at the design competition: a black and red poster board behind a row of 3D printed enclosure parts, a box of magnets, a box of M3 screws, and a printed copy of the build manual." loading="lazy" />
+          <p class="figure-caption">The competition table &mdash; the complete printed part kit, the fasteners, and the build manual.</p>
+        </div>
       </div>
+
+      <h3>Overview</h3>
+      <p>
+        Printing without an enclosure means an open bed exposed to room drafts
+        and a workspace breathing whatever the hotend gives off. The enclosures
+        that fix this are expensive, rarely modular, and often insulate poorly,
+        which is why the makerspaces that need them most tend not to have them.
+        Our brief was Western's FAST Lab: a high-traffic student shop where an
+        enclosure has to survive constant handling and constant modification.
+      </p>
+      <p>
+        The design constraints were tight and mostly financial &mdash; under
+        $150 for the base enclosure, under $50 for whatever value-add we chose
+        to bolt onto it, standardized or 3D printed parts only, recyclable
+        materials, clear sightlines to the print, and an open-source design
+        someone else could actually reproduce. We took the fume problem as the
+        value-add and built an active particle filtration unit into the
+        enclosure itself.
+      </p>
+      <p>
+        I led the team of five and worked across the whole project rather than
+        owning one subsystem: the CAD for the printed parts, the filtration
+        unit and its control circuit, and the dimensioned build manual we
+        shipped as the deliverable.
+      </p>
+
+      <div class="callout">
+        <p class="eyebrow">Designed to Be Copied, Not Just Built</p>
+        <p>
+          "Open source" was a constraint we took literally, and it turned out
+          to be the constraint that decided most of the design. Every part had
+          to clear the same bar: could a stranger with one 3D printer, a drill,
+          and no workshop reproduce it? That ruled out laser cutting, welding,
+          custom PCBs, injection-moulded clips, and any proprietary hardware.
+        </p>
+        <p>
+          What survived is a parts list you can fill anywhere. The acrylic is
+          nine plain rectangles in six sizes, cut from two sheets by whoever
+          sells them to you, with M3 clearance holes drilled to the dimensions
+          in the manual. The brackets are 30 printed parts across nine designs,
+          all of which fit a standard bed and print in PLA &mdash; 941 g of
+          filament, about 26 hours, one spool. The fasteners are M3 screws and
+          10&times;3 mm magnets from a bulk pack. Nothing needs a soldering
+          iron.
+        </p>
+        <p>
+          The other half of it is documentation. CAD files alone are not a
+          reproducible design, so the deliverable was a 23-page build manual:
+          panel drawings with every hole dimensioned, part-by-part assembly
+          renders, a hole-by-hole breadboard wiring guide written for someone
+          who has never wired anything, the full bill of materials with prices,
+          and operating instructions. It is the actual product &mdash; the
+          enclosure is what falls out of following it.
+        </p>
+      </div>
+
+      <h3>Mounting to the Printer Without Touching It</h3>
+      <p>
+        The hardest requirement to satisfy cheaply was attachment. The
+        enclosure has to hang off a printer we are not allowed to modify, with
+        no drilling, no adhesive, and nothing that voids a warranty on a
+        machine a lab depends on.
+      </p>
+      <p>
+        The Prusa XL's frame is extruded aluminum, so the answer was to use the
+        T-slots already in it. Part 001 is a two-piece printed clamp: 001A
+        drops into the channel and rotates 90&deg; to lock, acting as a printed
+        T-nut, and 001B slides on from the outside. A single M3 screw pulls
+        them together and traps the acrylic panel between them. Eight of these
+        carry the structural panels, and the whole enclosure comes off the
+        printer as fast as it went on.
+      </p>
+      <p>
+        Panels meet each other the same way. An L connector (002) screwed in
+        from the inside holds two sheets at a true 90&deg; without needing a
+        jig, a corner bracket, or a clean edge &mdash; the part defines the
+        angle, so the acrylic does not have to.
+      </p>
+
+      <div class="media-row media-row-match">
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/t-slot-integrator.jpg" alt="CAD detail of the two-piece T-slot integrator: a red printed piece seated in the aluminum extrusion channel and a white printed piece clamping from the outside, with a screw drawing them together." loading="lazy" />
+          <p class="figure-caption">The T-slot integrator, clamping into the printer's own extrusion.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/l-connector.jpg" alt="CAD detail of a red printed L-shaped bracket joining two acrylic panels at ninety degrees, with six screws inserted from the inside." loading="lazy" />
+          <p class="figure-caption">The L connector setting the 90&deg; between two panels.</p>
+        </div>
+      </div>
+
+      <h3>Doors, Magnets, and Seeing In</h3>
+      <p>
+        Every panel is clear for a reason. One of the objectives was monitoring
+        a print without opening anything, because opening the doors dumps the
+        heat the enclosure exists to hold and releases the fumes the filter is
+        busy capturing. A user who can watch the print through the wall does
+        not have a reason to break the seal.
+      </p>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            The front doors run on printed hinges (007) mounted on the inside
+            face and close onto neodymium magnets rather than any kind of
+            latch. The magnets are glued into grooves in two printed holders
+            &mdash; a corner holder (009) on the frame and a drop-down holder
+            (008) on the door &mdash; so the closing force comes from twelve
+            $0.25 magnets and two printed parts instead of hardware nobody can
+            source. Printed handles (004) bolt through both faces of each door.
+          </p>
+          <p>
+            The practical benefit is that the doors cannot bind. A magnetic
+            closure has no alignment to lose and nothing to wear out of
+            adjustment, and a door that pops open under a pull anywhere along
+            its edge is the right failure mode for a lab where people are
+            reaching in with one hand full.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/door-magnets.jpg" alt="CAD detail showing the drop-down magnet holder on the door meeting the corner magnet holder on the frame, with the magnet faces mating between them." loading="lazy" />
+          <p class="figure-caption">How the two magnet holders meet when a door closes.</p>
+        </div>
+      </div>
+
+      <h3>The Filtration Unit</h3>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            The value-add had a $50 ceiling, which is roughly what a single
+            replacement cartridge costs on a commercial fume filter. So the
+            unit is built around a filter you can buy at IKEA: an UPPÅTVIND
+            air-purifier refill, $4.99, stocked in most of the world.
+          </p>
+          <p>
+            A printed housing (005 body, 006 lid) bolts to a side panel and
+            holds the filter in a slot in front of an 80 mm silent fan, pulling
+            enclosure air through the media instead of letting it drift into
+            the room. Because the filter is square and only the quarter in
+            front of the fan loads up, the housing lets you pull it out and
+            rotate it 90&deg; when it is spent. Four positions, four filter
+            lives, one $5 part &mdash; which is the difference between a
+            consumable people replace and one they quietly stop replacing.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/filtration-unit.jpg" alt="CAD render of the red printed filtration housing with its grey lid lifted off, showing the fan grille and the mounting screws that fasten it to an acrylic panel." loading="lazy" />
+          <p class="figure-caption">The filtration housing and lid, mounted through a side panel.</p>
+        </div>
+      </div>
+
+      <h4>Knowing When the Filter Is Done</h4>
+      <p>
+        A filter nobody can see is a filter nobody changes, so an Arduino Uno
+        tracks run time and blinks an LED when the media is used up. A touch
+        sensor resets the timer whenever the filter is rotated or swapped. The
+        fan itself runs through a relay off the printer's power rather than its
+        own switch, so filtration starts when the print starts and stops when
+        the printer does &mdash; there is no step in the workflow a user can
+        forget.
+      </p>
+      <p>
+        The circuit is deliberately unimpressive: a relay, a resistor, an LED,
+        a touch sensor, a step-down converter, and a breadboard. The manual
+        assumes no soldering setup and no experience, and walks the builder
+        through it one breadboard hole at a time. No part in it costs more than
+        $10.
+      </p>
+
+      <h3>Where the Money Goes</h3>
+      <p>
+        The cost breakdown is the part of this project I would point at first.
+        Of the $111.64 base enclosure, $98.98 is the two sheets of acrylic.
+        Every bracket, hinge, handle, magnet holder, screw and magnet in the
+        structure &mdash; the entire designed portion &mdash; comes to $12.66.
+        The design is essentially free; what a builder pays for is glazing, at
+        whatever their local price for a sheet happens to be.
+      </p>
+      <div class="bom-table-wrap">
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th class="num">Result</th>
+              <th class="num">Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Base enclosure cost</td><td class="num">$111.64</td><td class="num">&le; $150</td></tr>
+            <tr><td>Active filtration add-on</td><td class="num">$49.58</td><td class="num">&le; $50</td></tr>
+            <tr><td>Acrylic share of base cost</td><td class="num">89%</td><td class="num">&mdash;</td></tr>
+            <tr><td>Printed parts</td><td class="num">30 parts, 9 designs</td><td class="num">&mdash;</td></tr>
+            <tr><td>Filament and print time</td><td class="num">941 g &middot; ~26 h</td><td class="num">&mdash;</td></tr>
+            <tr class="total"><td>Total build cost (CAD)</td><td class="num">$162.40</td><td class="num">&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <p class="eyebrow">The Three Concepts We Threw Out</p>
+        <p>
+          We scored four enclosure architectures before committing. Modular
+          snap-fit panels were expensive, restricted us to one material, and
+          would not survive a shop. Magnetic hexagonal panels were expensive
+          and relied on magnets strong enough to be a problem, with no obvious
+          way to scale to a different printer. A tarp-style shield was
+          genuinely cheap, and looked it &mdash; in a space where the enclosure
+          is also a demonstration of what the lab can make, that mattered.
+        </p>
+        <p>
+          The winner was the least inventive one: flat panels fitted to the
+          shape the Prusa XL already is. Taking the printer's own geometry as
+          the frame meant no structural design to get wrong, no material we
+          had to defend, and mounting points already built into the machine.
+          Most of what makes this design cheap is that we let the printer do
+          the structural work.
+        </p>
+      </div>
+
+      <h3>Build Manual</h3>
+      <p>
+        The full 23-page manual &mdash; panel drawings, assembly renders,
+        wiring, bill of materials, and operating instructions.
+      </p>
+      <div class="doc-reader">
+        <div class="doc-frame">
+          <div class="doc-scroll" tabindex="0" data-viewer-open="manual-viewer-enclosure"
+               role="region" aria-label="Flush Factory Build Manual, 23 pages. Scroll to read, or click to open it full size.">
+            <img src="../assets/img/projects/printer-enclosure/manual-01.jpg" alt="Build manual page 1" width="1207" height="1562" />
+            <img src="../assets/img/projects/printer-enclosure/manual-02.jpg" alt="Build manual page 2" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-03.jpg" alt="Build manual page 3" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-04.jpg" alt="Build manual page 4" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-05.jpg" alt="Build manual page 5" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-06.jpg" alt="Build manual page 6" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-07.jpg" alt="Build manual page 7" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-08.jpg" alt="Build manual page 8" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-09.jpg" alt="Build manual page 9" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-10.jpg" alt="Build manual page 10" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-11.jpg" alt="Build manual page 11" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-12.jpg" alt="Build manual page 12" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-13.jpg" alt="Build manual page 13" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-14.jpg" alt="Build manual page 14" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-15.jpg" alt="Build manual page 15" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-16.jpg" alt="Build manual page 16" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-17.jpg" alt="Build manual page 17" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-18.jpg" alt="Build manual page 18" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-19.jpg" alt="Build manual page 19" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-20.jpg" alt="Build manual page 20" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-21.jpg" alt="Build manual page 21" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-22.jpg" alt="Build manual page 22" width="1207" height="1562" loading="lazy" />
+            <img src="../assets/img/projects/printer-enclosure/manual-23.jpg" alt="Build manual page 23" width="1207" height="1562" loading="lazy" />
+          </div>
+          <span class="doc-open-hint" aria-hidden="true">View Build Manual &rarr;</span>
+        </div>
+        <p class="figure-caption">Scroll to read it here, or click to open it full size.</p>
+      </div>
+
+      <h3>Result</h3>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            By the end of the term we had printed the complete part kit and
+            built and run the filtration unit and its control circuit; the
+            enclosure shell itself is documented as a cut-and-drill package
+            against the panel drawings. Both budgets held &mdash; $111.64
+            against $150, and $49.58 against $50, with 42 cents to spare.
+          </p>
+          <p>
+            The project placed 1st in Western's First-Year Engineering Design
+            Competition. What I took from it is that the reproducibility
+            constraint was not a limitation on the design; it was the thing
+            that made it good. Being unable to reach for a laser cutter or a
+            custom part is what pushed us onto the printer's own T-slots and
+            onto a five-dollar filter anyone can find.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/printer-enclosure/team.jpg" alt="The five-person Flush Factory team standing in front of their competition display, one member holding the red filtration unit and another holding the printed build manual." loading="lazy" />
+          <p class="figure-caption">The team at the competition, with the filtration unit and the manual.</p>
+        </div>
+      </div>
+
     </div>
   </section>
+
+  <div class="ppt-viewer-overlay" id="manual-viewer-enclosure" aria-hidden="true" role="dialog" aria-label="Flush Factory Build Manual &mdash; full document">
+    <div class="ppt-viewer-backdrop" data-viewer-close></div>
+    <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close build manual viewer">&times;</button>
+    <div class="ppt-viewer-panel">
+      <div class="ppt-viewer-scroll">
+        <img src="../assets/img/projects/printer-enclosure/manual-01.jpg" alt="Build manual page 1" width="1207" height="1562" />
+        <img src="../assets/img/projects/printer-enclosure/manual-02.jpg" alt="Build manual page 2" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-03.jpg" alt="Build manual page 3" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-04.jpg" alt="Build manual page 4" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-05.jpg" alt="Build manual page 5" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-06.jpg" alt="Build manual page 6" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-07.jpg" alt="Build manual page 7" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-08.jpg" alt="Build manual page 8" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-09.jpg" alt="Build manual page 9" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-10.jpg" alt="Build manual page 10" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-11.jpg" alt="Build manual page 11" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-12.jpg" alt="Build manual page 12" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-13.jpg" alt="Build manual page 13" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-14.jpg" alt="Build manual page 14" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-15.jpg" alt="Build manual page 15" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-16.jpg" alt="Build manual page 16" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-17.jpg" alt="Build manual page 17" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-18.jpg" alt="Build manual page 18" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-19.jpg" alt="Build manual page 19" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-20.jpg" alt="Build manual page 20" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-21.jpg" alt="Build manual page 21" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-22.jpg" alt="Build manual page 22" width="1207" height="1562" loading="lazy" />
+        <img src="../assets/img/projects/printer-enclosure/manual-23.jpg" alt="Build manual page 23" width="1207" height="1562" loading="lazy" />
+      </div>
+    </div>
+  </div>
 
   <nav class="project-nav">
     <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
@@ -1087,6 +1414,6 @@
     </div>
   </nav>
 
-  <script src="../assets/js/main.js?v=2"></script>
+  <script src="../assets/js/main.js?v=4"></script>
 </body>
 </html>

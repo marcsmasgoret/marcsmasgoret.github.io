@@ -16,27 +16,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let lastViewerTrigger = null;
 
+  // An inline reader (.doc-scroll) and the overlay it opens show the same pages
+  // at different widths, so the reading position is carried across as a
+  // fraction of scrollable distance rather than as a pixel offset. The page
+  // images carry width/height attributes, so both scrollers know their full
+  // height before the images have decoded and the fraction is correct on the
+  // first frame.
+  function carryScrollPosition(from, to) {
+    if (!from || !to) return;
+    const fromMax = from.scrollHeight - from.clientHeight;
+    const toMax = to.scrollHeight - to.clientHeight;
+    if (fromMax <= 0 || toMax <= 0) return;
+    to.scrollTop = (from.scrollTop / fromMax) * toMax;
+  }
+
   function openViewer(overlay, trigger) {
     lastViewerTrigger = trigger || null;
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.classList.add("viewer-open");
+
+    if (trigger && trigger.classList.contains("doc-scroll")) {
+      carryScrollPosition(trigger, overlay.querySelector(".ppt-viewer-scroll"));
+    }
+
     const closeBtn = overlay.querySelector(".ppt-viewer-close");
-    if (closeBtn) closeBtn.focus();
+    if (closeBtn) closeBtn.focus({ preventScroll: true });
   }
 
   function closeViewer(overlay) {
+    if (lastViewerTrigger && lastViewerTrigger.classList.contains("doc-scroll")) {
+      carryScrollPosition(overlay.querySelector(".ppt-viewer-scroll"), lastViewerTrigger);
+    }
+
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.classList.remove("viewer-open");
-    if (lastViewerTrigger) lastViewerTrigger.focus();
+    if (lastViewerTrigger) lastViewerTrigger.focus({ preventScroll: true });
   }
 
   document.querySelectorAll("[data-viewer-open]").forEach((trigger) => {
-    trigger.addEventListener("click", () => {
+    const open = () => {
       const overlay = document.getElementById(trigger.getAttribute("data-viewer-open"));
       if (overlay) openViewer(overlay, trigger);
-    });
+    };
+    trigger.addEventListener("click", open);
+
+    // Triggers that are not buttons (the inline manual reader) need Enter wired
+    // up by hand. Space is left alone so it still scrolls the reader.
+    if (trigger.tagName !== "BUTTON") {
+      trigger.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        open();
+      });
+    }
   });
 
   document.querySelectorAll(".ppt-viewer-overlay").forEach((overlay) => {
