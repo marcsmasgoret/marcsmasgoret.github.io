@@ -5,3 +5,6 @@ Thumbs.db
 # Raw CAD/source exports — huge, unoptimized for the web.
 # Only the compressed output in assets/models/ is meant to be published.
 /Files/
+
+# Separate clone of the sorting robot repo; it has its own git history.
+/2026-project-pdf-team-003-1/

@@ -368,18 +368,345 @@
     <div class="wrap">
       <h2>Autonomous Collection &amp; Sorting System</h2>
       <div class="project-meta">
-        <div><strong>Status</strong>Write-up in progress</div>
+        <div><strong>Role</strong>Sorting System Lead &middot; Firmware &amp; Electronics</div>
+        <div><strong>Timeline</strong>February to April 2026 &middot; 8-week build</div>
+        <div><strong>Tools</strong>ESP32 (Arduino C++), TCS34725 Colour Sensor, SolidWorks, 3D Printing</div>
       </div>
+      <p class="lede">
+        A two-machine system that sweeps green erasers off an arena floor,
+        carries them back to base, and sorts them by colour with no human
+        input and no remote control. Built in eight weeks for a second-year
+        design competition, where it placed 2nd.
+      </p>
     </div>
   </section>
 
   <section class="project-body">
     <div class="wrap">
-      <div class="wip-note">
-        Full write-up for this project is coming soon. In the meantime, see the
-        <a href="../index.html#about">About</a> section or my
-        <a href="mailto:mmasgore@uwo.ca">email</a> for more details.
+
+      <div class="media-row">
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/full-cad.jpg" alt="SolidWorks render of the complete system with the scoop raised on its blue lift arms above the sorting station, ready to dump, with the rotary brush at the front of the robot and the sorter frame at the right." loading="lazy" />
+          <p class="figure-caption">Full system CAD with the scoop at full lift, in the drop-off position over the sorting station.</p>
+        </div>
+        <div class="figure">
+          <model-viewer
+            src="../assets/models/scavenger-assem.glb"
+            alt="Interactive 3D model of the complete collection and sorting system"
+            camera-orbit="-135deg 70deg 70%"
+            camera-controls
+            touch-action="pan-y"
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="18deg"
+            shadow-intensity="1"
+            environment-image="../assets/env/aircraft_workshop_1k.hdr"
+            exposure="1.15"
+            tone-mapping="neutral"
+            loading="lazy"
+            class="model-viewer-inline">
+            <div slot="progress-bar"></div>
+            <span slot="poster">Loading 3D model…</span>
+          </model-viewer>
+          <p class="figure-caption">The same assembly in 3D — drag to rotate, scroll to zoom.</p>
+        </div>
       </div>
+
+      <h3>Overview</h3>
+      <p>
+        The competition brief gave us 120 seconds, an arena of roughly 15 m&sup2;,
+        and a floor scattered with erasers. The system had to locate and collect
+        them, tell green erasers apart from every other colour, and deposit them
+        into the correct bin at a home base &mdash; entirely on its own, with
+        scoring tied to both how many it collected and how accurately it sorted
+        them.
+      </p>
+      <p>
+        The decision that shaped everything else was splitting those two jobs
+        across two machines. A mobile <em>scavenger</em> robot drives the arena
+        and sweeps up erasers without trying to identify anything, and a
+        stationary <em>sorting station</em> at the home base does all the colour
+        classification. Collection is fast and indiscriminate; sorting is slow
+        and careful. Neither job compromises the other.
+      </p>
+      <p>
+        I led the sorting station and wrote the firmware and electrical
+        integration for both machines. My teammates led the scavenger's
+        mechanical design.
+      </p>
+
+      <h3>My Contributions</h3>
+      <ul class="contrib-list">
+        <li>Designed and built the stationary sorting station end to end: vibratory feed, colour sensing, and the diverter chute.</li>
+        <li>Wrote the colour classification algorithm &mdash; illumination-invariant normalized RGB behind six simultaneous gates, with a one-second temporal confirmation before the chute commits.</li>
+        <li>Wrote both firmware programs in Arduino C++ on ESP32, built entirely around non-blocking state machines.</li>
+        <li>Handled all electrical work on both machines: motor drivers, sensor wiring, PWM channels, and power.</li>
+      </ul>
+
+      <div class="callout">
+        <p class="eyebrow">Why Sort at the Base Instead of Onboard</p>
+        <p>
+          We scored three full system concepts through a Go/No-Go screen and
+          then a weighted decision matrix. Onboard sorting kept failing the
+          same way: a colour sensor riding on a moving robot sees changing
+          ambient light, vibration from the drivetrain, and erasers tumbling
+          past at unpredictable angles. Every one of those degrades a colour
+          reading, and a misread costs points directly.
+        </p>
+        <p>
+          Moving the sensor to a fixed station fixes the sensing environment:
+          consistent geometry, consistent lighting, one eraser presented at a
+          time. The cost is that the robot has to come back to base &mdash; but
+          it already had to, because that is where the bins are. The
+          constraint was free.
+        </p>
+      </div>
+
+      <h3>The Sorting Station</h3>
+      <p>
+        The station takes a scoop-load of mixed erasers dumped in at the top and
+        processes them one at a time: an inclined platform vibrates them into a
+        single-file line, a colour sensor reads each one as it reaches the
+        bottom, and a servo-driven chute swings to send it left or right.
+      </p>
+
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <h4>Feeding: Alternating Vibration</h4>
+          <p>
+            Two vibration motors sit under the black feed platform, and rather
+            than running both continuously, the firmware alternates them: motor
+            one for 500 ms, then motor two for 500 ms, with no gap between. The
+            alternating side-to-side pulse walks erasers down the incline and
+            breaks up the clumps that form when a whole scoop-load lands at
+            once. Running both together just buzzed the pile in place.
+          </p>
+          <p>
+            Both motors run on 20 kHz PWM, deliberately above the audible range
+            so the station does not whine through a two-minute demo.
+          </p>
+
+          <h4>Diverting: A Two-Position Chute</h4>
+          <p>
+            At the bottom, a single servo drives the chute between two fixed
+            positions &mdash; 0&deg; for non-green and 70&deg; for green. There
+            is no in-between and nothing to calibrate at runtime. The chute
+            rests in the non-green position, so a sensing failure or a power
+            glitch defaults to the reject path rather than contaminating the
+            green bin.
+          </p>
+        </div>
+        <div class="figure video-figure video-figure-portrait">
+          <video autoplay loop muted playsinline poster="../assets/img/projects/sorting-system/sorting-loop-poster.jpg">
+            <source src="../assets/img/projects/sorting-system/sorting-loop.mp4" type="video/mp4" />
+          </video>
+          <p class="figure-caption">The station running: erasers vibrating into single file, getting read one by one, and the chute swinging to divert the green ones.</p>
+        </div>
+      </div>
+
+      <h4>Classifying: Six Gates, Not One Threshold</h4>
+      <p>
+        The sensor is a TCS34725 running over I&sup2;C at a 50 ms integration
+        time and 4&times; gain, and each decision averages three consecutive
+        reads to damp sensor noise. The important step happens before any
+        threshold is applied: the raw red, green, and blue counts are
+        normalized against their own sum, so what the algorithm actually
+        compares is each channel's <em>share</em> of the total light rather than
+        its absolute value.
+      </p>
+      <p>
+        That one change is what makes the classifier survive real conditions. A
+        green eraser under a bright lab light and the same eraser in shadow
+        produce very different raw counts but nearly identical normalized ones.
+        Absolute thresholds would have needed recalibrating every time someone
+        turned on a different bank of lights in the room.
+      </p>
+      <p>
+        On top of the normalized values, an eraser has to clear six independent
+        gates simultaneously to be called green. Any single failure rejects it:
+      </p>
+
+      <div class="bom-table-wrap">
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>Gate</th>
+              <th class="num">Threshold</th>
+              <th>What it rejects</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Clear channel</td><td class="num">&ge; 120</td><td>An empty chute with nothing under the sensor</td></tr>
+            <tr><td>Normalized green</td><td class="num">&ge; 0.40</td><td>Anything not predominantly green</td></tr>
+            <tr><td>Normalized red</td><td class="num">&le; 0.32</td><td>Yellows and oranges</td></tr>
+            <tr><td>Normalized blue</td><td class="num">&le; 0.32</td><td>Teals and cyans</td></tr>
+            <tr><td>Green dominance</td><td class="num">&ge; 0.080</td><td>Greys and washed-out neutrals</td></tr>
+            <tr><td>Hue angle</td><td class="num">108&ndash;145&deg;</td><td>Yellow-greens and blue-greens at the edges</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        The gates overlap on purpose. Green dominance &mdash; the normalized
+        green share minus whichever of red or blue is larger &mdash; catches the
+        case where a colour is technically green-leaning but so desaturated that
+        it is really grey. The hue window catches the opposite case: a colour
+        saturated enough to pass the channel tests but sitting at the yellow or
+        blue edge of green. A single threshold on green alone would let both
+        through.
+      </p>
+
+      <h4>Confirming: One Second of Agreement</h4>
+      <div class="text-figure-row text-figure-row-2fr">
+        <div class="text-figure-row-text">
+          <p>
+            Passing the gates once is not enough to move the chute. The reading
+            has to stay green continuously for a full second before the servo
+            commits, and it has to stay non-green for a full second before the
+            chute swings back. An eraser tumbling past the sensor, a shadow
+            crossing the aperture, or a momentary reflection all produce
+            single-frame misreads &mdash; and none of them survive a
+            thousand-millisecond hold.
+          </p>
+          <p>
+            This is the cheapest reliability improvement in the whole project:
+            a few lines of timestamp comparison that eliminated essentially
+            every false trigger we saw on the bench. Across more than a
+            thousand bench samples, the classifier produced no
+            misclassifications.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/sorter-detail.jpg" alt="Close view of the sorting station showing the grey printed frame, the black inclined feed platform, the colour sensor board mounted at the chute mouth, and the grey diverter tube below." loading="lazy" />
+          <p class="figure-caption">The station up close: black feed platform on top, and below it the chute with the colour sensor board mounted at its mouth.</p>
+        </div>
+      </div>
+
+      <h3>The Collection Robot</h3>
+      <p>
+        The scavenger is a 3D-printed rear-wheel-drive chassis with two DC gear
+        motors, a rotary brush across the front, and a servo-actuated scoop. The
+        brush sweeps erasers back into the scoop as the robot drives forward,
+        and reverses direction when the robot backs up so that the erasers
+        already collected stay in rather than being swept back out. It averaged
+        eight to nine erasers per collection pass.
+      </p>
+
+      <div class="media-row media-row-narrow">
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/scavenger-and-sorter.jpg" alt="The green 3D-printed scavenger robot with its blue rotary brush and grey scoop parked in front of the grey sorting station." loading="lazy" />
+          <p class="figure-caption">The built hardware: scavenger robot in front, sorting station behind.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/dumping-into-sorter.jpg" alt="The scavenger robot reversed into the sorting station with its scoop tipped up, emptying erasers onto the sorter's black inclined platform." loading="lazy" />
+          <p class="figure-caption">Hand-off: the robot reverses in and tips its scoop onto the feed ramp.</p>
+        </div>
+      </div>
+
+      <div class="figure video-figure video-figure-portrait">
+        <video controls preload="metadata" playsinline poster="../assets/img/projects/sorting-system/collection-run-poster.jpg">
+          <source src="../assets/img/projects/sorting-system/collection-run.mp4" type="video/mp4" />
+        </video>
+        <p class="figure-caption">A full autonomous run: the scavenger sweeps a collection pass, reverses to base, and empties into the sorting station.</p>
+      </div>
+
+      <h3>Firmware Architecture</h3>
+      <p>
+        Both programs are built the same way: a single non-blocking loop driving
+        an explicit state machine, with nothing blocking execution while it
+        waits. On the sorter this matters because the vibration motors and the
+        colour sensor have to run concurrently &mdash; the motor cycle cannot
+        stall colour reads, and a colour read cannot stall the feed. Each keeps
+        its own timestamp and advances independently.
+      </p>
+      <p>
+        The scavenger runs the larger machine: 27 states covering three
+        collection passes, each one a sequence of drive out with the brush
+        running, pre-lift the scoop to trap the load, reverse to base, align,
+        lift fully, dump, lower, and turn to the next heading. The scoop lifts
+        in timed one-degree increments every 25 ms rather than being commanded
+        straight to its target, so the load is not thrown out by a sudden servo
+        slew. During the reverse leg the scoop holds a 50&deg; mid-lift, high
+        enough to retain erasers but low enough to clear the station on
+        approach.
+      </p>
+
+      <div class="callout">
+        <p class="eyebrow">Letting the Mechanism Absorb the Error</p>
+        <p>
+          Our early design assumed closed-loop heading control for navigation.
+          What actually shipped is dead reckoning: timed drive segments, a
+          per-motor PWM trim to correct the chassis pulling to one side, and a
+          potentiometer to tune overall drive speed between runs.
+        </p>
+        <p>
+          Position accuracy comes from the ultrasonic sensor and the station
+          geometry instead. The robot reverses until the ultrasonic reads 15 cm
+          from the base, then keeps driving for a fixed five seconds while a
+          pair of funnel-shaped guide rails on the station physically pull the
+          chassis into alignment. Rather than measuring the error and
+          correcting for it in software, the rails mechanically remove it. It is
+          a less sophisticated answer than closed-loop control and a
+          considerably more reliable one over a 120-second run.
+        </p>
+      </div>
+
+      <h3>Results</h3>
+      <div class="bom-table-wrap">
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th class="num">Result</th>
+              <th class="num">Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Full autonomous cycle time</td><td class="num">~85.7 s</td><td class="num">&le; 120 s</td></tr>
+            <tr><td>Sorting accuracy</td><td class="num">90&ndash;92%</td><td class="num">&ge; 90%</td></tr>
+            <tr><td>Collection rate per pass</td><td class="num">8&ndash;9 erasers</td><td class="num">&mdash;</td></tr>
+            <tr><td>Misclassifications, bench testing</td><td class="num">0 / 1000+</td><td class="num">&mdash;</td></tr>
+            <tr class="total"><td>Competition placement</td><td class="num">2nd</td><td class="num">&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Limitations and What I'd Change</h3>
+      <p>
+        Two weaknesses showed up consistently in testing. When a full scoop
+        landed on the feed platform at once, erasers would occasionally cluster
+        and reach the sensor two at a time, which is the main source of the
+        8&ndash;10% sorting error: the classifier is accurate on a single
+        eraser, so nearly every miss traces back to the feed presenting it with
+        more than one. A metering gate that releases one eraser at a time,
+        rather than relying on vibration alone to separate them, would close
+        most of that gap.
+      </p>
+      <p>
+        The second is navigation. Dead reckoning worked because the arena was
+        fixed and we could tune the timings against it, but the approach does
+        not survive a change in floor surface or battery voltage, and the drift
+        accumulates across three passes. The guide rails cover for it at the
+        base, but a robot that had to hit an arbitrary target rather than a
+        funnel would need real heading feedback.
+      </p>
+      <p>
+        The broader lesson I took from it is where to spend reliability effort.
+        The two changes that most improved this system &mdash; normalizing the
+        colour channels and requiring a one-second confirmation &mdash; were
+        both software, cost nothing, and mattered more than any mechanical
+        refinement we made. But the single most reliable part of the whole
+        machine is a pair of passive plastic rails that do not sense anything at
+        all.
+      </p>
+
+      <h3>Source and Documentation</h3>
+      <p>
+        Full firmware for both machines, CAD, engineering drawings, circuit
+        schematics, and the complete design report are on GitHub:
+        <a href="https://github.com/marcsmasgoret/Autonomous-Sorting-Robot" target="_blank" rel="noopener">marcsmasgoret/Autonomous-Sorting-Robot</a>.
+      </p>
+
     </div>
   </section>
 

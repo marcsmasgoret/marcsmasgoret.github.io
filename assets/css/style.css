@@ -668,6 +668,24 @@ h1, h2, h3 {
   margin-top: 8px !important;
 }
 
+/* Model viewer sized to sit beside a still image in a media row, matching
+   that image's aspect so the two line up. */
+.model-viewer-inline {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1400 / 919;
+  height: auto !important;
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+@media (max-width: 720px) {
+  .model-viewer-inline {
+    aspect-ratio: 4 / 3;
+  }
+}
+
 /* ==========================================================================
    Case-study extras — figures, media rows, callouts, contrib list, BOM
    ========================================================================== */
@@ -698,6 +716,22 @@ h1, h2, h3 {
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 8px;
+}
+
+.video-figure video {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+}
+
+/* Phone-shot clips are low-resolution at source, so cap the display width
+   rather than letting the grid stretch and soften them. */
+.video-figure-portrait {
+  max-width: 330px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .media-row {
