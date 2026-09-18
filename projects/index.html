@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=15" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=18" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -1004,20 +1004,203 @@
   <!-- P.05 -->
   <section class="project-hero" id="combat-robotics">
     <div class="wrap">
-      <h2>Western Combat Robotics</h2>
+      <h2>Western Combat Robotics (WE First)</h2>
       <div class="project-meta">
-        <div><strong>Status</strong>Write-up in progress</div>
+        <div><strong>Role</strong>VP Combat Robotics &middot; Program Lead</div>
+        <div><strong>Timeline</strong>August 2026 to Present</div>
+        <div><strong>Scope</strong>2 Parallel Builds &middot; ~30 Members (est.)</div>
+        <div><strong>Class</strong>1 lb Antweight &middot; $500 to $800 per Robot (est.)</div>
       </div>
+      <p class="lede">
+        As VP Combat Robotics, I lead Western's first combat robotics program.
+        Two teams build competing 1 lb antweights, fight each other to find out
+        which design approach actually works, then carry what they learn into
+        competition against other universities.
+      </p>
     </div>
   </section>
 
   <section class="project-body">
     <div class="wrap">
-      <div class="wip-note">
-        Full write-up for this project is coming soon. In the meantime, see the
-        <a href="../index.html#about">About</a> section or my
-        <a href="mailto:mmasgore@uwo.ca">email</a> for more details.
+
+      <div class="figure">
+        <img src="../assets/img/projects/combat-robotics/reference-1lb-spinner.jpg" alt="A finished 1 lb vertical spinner combat robot on a workbench: an aluminum chassis with four blue wheels driven by green belts, twin blue weapon discs at the front, and angled wedgelets under the discs." />
+        <p class="figure-caption">
+          Reference photo, not our robot. A 1 lb vertical spinner built by Mark
+          Sutton, the class and style Build A is aiming for. Photo: Mark Sutton,
+          posted in the
+          <a href="https://www.facebook.com/groups/914654103210730/posts/971184820890991/" target="_blank" rel="noopener">Kansas Combat Robotics</a>
+          Facebook group.
+        </p>
       </div>
+
+      <div class="wip-note">
+        <strong>Where this project stands:</strong> the program launched in
+        August 2026 and this is its first year, so this write-up describes the
+        plan rather than finished robots. Team sizes, budgets, and the timeline
+        are early estimates, and the robot drawings are my own concept sketches,
+        not final designs. The photo above and the fight video further down show
+        other builders' robots, credited under each, as a reference for what our
+        builds are aiming at. I'll replace them with our own as the robots come
+        together.
+      </div>
+
+      <h3>Overview</h3>
+      <p>
+        WE First's combat robotics program, Bot Brawl, is new this year, and I
+        lead it. Instead of putting every member on one robot, the program runs
+        two parallel builds of roughly 15 people each. Each build has its own
+        lead who reports to me, and each build lead runs mechanical, electrical,
+        and software leads. The two builds take different design approaches,
+        and once both robots are finished they fight each other. That head-to-head
+        is the point: a first-year program has no past robots or institutional
+        knowledge to learn from, so we create our own test data before spending
+        money and travel on outside competitions.
+      </p>
+      <p>
+        We compete in the 1 lb (454 g) antweight class. It is small enough that
+        most of the robot can be 3D printed and a broken part costs tens of
+        dollars instead of hundreds, but the engineering is real: brushless
+        weapon motors, LiPo power, radio control, and armour that has to survive
+        a spinner hit. Ontario already has an active 1 lb scene. BotBrawl events
+        run a regular antweight class, and university teams such as Waterloo's
+        WATBOTs, U of T's UTRA, and TMU BattleBots already compete at them in
+        the 1 lb and 3 lb classes. The goal for the end of the 2026&ndash;27 year
+        is to join them.
+      </p>
+
+      <h3>Two Builds, One Design Question</h3>
+      <p>
+        The two teams are assigned contrasting archetypes, the two approaches
+        that most often meet in the antweight class, so the internal fights
+        answer a real design question: for a first-year team with a limited
+        budget, is it better to build the robot that deals the damage or the
+        robot that controls the fight?
+      </p>
+
+      <div class="build-compare">
+        <div class="build-card">
+          <img src="../assets/img/projects/combat-robotics/concept-vertical-spinner.svg" alt="Concept side-view sketch of Build A, a vertical spinner: a low chassis with two drive wheels, an electronics bay for the LiPo, ESCs and receiver, and a toothed weapon disc at the front spinning upward." loading="lazy" />
+          <p class="eyebrow">Build A</p>
+          <h4>Vertical Spinner</h4>
+          <p>
+            Stores energy in a spinning disc or drum and releases it upward on
+            impact, launching or breaking the opponent. The hard problems are
+            fitting enough weapon energy inside the weight limit, handling the
+            gyroscopic effects on steering, and surviving the recoil of its own
+            hits.
+          </p>
+        </div>
+        <div class="build-card">
+          <img src="../assets/img/projects/combat-robotics/concept-control-bot.svg" alt="Concept side-view sketch of Build B, a wedge and control bot: a wedge-shaped chassis with four-wheel drive and a powered lifter arm with forks that sweeps up from the front." loading="lazy" />
+          <p class="eyebrow">Build B</p>
+          <h4>Wedge / Control Bot</h4>
+          <p>
+            Wins by getting underneath the opponent and controlling the fight,
+            using a wedge and forks to get under and a powered lifter to flip
+            or pin. The hard problems are wedge geometry and ground clearance,
+            enough traction to push, and armour that can take spinner hits,
+            since this robot has to survive the weapon it is fighting.
+          </p>
+        </div>
+      </div>
+
+      <h4>The Internal Bot Brawl</h4>
+      <p>
+        When both robots are built, they fight each other. After every fight,
+        both teams tear down their robots, record what broke and why, and
+        feed that back into their design. Both teams, not just the winner, then
+        take those lessons into the robots we enter at inter-university
+        competition. The comparison also covers cost and build time as well as
+        fight results, which tells the program which approach a new team can
+        realistically build well.
+      </p>
+
+      <div class="figure">
+        <div class="video-embed">
+          <iframe src="https://www.youtube-nocookie.com/embed/IUBDW3iXEPM?start=1051&amp;rel=0&amp;cc_load_policy=0" title="Red Hot vs Snap!, BotBrawl Robot League Season 2 Week 5 (video by BotBrawl Canada)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p class="figure-caption">
+          Reference footage, not our robots. Red Hot, a vertical spinner from
+          Hot Sauce, fights Snap!, a lifter/grabber control bot from Trouble
+          Robotics, in the BotBrawl Robot League Season 2, Week 5. This is the
+          spinner-vs-control question our internal Bot Brawl is designed to
+          test. Video: <a href="https://www.youtube.com/watch?v=IUBDW3iXEPM&amp;t=1051s" target="_blank" rel="noopener">BotBrawl Canada on YouTube</a>, starting at the fight (17:31).
+        </p>
+      </div>
+
+      <h3>My Role</h3>
+      <ul class="contrib-list">
+        <li>Setting the program's technical direction, including the weight class and the contrasting archetype each build is assigned.</li>
+        <li>Driving the key design decisions on both builds, so each robot stays true to its archetype and the head-to-head stays a fair test.</li>
+        <li>Managing the two build leads, who each run mechanical, electrical, and software leads on a team of about 15.</li>
+        <li>Overseeing the budget across both builds: roughly $500 to $800 per robot (early estimate).</li>
+        <li>Owning the timeline, so both robots are ready for the internal Bot Brawl with time left to iterate before outside competition.</li>
+        <li>Planning the program's entry into inter-university competition in Ontario's 1 lb class.</li>
+      </ul>
+
+      <div class="callout">
+        <p class="eyebrow">Sizing the Program</p>
+        <ul>
+          <li>Weight limit: 1 lb (454 g) per robot, all-in: chassis, weapon, batteries, and electronics.</li>
+          <li>Budget: roughly $500 to $800 per robot, or about $1,000 to $1,600 across both builds (early estimate).</li>
+          <li>People: about 15 members per build, around 30 in total (early estimate).</li>
+          <li>Leadership: 1 program lead, 2 build leads, and 6 subsystem leads.</li>
+        </ul>
+        <p>
+          With two robots on one budget, every dollar spent on one build is a
+          dollar the other can't use. Keeping both teams inside the same
+          per-robot range matters for fairness as well as money: if one robot
+          wins because it was allowed to spend more, the fight doesn't tell us
+          anything about the design.
+        </p>
+      </div>
+
+      <h3>Season Plan</h3>
+      <p>Tentative, and will change as the builds progress.</p>
+      <ol class="roadmap">
+        <li class="is-current">
+          <span class="roadmap-when">Fall 2026 &middot; We are here</span>
+          <strong>Launch</strong>
+          <p>Recruit members, form the two teams, appoint build and subsystem leads, and set each build's archetype and budget.</p>
+        </li>
+        <li>
+          <span class="roadmap-when">Fall 2026</span>
+          <strong>Design</strong>
+          <p>Concept CAD, weight budgets, and design reviews for both builds before parts are ordered.</p>
+        </li>
+        <li>
+          <span class="roadmap-when">Winter 2027</span>
+          <strong>Build and Test</strong>
+          <p>Fabricate and assemble both robots, then drive and weapon testing.</p>
+        </li>
+        <li>
+          <span class="roadmap-when">Winter 2027</span>
+          <strong>Internal Bot Brawl</strong>
+          <p>Build A vs Build B, with a teardown and design review after every fight.</p>
+        </li>
+        <li>
+          <span class="roadmap-when">By the end of 2026&ndash;27</span>
+          <strong>Inter-University Competition</strong>
+          <p>Rebuild with what the internal fights taught us, then compete against other schools in Ontario's 1 lb class.</p>
+        </li>
+      </ol>
+
+      <div class="credits">
+        <h4>Credits</h4>
+        <p>
+          Top photo by Mark Sutton, from the
+          <a href="https://www.facebook.com/groups/914654103210730/posts/971184820890991/" target="_blank" rel="noopener">Kansas Combat Robotics</a>
+          Facebook group. Fight footage by
+          <a href="https://www.youtube.com/@BotBrawlCanada" target="_blank" rel="noopener">BotBrawl Canada</a>,
+          embedded from YouTube. The robots shown belong to their builders:
+          <a href="https://buildersdb.com/robots/18238" target="_blank" rel="noopener">Red Hot</a> by Hot Sauce and
+          <a href="https://buildersdb.com/robots/16411" target="_blank" rel="noopener">Snap!</a> by Trouble Robotics
+          (details via <a href="https://buildersdb.com" target="_blank" rel="noopener">BuildersDB</a>).
+          The concept drawings in this section are my own.
+        </p>
+      </div>
+
     </div>
   </section>
 
@@ -1414,6 +1597,17 @@
     </div>
   </nav>
 
-  <script src="../assets/js/main.js?v=4"></script>
+  <section class="section" id="contact">
+    <div class="wrap">
+      <h2 class="plain-heading">Contact</h2>
+      <div class="hero-links">
+        <a class="btn btn-accent" href="mailto:mmasgore@uwo.ca">mmasgore@uwo.ca</a>
+        <a class="btn" href="https://github.com/marcsmasgoret" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/marc-masgoret-a94589330" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="../assets/js/main.js?v=5"></script>
 </body>
 </html>
