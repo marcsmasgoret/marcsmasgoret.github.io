@@ -38,8 +38,6 @@ The site will be live at `https://marcsmasgoret.github.io`.
 1. In `projects/index.html`, copy one existing project block (the `<section class="project-hero" id="...">`
    through the following `<nav class="project-nav">`) and update the id, eyebrow, title, meta row,
    body content, and gallery.
-2. Fix the "Next:" link on the project before it, and the one on the new project, so the chain
-   still points to the right next section.
-3. Add a matching `<a class="project-row">` block to the list on `index.html`.
-4. Add a matching entry to the nav dropdown in **both** `index.html` and `projects/index.html`.
-5. Drop images in `assets/img/projects/`.
+2. Add a matching `<a class="project-row">` block to the list on `index.html`.
+3. Add a matching entry to the nav dropdown in **both** `index.html` and `projects/index.html`.
+4. Drop images in `assets/img/projects/`.
