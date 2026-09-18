@@ -478,13 +478,10 @@ h1, h2, h3 {
   aspect-ratio: 4 / 3;
 }
 
-.project-row .card-thumb.card-thumb-portrait {
-  aspect-ratio: 3 / 4;
-}
-
-.card-thumb-portrait img {
-  object-fit: contain;
-  object-position: center center;
+/* Near-square card for the Baker Bot photo, cropped just below the robot's
+   base so the head and body stay in frame. */
+.project-row .card-thumb.card-thumb-tall {
+  aspect-ratio: 1350 / 1405;
 }
 
 .project-row:hover {
@@ -706,6 +703,11 @@ h1, h2, h3 {
   }
 }
 
+/* Portrait variant, matched to the U-joint render it sits beside. */
+.model-viewer-inline.model-viewer-portrait {
+  aspect-ratio: 633 / 955;
+}
+
 /* ==========================================================================
    Case-study extras — figures, media rows, callouts, contrib list, BOM
    ========================================================================== */
@@ -816,6 +818,28 @@ h1, h2, h3 {
   object-fit: cover;
 }
 
+/* Car photo beside the wide frame CAD: columns follow each image's aspect
+   ratio so both land on the same height. */
+.media-row-baja {
+  grid-template-columns: 1.66fr 1.521fr;
+}
+
+.media-row-baja .figure:first-child img {
+  aspect-ratio: 415 / 250;
+  object-fit: cover;
+}
+
+.media-row-baja .figure:last-child img {
+  aspect-ratio: 1567 / 1030;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .media-row-baja {
+    grid-template-columns: 1fr;
+  }
+}
+
 .split-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -881,6 +905,37 @@ h1, h2, h3 {
 
 .text-figure-row-2fr {
   grid-template-columns: 2fr 1fr;
+}
+
+/* For a very tall figure (the drive shaft bottom view) beside text. */
+.text-figure-row-narrow {
+  grid-template-columns: 2.6fr 1fr;
+}
+
+/* Keep the figure at its natural height rather than stretching it to the
+   text, so tall diagrams are never cropped. */
+.text-figure-row.text-figure-row-narrow {
+  align-items: start;
+}
+
+.text-figure-row.text-figure-row-narrow .figure img {
+  flex: none;
+  height: auto;
+  object-fit: contain;
+  background: #fff;
+}
+
+/* Wider figure column for the IR robot course diagram. */
+.text-figure-row.text-figure-row-path {
+  grid-template-columns: 1.7fr 1fr;
+}
+
+@media (max-width: 720px) {
+  .text-figure-row.text-figure-row-narrow .figure img {
+    aspect-ratio: auto;
+    width: 60%;
+    margin: 0 auto;
+  }
 }
 
 .text-figure-row-3col {
