@@ -8,10 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const here = location.pathname.split("/").pop() || "index.html";
+  // Every page is an index.html in its own folder, so compare full paths, not
+  // just the file name.
+  const pagePath = (path) => path.replace(/index\.html$/, "");
+  const here = pagePath(location.pathname);
   document.querySelectorAll(".site-nav > a, .site-nav > .nav-item > a").forEach((link) => {
-    const target = link.getAttribute("href").split("/").pop().split("#")[0] || "index.html";
-    if (target === here) link.classList.add("active");
+    if (pagePath(new URL(link.href).pathname) === here) link.classList.add("active");
   });
 
   let lastViewerTrigger = null;
@@ -85,25 +87,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (openOverlay) closeViewer(openOverlay);
   });
 
-  // Scroll so a project's title lands at the top of the viewport, not the
-  // bottom. Native anchor jumps can land short/long here because late-loading
-  // images and the 3D model viewer shift page height after the initial jump,
-  // so we drive the scroll ourselves and re-correct once everything settles.
-  function scrollHashTargetToTop(hash) {
-    if (!hash) return;
-    const id = hash.startsWith("#") ? hash.slice(1) : hash;
-    if (!id) return;
-    const target = document.getElementById(id);
-    if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+  // Keep a project's title flush under the header after jumping to it. Images
+  // and the 3D model viewer above the target keep loading after the jump and
+  // push it down the page, so re-snap on every page-height change until the
+  // visitor scrolls on their own (or things have had time to settle). The snap
+  // is "instant" because html has scroll-behavior: smooth, and a smooth
+  // correction gets cut short by the next layout shift.
+  const userScrollEvents = ["wheel", "touchstart", "keydown", "mousedown"];
+  let releasePin = null;
+
+  function pinToTarget(target) {
+    if (releasePin) releasePin();
+    const snap = () => target.scrollIntoView({ behavior: "instant", block: "start" });
+    snap();
+
+    const observer = new ResizeObserver(snap);
+    observer.observe(document.body);
+    const timer = setTimeout(() => releasePin && releasePin(), 8000);
+
+    releasePin = () => {
+      observer.disconnect();
+      clearTimeout(timer);
+      userScrollEvents.forEach((ev) => window.removeEventListener(ev, releasePin));
+      releasePin = null;
+    };
+    userScrollEvents.forEach((ev) => window.addEventListener(ev, releasePin, { passive: true }));
   }
 
-  if (location.hash) {
-    scrollHashTargetToTop(location.hash);
-    window.addEventListener("load", () => {
-      scrollHashTargetToTop(location.hash);
-      setTimeout(() => scrollHashTargetToTop(location.hash), 300);
-      setTimeout(() => scrollHashTargetToTop(location.hash), 900);
-    });
+  if (location.hash.length > 1) {
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target) pinToTarget(target);
   }
 
   document.querySelectorAll('a[href*="#"]').forEach((link) => {
@@ -119,7 +132,23 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!target) return;
       e.preventDefault();
       history.pushState(null, "", url.hash);
+      if (releasePin) releasePin();
       target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Content can shift during the smooth scroll, so lock on once it ends,
+      // unless the visitor took over the scroll in the meantime.
+      let interrupted = false;
+      const interrupt = () => { interrupted = true; };
+      userScrollEvents.forEach((ev) => window.addEventListener(ev, interrupt, { once: true, passive: true }));
+      const lockOn = () => {
+        userScrollEvents.forEach((ev) => window.removeEventListener(ev, interrupt));
+        if (!interrupted) pinToTarget(target);
+      };
+      if ("onscrollend" in window) {
+        window.addEventListener("scrollend", lockOn, { once: true });
+      } else {
+        setTimeout(lockOn, 1000);
+      }
     });
   });
 

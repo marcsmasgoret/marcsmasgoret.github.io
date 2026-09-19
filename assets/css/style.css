@@ -444,22 +444,23 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
-   Project rows — stacked hub layout (projects/index.html)
+   Project cards — two-per-row grid on the home page
    ========================================================================== */
+/* The list bleeds 16px past the text column on each side so the thumbnails'
+   edges line up with the section heading, as the old stacked rows did. */
 .project-list {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: -16px -16px 0;
 }
 
 .project-row {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 340px) 1fr;
-  gap: 36px;
-  align-items: center;
-  margin: 0 -16px;
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px;
   border-radius: var(--radius);
   background-color: var(--surface);
   box-shadow: 0 2px 10px rgba(36, 31, 26, 0.1);
@@ -468,20 +469,15 @@ h1, h2, h3 {
   transition: box-shadow 0.2s ease;
 }
 
-/* The padding is equal on all four sides so the margin around the thumbnail is
-   the same top, bottom and left; the gap between cards carries the separation
-   that the old extra vertical padding used to provide. */
-.project-list { margin-top: -16px; }
-
 .project-row .card-thumb {
   border-radius: var(--radius);
   aspect-ratio: 4 / 3;
 }
 
-/* Near-square card for the Baker Bot photo, cropped just below the robot's
-   base so the head and body stay in frame. */
-.project-row .card-thumb.card-thumb-tall {
-  aspect-ratio: 1350 / 1405;
+/* The Baker Bot photo is near-square; anchor the crop at the top so the
+   robot's head stays in frame. */
+.project-row .card-thumb img[src*="baker-bot"] {
+  object-position: center top;
 }
 
 .project-row:hover {
@@ -493,7 +489,8 @@ h1, h2, h3 {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  padding: 0 4px 4px;
 }
 
 .project-row-body h3 {
@@ -501,33 +498,22 @@ h1, h2, h3 {
   text-transform: none;
   letter-spacing: normal;
   font-weight: 600;
-  font-size: 1.4rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
   margin: 0;
 }
 
 .project-row-body p {
   color: var(--text-muted);
-  font-size: 0.98rem;
-  max-width: 56ch;
+  font-size: 0.9rem;
+  line-height: 1.55;
   margin: 0;
 }
 
-.project-row-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--accent);
-  margin-top: 4px;
-}
-
-.project-row:hover .project-row-link { text-decoration: underline; }
-
 @media (max-width: 720px) {
-  .project-row {
+  .project-list {
     grid-template-columns: 1fr;
-    gap: 18px;
+    margin: -16px 0 0;
   }
 }
 
@@ -567,7 +553,9 @@ h1, h2, h3 {
    ========================================================================== */
 .project-hero {
   padding: 48px 0 0;
-  scroll-margin-top: 84px;
+  /* Exactly the sticky header's height (76px + 1px border), so a jump puts the
+     section flush under the header and hides the divider above it. */
+  scroll-margin-top: 77px;
 }
 
 /* Drawn inside .wrap rather than on the section, so it spans only the text
