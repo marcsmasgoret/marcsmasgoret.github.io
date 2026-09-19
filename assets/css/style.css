@@ -721,11 +721,53 @@ h1, h2, h3 {
   border: 1px solid var(--border);
 }
 
+/* Cover-cropped figures default to a centre crop; bias one left when the
+   detail that matters sits near the left edge of the source image. */
+.figure img.crop-left {
+  object-position: 30% 50%;
+}
+
 .figure-caption {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 8px;
+  text-align: center;
+}
+
+/* A figure the prose wraps around, so the text closes back up underneath it
+   instead of leaving a tall empty column beside a short image. */
+.flow-figure::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.flow-figure > p:last-child {
+  margin-bottom: 0;
+}
+
+.figure-float {
+  float: right;
+  width: 34%;
+  margin: 6px 0 20px 28px;
+}
+
+.figure-float.video-figure-portrait {
+  width: 300px;
+  max-width: 40%;
+  margin-left: 28px;
+  margin-right: 0;
+}
+
+@media (max-width: 720px) {
+  .figure-float,
+  .figure-float.video-figure-portrait {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 16px 0 24px;
+  }
 }
 
 .video-figure video {

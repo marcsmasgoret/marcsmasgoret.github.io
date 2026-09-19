@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects | Marc Masgoret</title>
-  <meta name="description" content="All projects — robotics, manufacturing, and research work by Marc Masgoret." />
+  <meta name="description" content="All projects: robotics, manufacturing, and research work by Marc Masgoret." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=23" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=24" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -29,7 +29,7 @@
             <a href="index.html#humanoid-ta-robot">Humanoid TA Robot</a>
             <a href="index.html#mechatronics-sorting-system">Sorting Robot</a>
             <a href="index.html#seawater-splitting-catalysts">Seawater Catalysts</a>
-            <a href="index.html#baja-split-drive-shaft">Baja — Drive Shaft</a>
+            <a href="index.html#baja-split-drive-shaft">Baja Drive Shaft</a>
             <a href="index.html#combat-robotics">Combat Robotics</a>
             <a href="index.html#3d-printer-enclosure">3D Printer Enclosure</a>
             <a href="index.html#ir-homing-robot">IR-Homing Robot</a>
@@ -43,6 +43,10 @@
   <section class="hero" style="padding: 56px 0 40px;" id="top">
     <div class="wrap">
       <h1 style="font-size: clamp(2.25rem, 5.5vw, 3.25rem);">Projects</h1>
+      <p class="lede">
+        A selection of what I have designed, built, and tested, across student
+        teams, design competitions, and research.
+      </p>
     </div>
   </section>
 
@@ -51,9 +55,8 @@
     <div class="wrap">
       <h2>Humanoid AI Teaching Assistant Robot ("Baker Bot")</h2>
       <div class="project-meta">
-        <div><strong>Role</strong>Arm Subsystem Lead &middot; Manufacturing Lead (Full Robot)</div>
+        <div><strong>Role</strong>Arm Subsystem Lead &middot; Mechanical Manufacturing Lead (Full Robot)</div>
         <div><strong>Timeline</strong>March to September 2026</div>
-        <div><strong>Tools</strong>SolidWorks, 3D Printing (PLA/PETG), DC Motor Control, Embedded C++ (ESP32)</div>
       </div>
       <p class="lede">
         A life-sized, waist-up humanoid robot built by a 16-person student team to
@@ -69,11 +72,11 @@
       <div class="media-row media-row-narrow">
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/hero-suit.jpg" alt="Baker Bot from behind, wearing a padded beige muscle suit over the torso and arms, waist-up on a workbench." loading="lazy" />
-          <p class="figure-caption">The finished robot wearing its padded muscle suit, which gives the arms a more natural, human silhouette under clothing.</p>
+          <p class="figure-caption">The finished robot in its padded muscle suit.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/full-cad.jpg" alt="Full CAD render of the Baker Bot showing the head, torso frame, battery, control boards, and both red and blue arm assemblies." loading="lazy" />
-          <p class="figure-caption">Full assembly CAD. The waist-up frame houses the compute, power, and both arm subsystems.</p>
+          <p class="figure-caption">Full assembly CAD, waist-up.</p>
         </div>
       </div>
 
@@ -89,18 +92,18 @@
         build came in under $2,000.
       </p>
       <p>
-        I led the arm subsystem, a two-person team, and served as manufacturing
-        lead for the whole robot, doing the bulk of the mechanical fabrication
-        and final assembly.
+        I led the arm subsystem, a two-person team, and served as mechanical
+        manufacturing lead for the whole robot, doing the bulk of the mechanical
+        fabrication and final assembly.
       </p>
 
       <h3>My Contributions</h3>
       <ul class="contrib-list">
         <li>Designed the elbow joint end to end in SolidWorks: actuation, housing, feedback, and homing.</li>
-        <li>Led the shoulder and hand designs, teaching my teammate through the CAD as active mentoring rather than handing off finished specs.</li>
+        <li>Led the shoulder and hand designs, teaching my teammate through the CAD as active mentoring.</li>
         <li>Handled all arm electrical work: motor drivers, limit-switch homing, and potentiometer position feedback.</li>
-        <li>Fabricated the entire arm subsystem and assembled the mechanical structure of the whole robot.</li>
-        <li>As manufacturing lead, set the print and design-for-manufacturing standards used on every printed part across the robot.</li>
+        <li>Did the full fabrication of both arms.</li>
+        <li>Set the print and design-for-manufacturing standards used on every printed part in the arm subsystem.</li>
       </ul>
 
       <h3>Interactive CAD Model</h3>
@@ -123,7 +126,7 @@
         <div slot="progress-bar"></div>
         <span slot="poster">Loading 3D model…</span>
       </model-viewer>
-      <p class="model-caption">Full Arm Assembly — SolidWorks, exported and compressed for web viewing.</p>
+      <p class="model-caption">The full arm assembly in 3D. Drag to rotate, scroll to zoom.</p>
 
       <h3>Arm Subsystem</h3>
       <p>
@@ -148,17 +151,17 @@
       </p>
       <p>
         Indexing the shoulder by hand keeps it simple, strong, and power-free,
-        which spends the actuation budget where it matters: the elbow.
+        saving the actuation budget for the elbow, where it matters most.
       </p>
 
       <div class="media-row media-row-match">
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/shoulder-cad.jpg" alt="Transparent CAD render of the shoulder pivot, showing the central mounting bolt, internal plates, tie rods, and indexing hardware." loading="lazy" />
-          <p class="figure-caption">Shoulder pivot internals. The arm rotates on a fixed bolt and locks at one of five indexed angles.</p>
+          <p class="figure-caption">Shoulder pivot internals in CAD.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/shoulder-real.jpg" alt="3D-printed shoulder housing held in hand, with a knurled indexing plunger knob and the edge of the aluminum indexing plate visible." loading="lazy" />
-          <p class="figure-caption">Printed shoulder housing with the pull-knob indexing plunger.</p>
+          <p class="figure-caption">The printed shoulder housing and its indexing plunger.</p>
         </div>
       </div>
 
@@ -174,16 +177,19 @@
             generates no heat while posed, which matters for a robot that
             spends most of a lecture holding a gesture. A potentiometer built
             into the joint reports elbow angle in real time, so the
-            controller always knows where the forearm is.
+            controller always knows where the forearm is. The whole joint is
+            built from seven 3D-printed parts that fit together around the
+            motor, potentiometer, and limit switch to form one compact,
+            self-contained module.
           </p>
           <div class="figure">
             <img src="../assets/img/projects/baker-bot/elbow-cad.jpg" alt="CAD render of the left and right elbow assemblies in red and blue, showing the gear motor, a limit switch, a potentiometer, and the carbon fiber forearm tube." loading="lazy" />
-            <p class="figure-caption">Elbow CAD. Worm gear motor, limit switch for homing, and an in-joint potentiometer for live position.</p>
+            <p class="figure-caption">Elbow CAD: worm gear motor, limit switch, and potentiometer.</p>
           </div>
         </div>
         <div class="figure split-row-side">
           <img src="../assets/img/projects/baker-bot/elbows-real.jpg" alt="Two assembled black 3D-printed elbow modules with gear motors and wiring, sitting on a workbench." loading="lazy" />
-          <p class="figure-caption">Both assembled elbow modules before integration.</p>
+          <p class="figure-caption">Both assembled elbow modules.</p>
         </div>
       </div>
 
@@ -220,22 +226,23 @@
             The forearm is a carbon fiber tube, chosen for stiffness at low
             weight. The hand mounts to the end through a quick-swap interface: a
             keyed turn-to-lock collar with a magnet that holds the hand seated.
-            This lets the robot change hands for context, an open pointing hand
-            for gesturing and explaining, and a closed hand that can hold an
-            object. The hands themselves are printed and fixed rather than
-            actuated, a deliberate scope cut to stay on budget without losing the
-            expressive value of a posed hand. The open pointing hand doubles as
-            the physics right-hand-rule gesture, a fitting default for a physics
-            TA.
+            This lets the robot change hands for context: a right-hand-rule
+            hand for physics demonstrations, an open pointing hand for
+            gesturing and explaining, and a closed hand that can hold an
+            object. Because the interface is shared, new hands can be designed
+            and swapped in later, so the robot can be customized for special
+            occasions. The hands themselves are printed and fixed rather than
+            actuated, a deliberate scope cut to stay on budget without losing
+            the expressive value of a posed hand.
           </p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/hand-real.jpg" alt="3D-printed black hand, palm side up, showing individually printed fingers and a seam across the palm." loading="lazy" />
-          <p class="figure-caption">Printed hand, palm side.</p>
+          <p class="figure-caption">A printed swappable hand, open palm.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/hand-mechanism.jpg" alt="3D-printed cylindrical hand mount held in hand, showing a magnet at the top, a keyed slot for the turn-to-lock, and mounting screws." loading="lazy" />
-          <p class="figure-caption">Quick-swap hand mount: turn to lock, held seated by a magnet.</p>
+          <p class="figure-caption">The quick-swap hand mount.</p>
         </div>
       </div>
 
@@ -276,43 +283,40 @@
             <li>Chamfered heat-set insert holes, giving the plastic displaced during insertion somewhere to go and keeping the surface flush.</li>
             <li>Tuned clearances for press fits and fasteners, with printed test-fit coupons for every critical interface before committing to a final part.</li>
           </ul>
+          <p>
+            I printed and assembled the complete arm subsystem along with parts
+            of the head and neck, prototyping in PLA to iterate cheaply and
+            reprinting final parts in PETG for strength and temperature
+            tolerance, roughly 50 unique printed parts across the robot.
+            The non-printed structure I fabricated by hand: cutting and
+            drilling the aluminum upper-arm tubes and shoulder plates, and
+            cutting the carbon fiber forearms to length.
+          </p>
         </div>
         <div class="figure">
-          <img src="../assets/img/projects/baker-bot/dfm-details.jpg" alt="Close-up CAD render of a printed part showing a chamfered heat-set insert boss, a teardrop-shaped horizontal hole, and a chamfered bottom edge." loading="lazy" />
-          <p class="figure-caption">The manufacturing details built into every part: chamfered insert bosses, teardrop horizontal holes, and elephant's-foot chamfers.</p>
+          <img class="crop-left" src="../assets/img/projects/baker-bot/dfm-details.jpg" alt="Close-up CAD render of a printed part showing a chamfered heat-set insert boss, a teardrop-shaped horizontal hole, and a chamfered bottom edge." loading="lazy" />
+          <p class="figure-caption">An elbow part, showing the print details built into every part on the arm.</p>
         </div>
       </div>
-
-      <h3>Manufacturing the Full Robot</h3>
-      <p>
-        As manufacturing lead I printed and assembled the complete arm
-        subsystem and printed and assembled parts of the head and neck. I
-        prototyped in PLA to iterate cheaply, then reprinted final parts in
-        PETG for strength and temperature tolerance. Across the robot this
-        came to roughly 50 unique printed parts. The non-printed structure I
-        fabricated by hand: cutting and drilling the aluminum upper-arm tubes
-        and shoulder plates, and cutting the carbon fiber forearms to length.
-      </p>
 
       <h3>Leading the Subsystem</h3>
       <p>
         Leading a subsystem taught me to break a build into realistic
         long-term and short-term goals: near-term targets that keep a
         teammate learning and shipping at a steady pace, set early enough to
-        leave room for team review and revision before integration. Rather
-        than handing my teammate finished specs, I taught the shoulder and
-        hand designs through the CAD itself, so the knowledge stuck and the
-        work held up. Balancing my own design and fabrication load against
-        mentoring and whole-robot assembly was the core challenge, and it is
+        leave room for team review and revision before integration. I taught
+        the shoulder and hand designs through the CAD itself, so the knowledge
+        stuck and the work held up. Balancing my own design and fabrication
+        load against mentoring and whole-robot assembly was the core
+        challenge, and it is
         the part of the project I would point to for any team-based
         engineering role.
       </p>
       <p>
-        This is the project I point to when someone asks what I actually do
-        as an engineer, because it never let me stay in one lane. Being both
-        arm subsystem lead and manufacturing lead for the whole robot meant
-        moving between CAD, electrical wiring, firmware, and a 3D printer
-        farm in the same week, and being accountable for how well those
+        Being both arm subsystem lead and mechanical manufacturing lead for
+        the whole robot meant moving between CAD, electrical wiring, firmware,
+        and a 3D printer farm in the same week, and being accountable for how
+        well those
         pieces fit together at final assembly, not just for my own arm. A
         16-person student build with a sub-$2,000 budget also has no room
         for a part that has to be redesigned after it is printed, which is
@@ -323,35 +327,6 @@
         technical range, budget discipline, and ownership past the edge of
         my own subsystem is what I'd bring to any team building real
         hardware on a deadline.
-      </p>
-
-      <h3>Arm Subsystem Bill of Materials</h3>
-      <div class="bom-table-wrap">
-        <table class="bom-table">
-          <thead>
-            <tr>
-              <th>Part</th>
-              <th class="num">Qty</th>
-              <th class="num">Cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>PETG filament, OVERTURE 2 kg (black)</td><td class="num">1</td><td class="num">$36.99</td></tr>
-            <tr><td>Carbon fiber forearm tube, 8 x 10 x 420 mm</td><td class="num">2</td><td class="num">$35.98</td></tr>
-            <tr><td>Aluminum upper-arm tube, 34 x 40 x 300 mm</td><td class="num">2</td><td class="num">$21.58</td></tr>
-            <tr><td>12V DC worm gear motor, 16 RPM</td><td class="num">2</td><td class="num">$92.04</td></tr>
-            <tr><td>DC motor driver</td><td class="num">1</td><td class="num">$10.99</td></tr>
-            <tr><td>Bearings</td><td class="num">1</td><td class="num">$17.89</td></tr>
-            <tr><td>8 mm hub with set screw</td><td class="num">1</td><td class="num">$13.99</td></tr>
-            <tr><td>M8 spring indexing plunger</td><td class="num">1</td><td class="num">$16.99</td></tr>
-            <tr><td>Fasteners, heat-set inserts, and hardware</td><td class="num"></td><td class="num">$89.27</td></tr>
-            <tr class="total"><td>Total</td><td class="num"></td><td class="num">$335.72</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        The arm subsystem came in at $335.72, part of a whole-robot build kept
-        under $2,000.
       </p>
 
     </div>
@@ -370,13 +345,12 @@
       <div class="project-meta">
         <div><strong>Role</strong>Sorting System Lead &middot; Firmware &amp; Electronics</div>
         <div><strong>Timeline</strong>February to April 2026 &middot; 8-week build</div>
-        <div><strong>Tools</strong>ESP32 (Arduino C++), TCS34725 Colour Sensor, SolidWorks, 3D Printing</div>
       </div>
       <p class="lede">
-        A two-machine system that sweeps green erasers off an arena floor,
-        carries them back to base, and sorts them by colour with no human
-        input and no remote control. Built in eight weeks for a second-year
-        design competition, where it placed 2nd.
+        A two-machine system that sweeps green erasers off a set, slightly
+        uneven floor area, carries them back to base, and sorts them by colour
+        with no human input and no remote control. Built in eight weeks for a
+        second-year design competition, where it placed 2nd.
       </p>
     </div>
   </section>
@@ -387,7 +361,7 @@
       <div class="media-row">
         <div class="figure">
           <img src="../assets/img/projects/sorting-system/full-cad.jpg" alt="SolidWorks render of the complete system with the scoop raised on its blue lift arms above the sorting station, ready to dump, with the rotary brush at the front of the robot and the sorter frame at the right." loading="lazy" />
-          <p class="figure-caption">Full system CAD with the scoop at full lift, in the drop-off position over the sorting station.</p>
+          <p class="figure-caption">Full system CAD, scoop raised over the sorting station.</p>
         </div>
         <div class="figure">
           <model-viewer
@@ -408,39 +382,39 @@
             <div slot="progress-bar"></div>
             <span slot="poster">Loading 3D model…</span>
           </model-viewer>
-          <p class="figure-caption">The same assembly in 3D — drag to rotate, scroll to zoom.</p>
+          <p class="figure-caption">The same assembly in 3D. Drag to rotate, scroll to zoom.</p>
         </div>
       </div>
 
       <h3>Overview</h3>
       <p>
-        The competition brief gave us 120 seconds, an arena of roughly 15 m&sup2;,
-        and a floor scattered with erasers. The system had to locate and collect
-        them, tell green erasers apart from every other colour, and deposit them
-        into the correct bin at a home base &mdash; entirely on its own, with
-        scoring tied to both how many it collected and how accurately it sorted
-        them.
+        The competition brief gave us 120 seconds, a set area of roughly
+        15 m&sup2;, and a slightly uneven floor scattered with erasers. The
+        system had to locate and collect them, tell green erasers apart from
+        every other colour, and deposit them into the correct bin at a home
+        base, entirely on its own, with scoring tied to both how many it
+        collected and how accurately it sorted them.
       </p>
       <p>
         The decision that shaped everything else was splitting those two jobs
-        across two machines. A mobile <em>scavenger</em> robot drives the arena
-        and sweeps up erasers without trying to identify anything, and a
-        stationary <em>sorting station</em> at the home base does all the colour
+        across two machines. A mobile scavenger robot drives the area and
+        sweeps up erasers without trying to identify anything, and a
+        stationary sorting station at the home base does all the colour
         classification. Collection is fast and indiscriminate; sorting is slow
         and careful. Neither job compromises the other.
       </p>
       <p>
-        I led the sorting station and wrote the firmware and electrical
-        integration for both machines. My teammates led the scavenger's
-        mechanical design.
+        The sorting station was mine end to end: mechanical design,
+        electronics, and firmware. My teammates built the scavenger.
       </p>
 
       <h3>My Contributions</h3>
       <ul class="contrib-list">
         <li>Designed and built the stationary sorting station end to end: vibratory feed, colour sensing, and the diverter chute.</li>
-        <li>Wrote the colour classification algorithm &mdash; illumination-invariant normalized RGB behind six simultaneous gates, with a one-second temporal confirmation before the chute commits.</li>
-        <li>Wrote both firmware programs in Arduino C++ on ESP32, built entirely around non-blocking state machines.</li>
-        <li>Handled all electrical work on both machines: motor drivers, sensor wiring, PWM channels, and power.</li>
+        <li>Wrote the colour classification algorithm: illumination-invariant normalized RGB behind six simultaneous gates, with a one-second temporal confirmation before the chute commits.</li>
+        <li>Wrote the station's firmware in Arduino C++ on an ESP32, built entirely around a non-blocking state machine.</li>
+        <li>Handled the station's electrical work: motor drivers, sensor wiring, PWM channels, and power.</li>
+        <li>Tuned the feed as a system: spring rate, motor speed, and the timing offset between the two vibrating stages.</li>
       </ul>
 
       <div class="callout">
@@ -456,63 +430,88 @@
         <p>
           Moving the sensor to a fixed station fixes the sensing environment:
           consistent geometry, consistent lighting, one eraser presented at a
-          time. The cost is that the robot has to come back to base &mdash; but
-          it already had to, because that is where the bins are. The
-          constraint was free.
+          time. The cost is that the robot has to come back to base, but it
+          already had to, because that is where the bins are.
         </p>
       </div>
 
       <h3>The Sorting Station</h3>
       <p>
-        The station takes a scoop-load of mixed erasers dumped in at the top and
-        processes them one at a time: an inclined platform vibrates them into a
-        single-file line, a colour sensor reads each one as it reaches the
-        bottom, and a servo-driven chute swings to send it left or right.
+        The station takes a scoop-load of mixed erasers dumped in at the top
+        and processes them one at a time. Two inclined V-shaped platforms
+        vibrate the pile into a single-file line, with a drop between them that
+        breaks apart whatever is still stuck together, a colour sensor reads
+        each eraser as it reaches the bottom, and a servo-driven chute swings
+        to send it left or right.
       </p>
 
-      <div class="text-figure-row">
-        <div class="text-figure-row-text">
-          <h4>Feeding: Alternating Vibration</h4>
-          <p>
-            Two vibration motors sit under the black feed platform, and neither
-            of them is a vibration motor. Each one is an ordinary DC gearmotor
-            with a hex nut glued to the encoder disc on the back of the motor
-            shaft &mdash; upstream of the gearbox, where the shaft still turns
-            at the motor's own speed rather than the reduced output speed. An
-            offset mass spinning that fast is the entire working principle of a
-            vibration motor, and putting it before the reduction is what makes
-            it work at all: the geared output turns far too slowly to shake
-            anything. Two nuts and some glue stood in for a part we did not
-            have.
-          </p>
-          <p>
-            Rather than running both continuously, the firmware alternates
-            them: motor one for 500 ms, then motor two for 500 ms, with no gap
-            between. The alternating side-to-side pulse walks erasers down the
-            incline and breaks up the clumps that form when a whole scoop-load
-            lands at once. Running both together just buzzed the pile in place.
-          </p>
-          <p>
-            Both motors run on 20 kHz PWM, deliberately above the audible range
-            so the station does not whine through a two-minute demo.
-          </p>
-
-          <h4>Diverting: A Two-Position Chute</h4>
-          <p>
-            At the bottom, a single servo drives the chute between two fixed
-            positions &mdash; 0&deg; for non-green and 70&deg; for green. There
-            is no in-between and nothing to calibrate at runtime. The chute
-            rests in the non-green position, so a sensing failure or a power
-            glitch defaults to the reject path rather than contaminating the
-            green bin.
-          </p>
+      <div class="media-row media-row-narrow">
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/sorter-detail.jpg" alt="Close view of the sorting station showing the grey printed frame, the black inclined feed platform, the colour sensor board mounted at the chute mouth, and the grey diverter tube below." loading="lazy" />
+          <p class="figure-caption">The feed platform, and the chute with the colour sensor at its mouth.</p>
         </div>
-        <div class="figure video-figure video-figure-portrait">
+        <div class="figure">
+          <img src="../assets/img/projects/sorting-system/dumping-into-sorter.jpg" alt="The scavenger robot reversed into the sorting station with its scoop tipped up, emptying erasers onto the sorter's black inclined platform." loading="lazy" />
+          <p class="figure-caption">The robot tipping its scoop onto the feed ramp.</p>
+        </div>
+      </div>
+
+      <div class="flow-figure">
+        <div class="figure video-figure video-figure-portrait figure-float">
           <video autoplay loop muted playsinline poster="../assets/img/projects/sorting-system/sorting-loop-poster.jpg">
             <source src="../assets/img/projects/sorting-system/sorting-loop.mp4" type="video/mp4" />
           </video>
-          <p class="figure-caption">The station running: erasers vibrating into single file, getting read one by one, and the chute swinging to divert the green ones.</p>
+          <p class="figure-caption">The station separating, reading, and diverting erasers.</p>
         </div>
+
+        <h4>Feeding: Two Vibrating Stages</h4>
+        <p>
+          The feed is two V-shaped platforms in series, each with its own
+          vibration motor, and a short drop from the first into the second.
+          The arrangement is borrowed from industrial sorting lines: potato
+          and produce graders use staged vibrating beds with transfers
+          between them, because one bed on its own will not reliably present
+          a single item. The V walls channel the pile into a line, and the
+          drop between the stages knocks apart anything still stuck together
+          on the way down.
+        </p>
+        <p>
+          Neither vibration motor is a vibration motor. Each one is an
+          ordinary DC gearmotor with a hex nut glued to the encoder disc on
+          the back of the motor shaft, upstream of the gearbox, where the
+          shaft still turns at the motor's own speed rather than the reduced
+          output speed. An offset mass spinning that fast is the entire
+          working principle of a vibration motor, and putting it before the
+          reduction is what makes it work at all: the geared output turns far
+          too slowly to shake anything. Two nuts and some glue stood in for a
+          part we did not have.
+        </p>
+        <p>
+          Each V sits on four springs, and the spring rate mattered as much
+          as the motors did. Too soft and the platform wallowed without
+          moving anything along; too stiff and it barely moved at all.
+          Getting erasers to index down one at a time meant tuning spring
+          rate and motor speed together rather than either on its own.
+        </p>
+        <p>
+          The two stages are also deliberately out of phase: the firmware
+          runs motor one for 500 ms, then motor two for 500 ms, with no gap
+          between. The reason is the drop. An eraser leaving the first V
+          while the second V is also shaking lands on a moving surface and
+          bounces, sometimes back up the incline, sometimes straight past the
+          line. Offsetting the two means the platform receiving an eraser is
+          always the one holding still.
+        </p>
+
+        <h4>Diverting: A Two-Position Chute</h4>
+        <p>
+          At the bottom, a single servo drives the chute between two fixed
+          positions: 0&deg; for non-green and 70&deg; for green. There
+          is no in-between and nothing to calibrate at runtime. The chute
+          rests in the non-green position, so a sensing failure or a power
+          glitch defaults to the reject path rather than contaminating the
+          green bin.
+        </p>
       </div>
 
       <h4>Indexing: The Part That Fought Back</h4>
@@ -524,10 +523,10 @@
       </p>
       <p>
         Erasers are close to a worst case for a feeder. They are rectangular
-        blocks with flat faces and square edges, so they neither roll nor flow
-        &mdash; a heap of them interlocks like masonry rather than pouring like
-        gravel, and it will bridge across the full width of the ramp and sit
-        there indefinitely. The faces are also large relative to the mass
+        blocks with flat faces and square edges, so they neither roll nor
+        flow. A heap of them locks together instead of pouring, and it will
+        bridge across the full width of the ramp and sit there indefinitely.
+        The faces are also large relative to the mass
         behind them, so two erasers in contact have a great deal of surface
         holding them together and very little weight trying to pull them apart.
       </p>
@@ -539,17 +538,15 @@
         individually and the pile simply stops moving, steep enough that it
         always moves and the whole clump slides down as one body. Gravity and
         geometry alone never separated them. The separation had to come from
-        vibration, which is why the feed ended up as two offset masses taking
-        turns instead of one steady buzz &mdash; a single continuous shake
-        packs a sticky pile tighter, while an alternating one keeps shearing it
-        sideways.
+        the vibration and from the drop between the two stages, which is why
+        the feed ended up staged rather than as one long shaking ramp.
       </p>
       <p>
         This is also where the residual error lives. On single erasers the
         classifier does not miss; in full runs the system sorts at 90&ndash;92%.
-        Essentially all of that gap is the feed rather than the sensor &mdash;
-        when a whole scoop-load lands at once, two erasers occasionally reach
-        the aperture stuck together and the sensor reads a blend of the two.
+        Essentially all of that gap is the feed rather than the sensor: when a
+        whole scoop-load lands at once, two erasers occasionally reach the
+        aperture stuck together and the sensor reads a blend of the two.
         Every improvement we made to sorting accuracy after the first week was
         an improvement to feeding, not to the algorithm.
       </p>
@@ -561,7 +558,7 @@
         reads to damp sensor noise. The important step happens before any
         threshold is applied: the raw red, green, and blue counts are
         normalized against their own sum, so what the algorithm actually
-        compares is each channel's <em>share</em> of the total light rather than
+        compares is each channel's share of the total light rather than
         its absolute value.
       </p>
       <p>
@@ -571,66 +568,78 @@
         Absolute thresholds would have needed recalibrating every time someone
         turned on a different bank of lights in the room.
       </p>
-      <p>
-        On top of the normalized values, an eraser has to clear six independent
-        gates simultaneously to be called green. Any single failure rejects it:
-      </p>
+      <div class="flow-figure">
+        <div class="figure figure-float">
+          <img src="../assets/img/projects/sorting-system/sensor-mount-cad.png" alt="CAD close-up of the colour sensor board seated in a recess in the wall of the black chute, its sensing face level with the gap an eraser passes through." loading="lazy" />
+          <p class="figure-caption">The sensor board recessed into the chute wall.</p>
+        </div>
 
-      <div class="bom-table-wrap">
-        <table class="bom-table">
-          <thead>
-            <tr>
-              <th>Gate</th>
-              <th class="num">Threshold</th>
-              <th>What it rejects</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Clear channel</td><td class="num">&ge; 120</td><td>An empty chute with nothing under the sensor</td></tr>
-            <tr><td>Normalized green</td><td class="num">&ge; 0.40</td><td>Anything not predominantly green</td></tr>
-            <tr><td>Normalized red</td><td class="num">&le; 0.32</td><td>Yellows and oranges</td></tr>
-            <tr><td>Normalized blue</td><td class="num">&le; 0.32</td><td>Teals and cyans</td></tr>
-            <tr><td>Green dominance</td><td class="num">&ge; 0.080</td><td>Greys and washed-out neutrals</td></tr>
-            <tr><td>Hue angle</td><td class="num">108&ndash;145&deg;</td><td>Yellow-greens and blue-greens at the edges</td></tr>
-          </tbody>
-        </table>
+        <p>
+          On top of the normalized values, an eraser has to clear six
+          independent gates simultaneously to be called green. Any single
+          failure rejects it:
+        </p>
+
+        <div class="bom-table-wrap">
+          <table class="bom-table">
+            <thead>
+              <tr>
+                <th>Gate</th>
+                <th class="num">Threshold</th>
+                <th>What it rejects</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Clear channel</td><td class="num">&ge; 120</td><td>An empty chute with nothing under the sensor</td></tr>
+              <tr><td>Normalized green</td><td class="num">&ge; 0.40</td><td>Anything not predominantly green</td></tr>
+              <tr><td>Normalized red</td><td class="num">&le; 0.32</td><td>Yellows and oranges</td></tr>
+              <tr><td>Normalized blue</td><td class="num">&le; 0.32</td><td>Teals and cyans</td></tr>
+              <tr><td>Green dominance</td><td class="num">&ge; 0.080</td><td>Greys and washed-out neutrals</td></tr>
+              <tr><td>Hue angle</td><td class="num">108&ndash;145&deg;</td><td>Yellow-greens and blue-greens at the edges</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          The gates overlap on purpose. Green dominance, the normalized green
+          share minus whichever of red or blue is larger, catches the case
+          where a colour is technically green-leaning but so desaturated that
+          it is really grey. The hue window catches the opposite case: a
+          colour saturated enough to pass the channel tests but sitting at
+          the yellow or blue edge of green. A single threshold on green alone
+          would let both through.
+        </p>
+
+        <p>
+          Mounting mattered as much as the thresholds. The TCS34725 has to sit
+        close to the eraser, because its reading falls off quickly with
+        distance and starts picking up whatever else is in view, so the board
+        is recessed into the chute wall with its face level with the gap the
+        eraser passes through. Everything around it prints in black, which
+        keeps stray colour from bouncing into the reading and gives the sensor
+        a consistent dark background to read a coloured object against. That
+        proximity is also why the feed springs ended up stiffer than the feed
+        alone would have wanted: a softer spring fed slightly better but shook
+        the sensor enough to smear the reading, and a still sensor was worth
+          more than a marginally better feed.
+        </p>
       </div>
-
-      <p>
-        The gates overlap on purpose. Green dominance &mdash; the normalized
-        green share minus whichever of red or blue is larger &mdash; catches the
-        case where a colour is technically green-leaning but so desaturated that
-        it is really grey. The hue window catches the opposite case: a colour
-        saturated enough to pass the channel tests but sitting at the yellow or
-        blue edge of green. A single threshold on green alone would let both
-        through.
-      </p>
 
       <h4>Confirming: One Second of Agreement</h4>
-      <div class="text-figure-row text-figure-row-2fr">
-        <div class="text-figure-row-text">
-          <p>
-            Passing the gates once is not enough to move the chute. The reading
-            has to stay green continuously for a full second before the servo
-            commits, and it has to stay non-green for a full second before the
-            chute swings back. An eraser tumbling past the sensor, a shadow
-            crossing the aperture, or a momentary reflection all produce
-            single-frame misreads &mdash; and none of them survive a
-            thousand-millisecond hold.
-          </p>
-          <p>
-            This is the cheapest reliability improvement in the whole project:
-            a few lines of timestamp comparison that eliminated essentially
-            every false trigger we saw on the bench. Across more than a
-            thousand bench samples, the classifier produced no
-            misclassifications.
-          </p>
-        </div>
-        <div class="figure">
-          <img src="../assets/img/projects/sorting-system/sorter-detail.jpg" alt="Close view of the sorting station showing the grey printed frame, the black inclined feed platform, the colour sensor board mounted at the chute mouth, and the grey diverter tube below." loading="lazy" />
-          <p class="figure-caption">The station up close: black feed platform on top, and below it the chute with the colour sensor board mounted at its mouth.</p>
-        </div>
-      </div>
+      <p>
+        Passing the gates once is not enough to move the chute. The reading has
+        to stay green continuously for a full second before the servo commits,
+        and it has to stay non-green for a full second before the chute swings
+        back. An eraser tumbling past the sensor, a shadow crossing the
+        aperture, or a momentary reflection all produce single-frame misreads,
+        and none of them survive a thousand-millisecond hold.
+      </p>
+      <p>
+        This is the cheapest reliability improvement in the whole project: a
+        few lines of timestamp comparison that eliminated essentially every
+        false trigger we saw on the bench. Across more than a thousand bench
+        samples, the classifier produced no misclassifications.
+      </p>
 
       <h3>The Collection Robot</h3>
       <p>
@@ -642,55 +651,47 @@
         eight to nine erasers per collection pass.
       </p>
 
-      <div class="media-row media-row-narrow">
-        <div class="figure">
-          <img src="../assets/img/projects/sorting-system/scavenger-and-sorter.jpg" alt="The green 3D-printed scavenger robot with its blue rotary brush and grey scoop parked in front of the grey sorting station." loading="lazy" />
-          <p class="figure-caption">The built hardware: scavenger robot in front, sorting station behind.</p>
-        </div>
-        <div class="figure">
-          <img src="../assets/img/projects/sorting-system/dumping-into-sorter.jpg" alt="The scavenger robot reversed into the sorting station with its scoop tipped up, emptying erasers onto the sorter's black inclined platform." loading="lazy" />
-          <p class="figure-caption">Hand-off: the robot reverses in and tips its scoop onto the feed ramp.</p>
-        </div>
-      </div>
-
       <div class="figure video-figure video-figure-portrait">
         <video controls preload="metadata" playsinline poster="../assets/img/projects/sorting-system/collection-run-poster.jpg">
           <source src="../assets/img/projects/sorting-system/collection-run.mp4" type="video/mp4" />
         </video>
-        <p class="figure-caption">A full autonomous run: the scavenger sweeps a collection pass, reverses to base, and empties into the sorting station.</p>
+        <p class="figure-caption">A full autonomous run, collection through sorting.</p>
       </div>
 
       <h3>Designing in Iterations</h3>
       <p>
-        Eight weeks was never enough time to get either machine right on paper,
-        and we stopped trying early. What replaced it was a short loop: model a
-        version in SolidWorks, print it that night, break it on the bench the
-        next morning, and change the model the same day. Almost nothing on the
-        finished system is a first revision, and the parts that decided whether
-        the system worked &mdash; the scoop, the feed platform, the chute
-        &mdash; went through several each.
+        Fast physical prototypes were what got us to a working design. Model a
+        version in SolidWorks, print it that night, test it on the bench the
+        next morning, change the model the same day. A part in your hand tells
+        you things a CAD model will not, especially with a material as awkward
+        as eraser rubber, and once a rough version worked the same loop was
+        what turned it into a good one. Almost nothing on the finished system
+        is a first revision, and the parts that decided whether it worked went
+        through several each: the scoop, the feed platforms, and the chute.
       </p>
 
       <div class="media-row media-row-match">
         <div class="figure">
           <img src="../assets/img/projects/sorting-system/scavenger-early.jpg" alt="Early SolidWorks render of the scavenger: a flat open printed deck on four wheels with a fixed ramp, a brush bar across one end, and the control board sitting exposed on the deck." loading="lazy" />
-          <p class="figure-caption">Where the scavenger started: a flat open deck with a fixed ramp and no way to lift or tip a load. The shipped robot added the servo-driven scoop, retaining walls, and a brush that reverses on the way home.</p>
+          <p class="figure-caption">The scavenger's heavy first design, before the weight rework.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/sorting-system/sorter-early.jpg" alt="Early SolidWorks render of the sorting station: a large tilted green funnel bowl with an internal cone, driven from below and held up by a tripod stand." loading="lazy" />
-          <p class="figure-caption">Where the sorter started: a tilted rotating funnel meant to spin a scoop-load up its wall and release erasers one at a time at the rim. It became the vibrating inclined platform instead.</p>
+          <p class="figure-caption">The sorter's first design: a tilted rotating funnel.</p>
         </div>
       </div>
 
       <p>
-        Neither machine resembles its first model. The rotating funnel above is
-        a centrifugal bowl feeder in miniature, and it is a completely
-        reasonable way to single-file parts &mdash; for parts that slide. Once
-        there were printed erasers-and-plastic tests on the bench it was obvious
-        that no amount of spin walks a sticky rubber block up a smooth wall in
-        an orderly line. The flat scavenger deck failed the same way: it looked
-        fine in CAD and had nowhere to put a load the moment the robot had to
-        carry one back.
+        Neither machine resembles its first model. The rotating funnel above
+        is a centrifugal bowl feeder in miniature, and it is a completely
+        reasonable way to single-file parts, as long as those parts slide. Once
+        there were printed erasers-and-plastic tests on the bench it was
+        obvious that no amount of spin walks a sticky rubber block up a smooth
+        wall in an orderly line. The vibrating platforms that replaced it were
+        simpler and far more reliable, and they took one less servo to build.
+        The first scavenger went the same way: it was a heavy robot, and
+        keeping the robot light was one of the competition objectives, so what
+        shipped was reworked around minimising weight.
       </p>
       <p>
         That is the part worth keeping from this project. The binding constraint
@@ -704,15 +705,17 @@
 
       <h3>Firmware Architecture</h3>
       <p>
-        Both programs are built the same way: a single non-blocking loop driving
-        an explicit state machine, with nothing blocking execution while it
-        waits. On the sorter this matters because the vibration motors and the
-        colour sensor have to run concurrently &mdash; the motor cycle cannot
-        stall colour reads, and a colour read cannot stall the feed. Each keeps
-        its own timestamp and advances independently.
+        The station's firmware is a single non-blocking loop driving an
+        explicit state machine, with nothing blocking execution while it waits.
+        That matters here because the vibration motors and the colour sensor
+        have to run concurrently: the motor cycle cannot stall colour reads,
+        and a colour read cannot stall the feed. Each keeps its own timestamp
+        and advances independently, which is also what makes the 500 ms offset
+        between the two feed stages exact.
       </p>
       <p>
-        The scavenger runs the larger machine: 27 states covering three
+        The scavenger runs the larger program, built the same way: 27 states
+        covering three
         collection passes, each one a sequence of drive out with the brush
         running, pre-lift the scoop to trap the load, reverse to base, align,
         lift fully, dump, lower, and turn to the next heading. The scoop lifts
@@ -741,26 +744,6 @@
           a less sophisticated answer than closed-loop control and a
           considerably more reliable one over a 120-second run.
         </p>
-      </div>
-
-      <h3>Results</h3>
-      <div class="bom-table-wrap">
-        <table class="bom-table">
-          <thead>
-            <tr>
-              <th>Metric</th>
-              <th class="num">Result</th>
-              <th class="num">Requirement</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Full autonomous cycle time</td><td class="num">~85.7 s</td><td class="num">&le; 120 s</td></tr>
-            <tr><td>Sorting accuracy</td><td class="num">90&ndash;92%</td><td class="num">&ge; 90%</td></tr>
-            <tr><td>Collection rate per pass</td><td class="num">8&ndash;9 erasers</td><td class="num">&mdash;</td></tr>
-            <tr><td>Misclassifications, bench testing</td><td class="num">0 / 1000+</td><td class="num">&mdash;</td></tr>
-            <tr class="total"><td>Competition placement</td><td class="num">2nd</td><td class="num">&mdash;</td></tr>
-          </tbody>
-        </table>
       </div>
 
       <h3>Source and Documentation</h3>
@@ -793,7 +776,6 @@
       <div class="project-meta">
         <div><strong>Role</strong>Undergraduate Research Intern</div>
         <div><strong>Timeline</strong>May to August 2026</div>
-        <div><strong>Tools</strong>Electrodeposition, Hydrothermal Synthesis, XRD/UV-Vis, Potentiostat Testing</div>
       </div>
       <p class="lede">
         A noble-metal-free high-entropy alloy catalyst engineered for overall
@@ -862,7 +844,7 @@
         <div class="figure-stack">
           <div class="figure">
             <img src="../assets/img/projects/seawater-hea/research-team.jpg" alt="Marc Masgoret and three labmates from the Mirzaei research group sitting together at an outdoor table." loading="lazy" />
-            <p class="figure-caption">The research team in my lab.</p>
+            <p class="figure-caption">My coworkers in the research lab.</p>
           </div>
 
           <div class="hp-video hp-video-compact">
@@ -879,15 +861,15 @@
               <span class="hp-label hp-label-oxygen"><span class="hp-label-arrow">&uarr;</span>Oxygen</span>
             </div>
             <p class="figure-caption hp-caption-left">
-              <em>Hydrogen and oxygen gas evolving off the two electrodes during a
-              bench-scale electrolysis test in the lab.</em>
+              <em>Hydrogen and oxygen evolving off the electrodes during a
+              bench-scale electrolysis test.</em>
             </p>
           </div>
         </div>
       </div>
 
       <h3>Presentation</h3>
-      <p>My full end-of-internship USRI presentation, slide by slide.</p>
+      <p>A short presentation covering my work in more depth.</p>
       <div class="figure">
         <button type="button" class="figure-clickable" data-viewer-open="ppt-viewer-seawater" aria-haspopup="dialog">
           <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Title slide of the presentation: High-Entropy Alloy Development for Overall Seawater Splitting, by Marc Masgoret, supervised by Dr. Amir Mirzaei." loading="lazy" />
@@ -898,7 +880,7 @@
     </div>
   </section>
 
-  <div class="ppt-viewer-overlay" id="ppt-viewer-seawater" aria-hidden="true" role="dialog" aria-label="High-Entropy Alloy Development for Overall Seawater Splitting — full presentation">
+  <div class="ppt-viewer-overlay" id="ppt-viewer-seawater" aria-hidden="true" role="dialog" aria-label="High-Entropy Alloy Development for Overall Seawater Splitting, full presentation">
     <div class="ppt-viewer-backdrop" data-viewer-close></div>
     <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close presentation viewer">&times;</button>
     <div class="ppt-viewer-panel">
@@ -944,14 +926,12 @@
       <div class="project-meta">
         <div><strong>Role</strong>Mechanical Design &amp; Assembly</div>
         <div><strong>Timeline</strong>March 2026 to Present</div>
-        <div><strong>Status</strong>In Progress &middot; Design Validation</div>
-        <div><strong>Tools</strong>SolidWorks, SolidWorks Simulation, 3D-Printed Prototyping</div>
       </div>
       <p class="lede">
-        A two-U-joint front drive shaft for Western Baja SAE's four-wheel-drive
+        A two-U-joint drive shaft for Western Baja SAE's four-wheel-drive
         off-road car. Splitting the shaft lets the engine sit about 6 inches
         lower, bolted straight to the frame. My own project, designed for the
-        car the team is building this year.
+        team's 2027 car.
       </p>
     </div>
   </section>
@@ -962,11 +942,11 @@
       <div class="media-row media-row-baja">
         <div class="figure">
           <img src="../assets/img/projects/baja/car.jpg" alt="Western Baja SAE's car number 6 sliding through a dirt corner on a wooded course, kicking up mud, with the driver in a purple suit." loading="lazy" />
-          <p class="figure-caption">The team's current car on course at competition.</p>
+          <p class="figure-caption">The team's current car at competition.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baja/full-cad-wide.jpg" alt="SolidWorks render of the new car's tube frame in teal with the green engine and gearbox low at the rear, and the split drive shaft running forward along the bottom of the frame to the front differential." loading="lazy" />
-          <p class="figure-caption">The new frame in CAD, with the engine dropped low at the rear and the split drive shaft running forward to the front differential.</p>
+          <p class="figure-caption">The new frame in CAD, engine dropped low at the rear.</p>
         </div>
       </div>
 
@@ -991,10 +971,9 @@
         driver's seat too.
       </p>
       <p>
-        This is my project end to end: packaging the shaft in the frame,
-        setting the joint geometry, designing the custom yokes, and planning
-        the validation and testing that has to happen before it goes on the
-        car.
+        I packaged the shaft in the frame, set the joint geometry, designed
+        the custom yokes, and planned the validation and testing that has to
+        happen before it goes on the car.
       </p>
 
       <h3>My Contributions</h3>
@@ -1036,7 +1015,7 @@
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baja/bottom-view.jpg" alt="Bottom view of the frame CAD: the engine and gearbox at the bottom of the image, with the drive shaft leaving from one side and angling across the frame to the front differential on the centreline at the top." loading="lazy" />
-          <p class="figure-caption">Bottom view. The shaft leaves the gearbox off-centre and angles across to the front differential.</p>
+          <p class="figure-caption">Bottom view of the shaft path, gearbox to front differential.</p>
         </div>
       </div>
 
@@ -1076,7 +1055,7 @@
       <div class="media-row">
         <div class="figure">
           <img src="../assets/img/projects/baja/ujoint-cad.jpg" alt="SolidWorks render of the U-joint: a splined steel stub and steel yoke at the top, the cross in the middle, and an aluminum yoke welded onto the aluminum tube at the bottom." loading="lazy" />
-          <p class="figure-caption">U-joint CAD: splined steel stub and yoke on top, aluminum yoke and tube below, joined by the purchased cross.</p>
+          <p class="figure-caption">U-joint CAD: steel stub and yoke, aluminum yoke and tube.</p>
         </div>
         <div class="figure">
           <model-viewer
@@ -1142,7 +1121,7 @@
       <p>
         Alongside the drive shaft, I've worked on other parts of the car,
         including sprag bearing wheel hubs and a redesign of the wheel rims to
-        reduce unsprung weight.
+        reduce weight.
       </p>
 
     </div>
@@ -1179,9 +1158,8 @@
       <div class="figure">
         <img src="../assets/img/projects/combat-robotics/reference-1lb-spinner.jpg?v=2" alt="A finished 1 lb vertical spinner combat robot on a workbench: an aluminum chassis with four blue wheels driven by green belts, twin blue weapon discs at the front, and angled wedgelets under the discs." />
         <p class="figure-caption">
-          Reference photo, not our robot. A 1 lb vertical spinner built by Mark
-          Sutton, the class and style Build A is aiming for. Photo: Mark Sutton,
-          posted in the
+          Reference photo, not our robot: a 1 lb vertical spinner, the class
+          Build A is aiming for. Photo: Mark Sutton, posted in the
           <a href="https://www.facebook.com/groups/914654103210730/posts/971184820890991/" target="_blank" rel="noopener">Kansas Combat Robotics</a>
           Facebook group.
         </p>
@@ -1191,8 +1169,9 @@
         <strong>Where this project stands:</strong> the program launched in
         August 2026 and this is its first year, so this write-up describes the
         plan rather than finished robots. Team sizes, budgets, and the timeline
-        are early estimates, and the robot drawings are my own concept sketches,
-        not final designs. The photo above and the fight video further down show
+        are early estimates, the two archetypes below are likely directions
+        rather than committed ones, and the robot drawings are my own concept
+        sketches, not final designs. The photo above and the fight video further down show
         other builders' robots, credited under each, as a reference for what our
         builds are aiming at. I'll replace them with our own as the robots come
         together.
@@ -1200,15 +1179,12 @@
 
       <h3>Overview</h3>
       <p>
-        WE First's combat robotics program, Bot Brawl, is new this year, and I
+        WE First's combat robotics program, Bot Brawl, launched in 2026, and I
         lead it. Instead of putting every member on one robot, the program runs
         two parallel builds of roughly 15 people each. Each build has its own
         lead who reports to me, and each build lead runs mechanical, electrical,
-        and software leads. The two builds take different design approaches,
-        and once both robots are finished they fight each other. That head-to-head
-        is the point: a first-year program has no past robots or institutional
-        knowledge to learn from, so we create our own test data before spending
-        money and travel on outside competitions.
+        and software leads. The two builds take deliberately different design
+        approaches, and once both robots are finished they fight each other.
       </p>
       <p>
         We compete in the 1 lb (454 g) antweight class. It is small enough that
@@ -1224,11 +1200,14 @@
 
       <h3>Two Builds, One Design Question</h3>
       <p>
-        The two teams are assigned contrasting archetypes, the two approaches
-        that most often meet in the antweight class, so the internal fights
-        answer a real design question: for a first-year team with a limited
-        budget, is it better to build the robot that deals the damage or the
-        robot that controls the fight?
+        Running two builds only pays off if the two are trying different
+        things, so each team takes a contrasting approach and the internal
+        fights settle it by result rather than by argument. Nothing is locked
+        in yet. The two archetypes below are the front-runners, the pair that
+        most often meets in the antweight class, and they frame the question we
+        actually want answered: for a first-year team with a limited budget, is
+        it better to build the robot that deals the damage or the robot that
+        controls the fight?
       </p>
 
       <div class="build-compare">
@@ -1274,18 +1253,15 @@
           <iframe src="https://www.youtube-nocookie.com/embed/IUBDW3iXEPM?start=1051&amp;rel=0&amp;cc_load_policy=0" title="Red Hot vs Snap!, BotBrawl Robot League Season 2 Week 5 (video by BotBrawl Canada)" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <p class="figure-caption">
-          Reference footage, not our robots. Red Hot, a vertical spinner from
-          Hot Sauce, fights Snap!, a lifter/grabber control bot from Trouble
-          Robotics, in the BotBrawl Robot League Season 2, Week 5. This is the
-          spinner-vs-control question our internal Bot Brawl is designed to
-          test. Video: <a href="https://www.youtube.com/watch?v=IUBDW3iXEPM&amp;t=1051s" target="_blank" rel="noopener">BotBrawl Canada on YouTube</a>, starting at the fight (17:31).
+          Reference footage, not our robots: Red Hot, a vertical spinner,
+          fights Snap!, a control bot, in the BotBrawl Robot League. Video: <a href="https://www.youtube.com/watch?v=IUBDW3iXEPM&amp;t=1051s" target="_blank" rel="noopener">BotBrawl Canada on YouTube</a>, starting at the fight (17:31).
         </p>
       </div>
 
       <h3>My Role</h3>
       <ul class="contrib-list">
-        <li>Setting the program's technical direction, including the weight class and the contrasting archetype each build is assigned.</li>
-        <li>Driving the key design decisions on both builds, so each robot stays true to its archetype and the head-to-head stays a fair test.</li>
+        <li>Setting the program's technical direction, including the weight class and the direction each build takes.</li>
+        <li>Driving the key design decisions on both builds, so the two stay genuinely different and the head-to-head stays a fair test.</li>
         <li>Managing the two build leads, who each run mechanical, electrical, and software leads on a team of about 15.</li>
         <li>Overseeing the budget across both builds: roughly $500 to $800 per robot (early estimate).</li>
         <li>Owning the timeline, so both robots are ready for the internal Bot Brawl with time left to iterate before outside competition.</li>
@@ -1312,27 +1288,27 @@
       <h3>Season Plan</h3>
       <p>Tentative, and will change as the builds progress.</p>
       <ol class="roadmap">
-        <li class="is-current">
-          <span class="roadmap-when">Fall 2026 &middot; We are here</span>
+        <li class="is-current" data-from="2026-09-01">
+          <span class="roadmap-when">Fall 2026<span class="roadmap-now"> &middot; We are here</span></span>
           <strong>Launch</strong>
           <p>Recruit members, form the two teams, appoint build and subsystem leads, and set each build's archetype and budget.</p>
         </li>
-        <li>
+        <li data-from="2026-11-01">
           <span class="roadmap-when">Fall 2026</span>
           <strong>Design</strong>
           <p>Concept CAD, weight budgets, and design reviews for both builds before parts are ordered.</p>
         </li>
-        <li>
+        <li data-from="2027-01-01">
           <span class="roadmap-when">Winter 2027</span>
           <strong>Build and Test</strong>
           <p>Fabricate and assemble both robots, then drive and weapon testing.</p>
         </li>
-        <li>
+        <li data-from="2027-03-01">
           <span class="roadmap-when">Winter 2027</span>
           <strong>Internal Bot Brawl</strong>
           <p>Build A vs Build B, with a teardown and design review after every fight.</p>
         </li>
-        <li>
+        <li data-from="2027-05-01">
           <span class="roadmap-when">By the end of 2026&ndash;27</span>
           <strong>Inter-University Competition</strong>
           <p>Rebuild with what the internal fights taught us, then compete against other schools in Ontario's 1 lb class.</p>
@@ -1373,7 +1349,6 @@
       <div class="project-meta">
         <div><strong>Role</strong>Team Lead &middot; Design, Filtration &amp; Documentation</div>
         <div><strong>Timeline</strong>January to April 2025</div>
-        <div><strong>Tools</strong>SolidWorks, 3D Printing (PLA), Arduino Uno, Acrylic Fabrication</div>
       </div>
       <p class="lede">
         An enclosure for the Prusa XL that anyone can build for about $162 in
@@ -1391,11 +1366,11 @@
       <div class="media-row media-row-lead">
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/enclosure-cad.jpg" alt="CAD assembly of the enclosure: clear acrylic panels held together by red 3D printed brackets, with black printed hinges on the front doors, a printed handle, and the red filtration unit mounted on the lower right panel." loading="lazy" />
-          <p class="figure-caption">The full assembly. Everything red or black is printed; everything clear is a flat rectangle of acrylic.</p>
+          <p class="figure-caption">The full assembly: printed parts in red and black, acrylic panels clear.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/display-table.jpg" alt="The team's display table at the design competition: a black and red poster board behind a row of 3D printed enclosure parts, a box of magnets, a box of M3 screws, and a printed copy of the build manual." loading="lazy" />
-          <p class="figure-caption">The competition table &mdash; the complete printed part kit, the fasteners, and the build manual.</p>
+          <p class="figure-caption">The competition table: printed part kit, fasteners, and build manual.</p>
         </div>
       </div>
 
@@ -1409,7 +1384,7 @@
         enclosure has to survive constant handling and constant modification.
       </p>
       <p>
-        The design constraints were tight and mostly financial &mdash; under
+        The design constraints were tight and mostly financial: under
         $150 for the base enclosure, under $50 for whatever value-add we chose
         to bolt onto it, standardized or 3D printed parts only, recyclable
         materials, clear sightlines to the print, and an open-source design
@@ -1438,7 +1413,7 @@
           nine plain rectangles in six sizes, cut from two sheets by whoever
           sells them to you, with M3 clearance holes drilled to the dimensions
           in the manual. The brackets are 30 printed parts across nine designs,
-          all of which fit a standard bed and print in PLA &mdash; 941 g of
+          all of which fit a standard bed and print in PLA: 941 g of
           filament, about 26 hours, one spool. The fasteners are M3 screws and
           10&times;3 mm magnets from a bulk pack. Nothing needs a soldering
           iron.
@@ -1449,7 +1424,7 @@
           panel drawings with every hole dimensioned, part-by-part assembly
           renders, a hole-by-hole breadboard wiring guide written for someone
           who has never wired anything, the full bill of materials with prices,
-          and operating instructions. It is the actual product &mdash; the
+          and operating instructions. It is the actual product, and the
           enclosure is what falls out of following it.
         </p>
       </div>
@@ -1473,18 +1448,18 @@
       <p>
         Panels meet each other the same way. An L connector (002) screwed in
         from the inside holds two sheets at a true 90&deg; without needing a
-        jig, a corner bracket, or a clean edge &mdash; the part defines the
-        angle, so the acrylic does not have to.
+        jig, a corner bracket, or a clean edge. The part defines the angle,
+        so the acrylic does not have to.
       </p>
 
       <div class="media-row media-row-match">
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/t-slot-integrator.jpg" alt="CAD detail of the two-piece T-slot integrator: a red printed piece seated in the aluminum extrusion channel and a white printed piece clamping from the outside, with a screw drawing them together." loading="lazy" />
-          <p class="figure-caption">The T-slot integrator, clamping into the printer's own extrusion.</p>
+          <p class="figure-caption">The T-slot integrator clamped into the printer's extrusion.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/l-connector.jpg" alt="CAD detail of a red printed L-shaped bracket joining two acrylic panels at ninety degrees, with six screws inserted from the inside." loading="lazy" />
-          <p class="figure-caption">The L connector setting the 90&deg; between two panels.</p>
+          <p class="figure-caption">The L connector holding two panels at 90&deg;.</p>
         </div>
       </div>
 
@@ -1501,11 +1476,11 @@
           <p>
             The front doors run on printed hinges (007) mounted on the inside
             face and close onto neodymium magnets rather than any kind of
-            latch. The magnets are glued into grooves in two printed holders
-            &mdash; a corner holder (009) on the frame and a drop-down holder
-            (008) on the door &mdash; so the closing force comes from twelve
-            $0.25 magnets and two printed parts instead of hardware nobody can
-            source. Printed handles (004) bolt through both faces of each door.
+            latch. The magnets are glued into grooves in two printed holders:
+            a corner holder (009) on the frame and a drop-down holder (008) on
+            the door. The closing force comes from twelve $0.25 magnets and two
+            printed parts instead of hardware nobody can source. Printed
+            handles (004) bolt through both faces of each door.
           </p>
           <p>
             The practical benefit is that the doors cannot bind. A magnetic
@@ -1517,7 +1492,7 @@
         </div>
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/door-magnets.jpg" alt="CAD detail showing the drop-down magnet holder on the door meeting the corner magnet holder on the frame, with the magnet faces mating between them." loading="lazy" />
-          <p class="figure-caption">How the two magnet holders meet when a door closes.</p>
+          <p class="figure-caption">The two magnet holders meeting as a door closes.</p>
         </div>
       </div>
 
@@ -1537,13 +1512,13 @@
             the room. Because the filter is square and only the quarter in
             front of the fan loads up, the housing lets you pull it out and
             rotate it 90&deg; when it is spent. Four positions, four filter
-            lives, one $5 part &mdash; which is the difference between a
+            lives, one $5 part, which is the difference between a
             consumable people replace and one they quietly stop replacing.
           </p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/filtration-unit.jpg" alt="CAD render of the red printed filtration housing with its grey lid lifted off, showing the fan grille and the mounting screws that fasten it to an acrylic panel." loading="lazy" />
-          <p class="figure-caption">The filtration housing and lid, mounted through a side panel.</p>
+          <p class="figure-caption">The filtration housing and lid in a side panel.</p>
         </div>
       </div>
 
@@ -1554,7 +1529,7 @@
         sensor resets the timer whenever the filter is rotated or swapped. The
         fan itself runs through a relay off the printer's power rather than its
         own switch, so filtration starts when the print starts and stops when
-        the printer does &mdash; there is no step in the workflow a user can
+        the printer does. There is no step in the workflow a user can
         forget.
       </p>
       <p>
@@ -1570,7 +1545,7 @@
         The cost breakdown is the part of this project I would point at first.
         Of the $111.64 base enclosure, $98.98 is the two sheets of acrylic.
         Every bracket, hinge, handle, magnet holder, screw and magnet in the
-        structure &mdash; the entire designed portion &mdash; comes to $12.66.
+        structure, the entire designed portion, comes to $12.66.
         The design is essentially free; what a builder pays for is glazing, at
         whatever their local price for a sheet happens to be.
       </p>
@@ -1602,8 +1577,8 @@
           would not survive a shop. Magnetic hexagonal panels were expensive
           and relied on magnets strong enough to be a problem, with no obvious
           way to scale to a different printer. A tarp-style shield was
-          genuinely cheap, and looked it &mdash; in a space where the enclosure
-          is also a demonstration of what the lab can make, that mattered.
+          genuinely cheap, and looked it. In a space where the enclosure is
+          also a demonstration of what the lab can make, that mattered.
         </p>
         <p>
           The winner was the least inventive one: flat panels fitted to the
@@ -1617,8 +1592,8 @@
 
       <h3>Build Manual</h3>
       <p>
-        The full 23-page manual &mdash; panel drawings, assembly renders,
-        wiring, bill of materials, and operating instructions.
+        The full 23-page manual: panel drawings, assembly renders, wiring,
+        bill of materials, and operating instructions.
       </p>
       <div class="doc-reader">
         <div class="doc-frame">
@@ -1660,7 +1635,7 @@
             By the end of the term we had printed the complete part kit and
             built and run the filtration unit and its control circuit; the
             enclosure shell itself is documented as a cut-and-drill package
-            against the panel drawings. Both budgets held &mdash; $111.64
+            against the panel drawings. Both budgets held: $111.64
             against $150, and $49.58 against $50, with 42 cents to spare.
           </p>
           <p>
@@ -1674,14 +1649,14 @@
         </div>
         <div class="figure">
           <img src="../assets/img/projects/printer-enclosure/team.jpg" alt="The five-person Flush Factory team standing in front of their competition display, one member holding the red filtration unit and another holding the printed build manual." loading="lazy" />
-          <p class="figure-caption">The team at the competition, with the filtration unit and the manual.</p>
+          <p class="figure-caption">The team at the competition with the filtration unit and manual.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <div class="ppt-viewer-overlay" id="manual-viewer-enclosure" aria-hidden="true" role="dialog" aria-label="Flush Factory Build Manual &mdash; full document">
+  <div class="ppt-viewer-overlay" id="manual-viewer-enclosure" aria-hidden="true" role="dialog" aria-label="Flush Factory Build Manual, full document">
     <div class="ppt-viewer-backdrop" data-viewer-close></div>
     <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close build manual viewer">&times;</button>
     <div class="ppt-viewer-panel">
@@ -1726,12 +1701,11 @@
       <div class="project-meta">
         <div><strong>Role</strong>Solo Build &amp; Code</div>
         <div><strong>Type</strong>Class Project</div>
-        <div><strong>Tools</strong>ESP32, C++, IR Detector, Ultrasonic Sensor</div>
       </div>
       <p class="lede">
         A small autonomous robot that drives a set course, finds an IR beacon,
         grabs a ping pong ball with its claw, and brings it back to where it
-        started. I built and programmed it myself.
+        started.
       </p>
     </div>
   </section>
@@ -1741,7 +1715,7 @@
 
       <div class="figure">
         <img src="../assets/img/projects/ir-robot/build.jpg" alt="The finished robot on a desk: a laser-cut hardboard chassis with an ESP32 control board and wiring on top, two ultrasonic sensor eyes at the front, and a long arm ending in a claw." loading="lazy" />
-        <p class="figure-caption">The finished robot: ESP32 controller on top, ultrasonic sensor at the front, and the arm and claw that grab the ball.</p>
+        <p class="figure-caption">The finished robot: ESP32, ultrasonic sensor, and the claw.</p>
       </div>
 
       <h3>The Task</h3>
@@ -1783,7 +1757,7 @@
         </div>
         <div class="figure">
           <img src="../assets/img/projects/ir-robot/path.jpg" alt="Course diagram: the robot starts at the bottom left, drives right across two sheets of paper, turns 90 degrees, and drives up across a third sheet toward the IR beacon holding a ping pong ball, then returns along the same path." loading="lazy" />
-          <p class="figure-caption">The course: out across the paper, a 90&deg; turn, up to the beacon, and back.</p>
+          <p class="figure-caption">The course: out, a 90&deg; turn to the beacon, and back.</p>
         </div>
       </div>
 
@@ -1808,6 +1782,6 @@
     </div>
   </section>
 
-  <script src="../assets/js/main.js?v=6"></script>
+  <script src="../assets/js/main.js?v=7"></script>
 </body>
 </html>

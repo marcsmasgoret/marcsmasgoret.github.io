@@ -152,6 +152,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // The season plan marks the step the programme is on. Each step carries the
+  // date it starts, so the marker walks down the list with the calendar rather
+  // than going stale between edits. The markup ships with the first step
+  // marked, which is what shows if scripting is off.
+  document.querySelectorAll(".roadmap").forEach((list) => {
+    const steps = Array.from(list.querySelectorAll("li[data-from]"));
+    if (!steps.length) return;
+
+    const now = Date.now();
+    let current = null;
+    steps.forEach((step) => {
+      const from = Date.parse(step.dataset.from);
+      if (!Number.isNaN(from) && from <= now) current = step;
+    });
+    if (!current) return;
+
+    steps.forEach((step) => {
+      step.classList.remove("is-current");
+      const marker = step.querySelector(".roadmap-now");
+      if (marker) marker.remove();
+    });
+
+    current.classList.add("is-current");
+    const when = current.querySelector(".roadmap-when");
+    if (when) {
+      const marker = document.createElement("span");
+      marker.className = "roadmap-now";
+      marker.innerHTML = " &middot; We are here";
+      when.appendChild(marker);
+    }
+  });
+
   // Auto-hiding scrollbar: show it while the page is scrolling, fade it back
   // out shortly after scrolling stops.
   let scrollHideTimer;
