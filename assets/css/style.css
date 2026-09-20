@@ -1,25 +1,35 @@
 /* ==========================================================================
-   Design tokens — "drafting sheet" system
+   Design tokens — dark neo-grotesque system
    ========================================================================== */
 :root {
-  --bg: #f8f6f2;
-  --surface: #ffffff;
-  --border: #e2ddd0;
-  --text: #26221d;
-  --text-muted: #7d766a;
-  --accent: #4a72c9;
-  --accent-soft: rgba(74, 114, 201, 0.13);
-  --accent-text: #ffffff;
-  --code-bg: #eae4d8;
+  --bg: #050506;
+  --surface: #0c0c0e;
+  --surface-2: #121215;
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.34);
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.54);
+  --accent: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent-text: #050506;
+  --code-bg: #121215;
 
-  --font-display: Georgia, "Times New Roman", serif;
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-mono: Arial, Helvetica, sans-serif;
-  --font-signature: "SignPainter-HouseScript", "SignPainter", "Caveat", cursive;
+  /* One family throughout. Switzer is the closest freely licensed stand-in
+     for the PP Neue Montreal used in the reference design. */
+  --font-stack: "Switzer", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-stack);
+  --font-sans: var(--font-stack);
+  --font-mono: var(--font-stack);
+  --font-signature: var(--font-stack);
 
   --max-width: 940px;
+  --max-width-wide: 1560px;
+  --header-h: 72px;
   --radius: 14px;
   --radius-sm: 8px;
+
+  /* Faster through the middle, eased at both ends — used by the card outline. */
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* ==========================================================================
@@ -50,7 +60,7 @@ html {
 }
 
 html.is-scrolling {
-  scrollbar-color: rgba(74, 114, 201, 0.45) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.38) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -70,16 +80,16 @@ html.is-scrolling {
 
 html.is-scrolling::-webkit-scrollbar-thumb,
 .is-scrolling::-webkit-scrollbar-thumb {
-  background-color: rgba(74, 114, 201, 0.45);
+  background-color: rgba(255, 255, 255, 0.38);
 }
 
 a { color: inherit; }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: -0.025em;
   line-height: 1.05;
   text-wrap: balance;
 }
@@ -182,7 +192,7 @@ h1, h2, h3 {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  box-shadow: 0 12px 28px rgba(36, 31, 26, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
   opacity: 0;
   transform: translateY(-18px);
   pointer-events: none;
@@ -463,7 +473,7 @@ h1, h2, h3 {
   padding: 14px;
   border-radius: var(--radius);
   background-color: var(--surface);
-  box-shadow: 0 2px 10px rgba(36, 31, 26, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
   text-decoration: none;
   color: inherit;
   transition: box-shadow 0.2s ease;
@@ -481,7 +491,7 @@ h1, h2, h3 {
 }
 
 .project-row:hover {
-  box-shadow: 0 8px 22px rgba(36, 31, 26, 0.16);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
 }
 
 .project-row-body {
@@ -549,13 +559,125 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
+   Project sidebar — table of contents for projects/index.html
+   main.js builds the list from the h2/h3 structure and runs the scrollspy;
+   this just lays out and states whatever it produces. Collapses away below
+   the breakpoint, where the page reads exactly as it does without JS.
+   ========================================================================== */
+.project-shell { display: block; }
+
+.project-sidenav { display: none; }
+
+@media (min-width: 1360px) {
+  .project-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+    column-gap: 40px;
+  }
+
+  .project-sidenav {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+    max-height: calc(100vh - var(--header-h) - 72px);
+    overflow-y: auto;
+    padding: 4px 12px 4px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  .project-sidenav::-webkit-scrollbar { width: 6px; }
+  .project-sidenav::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border-radius: 999px;
+  }
+}
+
+.sidenav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidenav-item + .sidenav-item { margin-top: 18px; }
+
+.sidenav-title {
+  display: block;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  transition: color 0.2s ease;
+}
+
+.sidenav-title:hover { color: var(--text); }
+
+/* The current project's title lights up, independent of whether a
+   sub-heading within it is also current (e.g. right as it scrolls in). */
+.sidenav-item.is-active > .sidenav-title {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Sub-list height is animated via the grid-rows trick so it works for any
+   amount of content without a hardcoded max-height, and collapses to
+   nothing (no padding/margin bleed) when not the active project. */
+.sidenav-sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease-draw);
+}
+
+.sidenav-item.is-active .sidenav-sub {
+  grid-template-rows: 1fr;
+}
+
+.sidenav-sub > ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.sidenav-item.is-active .sidenav-sub > ol {
+  padding-top: 10px;
+}
+
+.sidenav-sub a {
+  display: block;
+  padding: 5px 0 5px 14px;
+  border-left: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.sidenav-sub a:hover { color: var(--text); }
+
+.sidenav-sub a.is-current {
+  color: var(--text);
+  border-left-color: var(--text);
+}
+
+/* ==========================================================================
    Project detail sections — stacked on projects/index.html
    ========================================================================== */
 .project-hero {
   padding: 48px 0 0;
-  /* Exactly the sticky header's height (76px + 1px border), so a jump puts the
-     section flush under the header and hides the divider above it. */
-  scroll-margin-top: 77px;
+  /* Exactly the sticky header's height plus its 1px border, so a jump puts
+     the section flush under the header and hides the divider above it. */
+  scroll-margin-top: calc(var(--header-h) + 1px);
+}
+
+/* Sub-headings are jump targets from the sidenav too, so they need the same
+   clearance under the sticky header, just a little looser since they are
+   mid-read rather than a section start. */
+.project-body h3 {
+  scroll-margin-top: calc(var(--header-h) + 24px);
 }
 
 /* Drawn inside .wrap rather than on the section, so it spans only the text
@@ -691,7 +813,7 @@ h1, h2, h3 {
   }
 }
 
-/* Portrait variant, matched to the U-joint render it sits beside. */
+/* Portrait variant, for the tall U-joint model sitting beside body text. */
 .model-viewer-inline.model-viewer-portrait {
   aspect-ratio: 633 / 955;
 }
@@ -701,10 +823,10 @@ h1, h2, h3 {
    ========================================================================== */
 .project-body h4 {
   font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: -0.015em;
+  font-size: 1.1rem;
   margin: 28px 0 10px;
   color: var(--text);
 }
@@ -994,6 +1116,16 @@ h1, h2, h3 {
   min-height: 0;
 }
 
+/* A model viewer keeps its own aspect ratio rather than stretching to the
+   text column, and sits at the top of it. */
+.text-figure-row .figure model-viewer {
+  flex: none;
+}
+
+.text-figure-row .figure:has(model-viewer) {
+  justify-content: flex-start;
+}
+
 @media (max-width: 720px) {
   .text-figure-row {
     grid-template-columns: 1fr;
@@ -1119,7 +1251,7 @@ h1, h2, h3 {
   border-radius: 50%;
   border: 2px solid var(--accent);
   background: var(--surface);
-  box-shadow: 0 2px 6px rgba(36, 31, 26, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
   font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: 700;
@@ -1231,12 +1363,12 @@ h1, h2, h3 {
   inset: 0;
   border-radius: var(--radius);
   pointer-events: none;
-  box-shadow: inset 0 0 28px 14px rgba(250, 249, 246, 0);
+  box-shadow: inset 0 0 28px 14px rgba(5, 5, 6, 0);
   transition: box-shadow 0.18s ease;
 }
 
 .doc-frame:hover::after {
-  box-shadow: inset 0 0 28px 14px rgba(250, 249, 246, 0.92);
+  box-shadow: inset 0 0 28px 14px rgba(5, 5, 6, 0.92);
 }
 
 .doc-open-hint {
@@ -1270,7 +1402,7 @@ h1, h2, h3 {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   scrollbar-width: thin;
-  scrollbar-color: rgba(20, 18, 15, 0.3) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
 .doc-scroll::-webkit-scrollbar {
@@ -1278,12 +1410,12 @@ h1, h2, h3 {
 }
 
 .doc-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(20, 18, 15, 0.3);
+  background-color: rgba(255, 255, 255, 0.25);
   border-radius: 999px;
 }
 
 .doc-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(20, 18, 15, 0.5);
+  background-color: rgba(255, 255, 255, 0.45);
 }
 
 .doc-scroll img {
@@ -1605,3 +1737,541 @@ body.viewer-open {
 
 .site-footer a { text-decoration: none; color: var(--text); }
 .site-footer a:hover { color: var(--accent); }
+
+/* ==========================================================================
+   Dark shell — header, home hero, work grid, footer, about
+   Everything below is the current site chrome and overrides the older
+   light-theme rules above where class names overlap.
+   ========================================================================== */
+
+.wrap-wide {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+@media (max-width: 860px) {
+  .wrap-wide { padding: 0 24px; }
+}
+
+/* --------------------------------------------------------------------------
+   Header — nav left, monogram centred, social buttons right
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: var(--header-h);
+}
+
+.nav-main {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  justify-self: start;
+}
+
+.nav-main a {
+  position: relative;
+  text-decoration: none;
+  font-size: 0.92rem;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+
+.nav-main a:hover { color: var(--text); }
+
+/* The rule under the current page grows out from the left, matching the
+   short underline under "Home" in the reference header. */
+.nav-main a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -14px;
+  height: 1px;
+  width: 100%;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-draw);
+}
+
+.nav-main a.active { color: var(--text); }
+
+.nav-main a.active::after { transform: scaleX(1); }
+
+.site-monogram {
+  justify-self: center;
+  display: flex;
+  text-decoration: none;
+  color: var(--text);
+  padding: 6px 10px;
+  transition: opacity 0.2s ease;
+}
+
+.site-monogram:hover { opacity: 0.6; }
+
+.site-monogram .monogram-mark { width: 44px; height: 25px; }
+.footer-mark .monogram-mark { width: 37px; height: 21px; }
+
+/* Two M's sharing their touching leg, drawn as one filled path: three leg
+   rectangles and four diagonal parallelograms, unioned by the nonzero fill
+   rule. Built rather than set in a typeface because the shared middle leg
+   has to be exactly as wide as the two outer ones — here all three are the
+   same rectangle, so that holds by construction. Proportions are measured
+   off the reference wordmark: legs 40 units wide, diagonals 35, each M's
+   valley running to the baseline midway between its legs. */
+.monogram-mark {
+  display: block;
+  fill: currentColor;
+  stroke: none;
+}
+
+.header-social {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.icon-btn > svg:first-child {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex: none;
+}
+
+.icon-btn:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--accent-soft);
+}
+
+/* The small outbound arrow carried over from the reference header. */
+.icon-btn .icon-arrow {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, transform 0.25s ease;
+}
+
+.icon-btn:hover .icon-arrow {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}
+
+@media (max-width: 720px) {
+  .nav-main { gap: 18px; }
+  .nav-main a { font-size: 0.82rem; }
+  .icon-btn { height: 32px; padding: 0 10px; gap: 6px; }
+  .icon-btn > svg:first-child { width: 15px; height: 15px; }
+}
+
+@media (max-width: 520px) {
+  .site-monogram { display: none; }
+  .header-inner { grid-template-columns: 1fr auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Home hero
+   -------------------------------------------------------------------------- */
+.home-hero {
+  padding: 86px 0 36px;
+}
+
+.home-title {
+  font-size: clamp(2.6rem, 7.2vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  margin: 0 0 18px;
+}
+
+.home-sub {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.5;
+}
+
+@media (max-width: 860px) {
+  .home-hero { padding: 52px 0 28px; }
+}
+
+/* --------------------------------------------------------------------------
+   Work grid — three across, no shadows
+   -------------------------------------------------------------------------- */
+.work-section { padding: 36px 0 90px; }
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+@media (max-width: 1040px) {
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .work-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.work-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 20px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  box-shadow: none;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.work-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.work-card-media img,
+.work-card-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The Baker Bot photo is near-square; anchor the crop so the head stays in. */
+.work-card-media img[src*="baker-bot"] { object-position: center top; }
+
+/* The electrolysis clip is a tall portrait video, so a centred crop lands on
+   the dry top of the jar. Pull it down to the waterline, where both
+   electrodes sit submerged and visibly bubbling. */
+.work-card-media video[poster*="hydrogen-production"] { object-position: 50% 80%; }
+
+.work-card:hover .work-card-media img,
+.work-card:hover .work-card-media video { transform: scale(1.045); }
+
+.work-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(6, 6, 8, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 0.74rem;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+
+.work-card-body {
+  margin-top: 18px;
+  padding-left: 13px;
+  border-left: 2px solid var(--border-strong);
+}
+
+.work-card-body h3 {
+  margin: 0 0 9px;
+  font-size: clamp(1.15rem, 1.6vw, 1.42rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+}
+
+/* The hover outline: one continuous stroke drawn clockwise from the
+   top-left corner. main.js measures each card and writes --outline-len so
+   the dash length matches the real perimeter; the fallback here is long
+   enough to stay hidden if scripting is off. */
+.work-card-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+}
+
+.work-card-outline path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: var(--outline-len, 3000);
+  stroke-dashoffset: var(--outline-len, 3000);
+  /* No transition until main.js has written the measured length. Animating
+     the dash offset while that value is still changing would draw the border
+     once on page load, which should only ever happen on hover. */
+  transition: none;
+}
+
+.work-card.is-outline-ready .work-card-outline path {
+  transition: stroke-dashoffset 0.85s var(--ease-draw);
+}
+
+.work-card:hover .work-card-outline path,
+.work-card:focus-visible .work-card-outline path {
+  stroke-dashoffset: 0;
+}
+
+.work-card:focus-visible { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card.is-outline-ready .work-card-outline path,
+  .work-card-media img,
+  .work-card-media video { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Footer — Explore / Connect columns, right aligned
+   -------------------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 64px 0 40px;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 48px;
+}
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, auto));
+  gap: 0 72px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-head {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.footer-col a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.92rem;
+  width: fit-content;
+  transition: opacity 0.2s ease;
+}
+
+.footer-col a:hover { opacity: 0.55; }
+
+.footer-mark {
+  display: flex;
+  text-decoration: none;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.footer-mark .monogram-mark { font-size: 1.3rem; }
+
+@media (max-width: 680px) {
+  .footer-inner { align-items: flex-start; gap: 36px; }
+  .footer-cols { gap: 0 48px; }
+}
+
+/* --------------------------------------------------------------------------
+   About — sticky bio left, scrolling image column right
+   -------------------------------------------------------------------------- */
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  gap: 80px;
+  padding: 72px 0 90px;
+  align-items: start;
+}
+
+.about-intro {
+  position: sticky;
+  top: calc(var(--header-h) + 56px);
+}
+
+.about-intro h1 {
+  margin: 0 0 22px;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.about-lede {
+  max-width: 54ch;
+  margin: 0 0 18px;
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.about-facts {
+  margin: 30px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.about-fact {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+.about-fact dt {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.about-fact dd {
+  margin: 0;
+  color: var(--text);
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 36px;
+}
+
+/* The image column scrolls on its own so the idle ticker can run without
+   dragging the whole page with it. */
+.about-gallery {
+  height: calc(100vh - var(--header-h) - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: ns-resize;
+}
+
+.about-gallery::-webkit-scrollbar { width: 0; height: 0; }
+
+.about-gallery-track {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.about-shot {
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.about-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* Dim the column on hover and bring back only the image under the pointer,
+   so the caption that follows the cursor reads against a quiet backdrop. */
+.about-gallery:hover .about-shot img { opacity: 0.6; }
+.about-gallery .about-shot:hover img { opacity: 1; }
+
+@media (max-width: 900px) {
+  .about-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding: 44px 0 64px;
+  }
+
+  .about-intro { position: static; }
+
+  .about-gallery { height: 70vh; cursor: default; }
+}
+
+/* The caption that rides along with the pointer over a gallery image. */
+.cursor-caption {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  max-width: 320px;
+  padding: 5px 11px;
+  background: #ffffff;
+  color: #050506;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.cursor-caption.is-visible { opacity: 1; }
+
+@media (hover: none) {
+  .cursor-caption { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Cursor buddy canvas (home page only) — sits above the sticky header so the
+   figure can start out perched on the monogram, and never takes a click.
+   -------------------------------------------------------------------------- */
+#cursor-buddy {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+}
