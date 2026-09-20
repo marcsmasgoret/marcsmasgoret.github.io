@@ -17,6 +17,9 @@
    when it is going straight up or down in open air; and flies on a
    jetpack when a scroll or a losing chase leaves it behind.
 
+   It is confined to the page between the header and the footer, so it
+   never walks over the nav or the footer columns.
+
    It sits when it arrives. If the pointer is resting inside a block, where
    it can never stand, it settles on that block's nearest corner rather
    than anywhere along its sides. Clicking it while it sits startles it.
@@ -63,10 +66,14 @@
   const TORSO = SHO - HIP;
   const HEAD_OFF = HEAD_Y - SHO;
 
-  // The card grid's gaps are 22px. The padding has to leave a column gap
-  // narrower than the body (so it cannot squeeze through standing) and a
-  // row gap taller than the crawl (so it can get through on its front).
-  const PAD = 2;                // 22 - 2*PAD = 18: under 20 wide, over 15 tall
+  // The card grid's gaps are 22px, and the padding is split by axis so the
+  // two can differ. Sideways, a gap has to come out narrower than the body
+  // (18 < 20) so the figure cannot squeeze between two cards standing. A
+  // row gap is left at its full 22, which gives a 15-high crawl seven
+  // pixels of room instead of the three a uniform pad left it — enough
+  // that it actually fits through rather than only just failing to.
+  const PAD_X = 2;
+  const PAD_Y = 0;
 
   const WALK_SPEED = 190;       // px/s
   const CRAWL_SPEED = 120;
@@ -122,10 +129,10 @@
         if (r.bottom < -80 || r.top > vh + 80) continue;
         out.push({
           id: `${si}:${bi}`,
-          left: r.left - PAD,
-          right: r.right + PAD,
-          top: r.top - PAD,
-          bottom: r.bottom + PAD,
+          left: r.left - PAD_X,
+          right: r.right + PAD_X,
+          top: r.top - PAD_Y,
+          bottom: r.bottom + PAD_Y,
         });
       }
     });
@@ -140,6 +147,27 @@
   function blockAt(list, x, y, h) {
     for (const r of list) if (hits(r, x, y, h)) return r;
     return null;
+  }
+
+  /* ------------------------------------------------------------ the band
+     The strip of page the figure is allowed into: below the header, above
+     the footer. Both are measured fresh each frame, since the header is
+     sticky and the footer only rises into view at the end of the page. */
+  let band = { top: 0, bottom: 0 };
+
+  function measureBand() {
+    const header = document.querySelector(".site-header");
+    const footer = document.querySelector(".site-footer");
+    const top = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
+    const bottom = footer ? Math.min(vh, footer.getBoundingClientRect().top) : vh;
+
+    // Never inverted, however little page is left between the two.
+    band = { top: top + 4, bottom: Math.max(top + 4 + H, bottom - 4) };
+  }
+
+  // Clamp a feet position into the band, given the height standing there.
+  function clampY(y, h) {
+    return Math.max(band.top + h, Math.min(band.bottom, y));
   }
 
   /* ----------------------------------------------------------------- state */
@@ -409,7 +437,8 @@
   // finish instantly and re-trigger on the very next frame.
   function grab(wall, goUp, now) {
     const rawTo = goUp ? -3 : (wall.bottom - wall.top) + H + 3;
-    const toDy = Math.max(H + 6 - wall.top, Math.min(vh - 6 - wall.top, rawTo));
+    const toDy = Math.max(band.top + H + 6 - wall.top,
+                          Math.min(band.bottom - 6 - wall.top, rawTo));
     const fromDy = buddy.y - wall.top;
     if (Math.abs(toDy - fromDy) < 5) return false;
 
@@ -424,8 +453,10 @@
   }
 
   function step(dt, now) {
+    measureBand();
     const list = rects();
     const goal = reachable(list);
+    goal.y = clampY(goal.y, H);
     const dist = Math.hypot(goal.x - buddy.x, goal.y - buddy.y);
 
     // --- perched on the logo, waiting to jump off -------------------------
@@ -445,7 +476,7 @@
         buddy.dropFrom = { x: buddy.x, y: buddy.y };
         buddy.dropTo = {
           x: Math.min(vw - 30, buddy.x + 95),
-          y: Math.min(vh - 20, buddy.y + 185),
+          y: clampY(buddy.y + 185, H),
         };
         buddy.facing = 1;
       }
@@ -471,7 +502,7 @@
         buddy.t0 = now;
         return;
       }
-      buddy.y = buddy.startleY - Math.sin(Math.PI * t) * 34;
+      buddy.y = clampY(buddy.startleY - Math.sin(Math.PI * t) * 34, H);
       return;
     }
 
@@ -508,7 +539,7 @@
       }
       const k = Math.min(1, (JET_SPEED * dt) / Math.max(dist, 1));
       buddy.x += (goal.x - buddy.x) * k;
-      buddy.y += (goal.y - buddy.y) * k;
+      buddy.y = clampY(buddy.y + (goal.y - buddy.y) * k, H);
       if (Math.abs(goal.x - buddy.x) > 2) {
         buddy.facing = goal.x > buddy.x ? 1 : -1;
       }
@@ -541,9 +572,25 @@
         }
 
         buddy.x = r.left + g.dx;
-        buddy.y = r.top + g.dy;
-        buddy.phase += dt * (sliding ? 9 : 5.5);
-        return;
+        buddy.y = clampY(r.top + g.dy, H);
+
+        // Working past the mouth of a gap that is too short to stand in
+        // but leads where the pointer is: let go and go in flat. Without
+        // this a climb or slide only ever ends above or below a whole
+        // card, and the lanes between the card rows never get used.
+        const intoX = buddy.x + buddy.facing * (HALF_W + 4);
+        const atGap = buddy.mode !== "walk" &&
+                      Math.abs(goal.y - buddy.y) < H &&
+                      blockAt(list, intoX, buddy.y, H) &&
+                      !blockAt(list, intoX, buddy.y, CRAWL_H);
+
+        if (!atGap) {
+          buddy.phase += dt * (sliding ? 9 : 5.5);
+          return;
+        }
+
+        buddy.mode = "crawl";
+        buddy.grip = null;
       }
     }
 
@@ -572,7 +619,7 @@
       const stepY = Math.sign(dy) * Math.min(Math.abs(dy), SCALE_SPEED * dt);
       if (!blockAt(list, buddy.x, buddy.y + stepY, H)) {
         buddy.mode = "scale";
-        buddy.y += stepY;
+        buddy.y = clampY(buddy.y + stepY, H);
         buddy.phase += dt * 5;
         return;
       }
@@ -659,7 +706,7 @@
     }
 
     buddy.x = Math.max(HALF_W + 4, Math.min(vw - HALF_W - 4, buddy.x));
-    buddy.y = Math.max(H + 4, Math.min(vh - 4, buddy.y));
+    buddy.y = clampY(buddy.y, bodyH + 4);
   }
 
   /* ------------------------------------------------------------ the render */

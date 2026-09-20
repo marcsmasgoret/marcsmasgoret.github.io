@@ -291,6 +291,10 @@ h1, h2, h3 {
   margin: 10px 0 14px;
 }
 
+/* The projects page sets its hero in .wrap-wide so the title and lede
+   start on the same left edge as the sticky section nav below them. */
+.projects-hero .lede { max-width: 64ch; }
+
 .hero p.lede {
   max-width: 58ch;
   color: var(--text-muted);
@@ -1821,16 +1825,17 @@ body.viewer-open {
 
 .site-monogram:hover { opacity: 0.6; }
 
-.site-monogram .monogram-mark { width: 44px; height: 25px; }
-.footer-mark .monogram-mark { width: 37px; height: 21px; }
+.site-monogram .monogram-mark { width: 44px; height: 20px; }
+.footer-mark .monogram-mark { width: 37px; height: 17px; }
 
 /* Two M's sharing their touching leg, drawn as one filled path: three leg
    rectangles and four diagonal parallelograms, unioned by the nonzero fill
    rule. Built rather than set in a typeface because the shared middle leg
    has to be exactly as wide as the two outer ones — here all three are the
-   same rectangle, so that holds by construction. Proportions are measured
-   off the reference wordmark: legs 40 units wide, diagonals 35, each M's
-   valley running to the baseline midway between its legs. */
+   same rectangle, so that holds by construction. Drawn heavy and short:
+   legs 54 units wide and diagonals 48 on a 368 x 170 box, so the strokes
+   read bolder and the mark sits lower than the letterforms beside it. Each
+   M's valley runs to the baseline midway between its legs. */
 .monogram-mark {
   display: block;
   fill: currentColor;
@@ -2230,6 +2235,34 @@ body.viewer-open {
 .about-gallery:hover .about-shot img { opacity: 0.6; }
 .about-gallery .about-shot:hover img { opacity: 1; }
 
+/* The About page is deliberately a single screen: the bio sits still on
+   the left, the photo column scrolls on its own on the right, and the page
+   itself never scrolls (which is why it carries no footer). */
+body.about-page { overflow: hidden; }
+
+.about-page main { height: calc(100vh - var(--header-h)); }
+
+.about-page .about-layout {
+  height: 100%;
+  padding: 48px 0 44px;
+  align-items: stretch;
+}
+
+.about-page .about-intro {
+  position: static;
+  align-self: center;
+  /* On a short window the bio is the one thing that can outgrow its half
+     of the screen, so it takes the overflow rather than getting clipped
+     by the page that no longer scrolls. */
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.about-page .about-intro::-webkit-scrollbar { width: 0; }
+
+.about-page .about-gallery { height: 100%; }
+
 @media (max-width: 900px) {
   .about-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -2240,6 +2273,18 @@ body.viewer-open {
   .about-intro { position: static; }
 
   .about-gallery { height: 70vh; cursor: default; }
+
+  /* Stacked, it no longer fits on one screen, so give the page back. */
+  body.about-page { overflow: auto; }
+  .about-page main { height: auto; }
+
+  .about-page .about-layout {
+    height: auto;
+    padding: 44px 0 64px;
+    align-items: start;
+  }
+
+  .about-page .about-gallery { height: 70vh; }
 }
 
 /* The caption that rides along with the pointer over a gallery image. */
