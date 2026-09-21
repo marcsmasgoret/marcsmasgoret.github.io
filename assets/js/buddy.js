@@ -87,6 +87,8 @@
   const CRAWL_SPEED = 120;
   const RISE_SPEED = 85;        // vertical drift while walking open ground
   const SCALE_SPEED = 120;      // straight up or down in open air
+  const SCALE_CYCLE = 36;       // px climbed per full cycle of both hands
+  const SCALE_REACH = 0.3;      // share of each limb's cycle spent reaching
   const CLIMB_SPEED = 135;
   const SLIDE_SPEED = 280;
   const JET_SPEED = 660;
@@ -104,7 +106,7 @@
   const SEAT_IN = 15;
   const HOP_ARC = 10;
 
-  const FAST_SCROLL = 48;       // px of scroll in one frame
+  const FAST_SCROLL = 1400;     // px/s of scroll
   const JET_GAP = 1300;         // hopeless even to start walking
   const JET_PATIENCE = 3.2;     // seconds of chasing without arriving
   const JET_CHASING = 260;      // ...while still this far away
@@ -200,6 +202,15 @@
       if (best === null || Math.abs(fy - y) < Math.abs(best - y)) best = fy;
     }
     return best;
+  }
+
+  // Somewhere to stand at this height, at x or a step either side of it,
+  // or null. Down the gap between two columns the figure overlaps the card
+  // beside it by four pixels, so past the end of that card (a short last
+  // row) open ground is only a step away.
+  function standNear(list, x, y) {
+    for (const d of [0, 4, -4]) if (!blockAt(list, x + d, y, H)) return x + d;
+    return null;
   }
 
   /* ----------------------------------------------------------------- seats */
@@ -434,16 +445,47 @@
     knee(hipX + 1 - s * reach, liftB);
   }
 
-  // Going straight up or down with nothing to hold: seen from behind, both
-  // arms reaching overhead, so it reads as climbing rather than levitating.
+  // Going straight up or down in the open, seen from behind, like someone
+  // on a climbing wall. Both hands stay up on holds above the shoulders;
+  // each in turn reaches quickly for the next one, the opposite foot
+  // stepping up just after it, then pulls down to shoulder height as the
+  // body rises past it while that foot pushes its leg straight. Elbows
+  // and knees splay out, as they do on a wall. `p` runs with the distance
+  // climbed (see SCALE_CYCLE), and backwards on the way down, which plays
+  // the climb in reverse.
   function poseScale(p) {
-    const t = Math.sin(p);
-    limb(0, SHO, 2.0 + t * 0.2, ARM * 0.5, 2.5 + t * 0.25, ARM * 0.5);
-    limb(0, SHO, -2.0 + t * 0.2, ARM * 0.5, -2.5 + t * 0.25, ARM * 0.5);
-    limb(0, HIP, 0.3 + t * 0.3, LEG * 0.5, 0.08 + t * 0.2, LEG * 0.5);
-    limb(0, HIP, -0.3 + t * 0.3, LEG * 0.5, -0.08 + t * 0.2, LEG * 0.5);
-    line(0, HIP, 0, SHO);
-    head(HEAD_Y);
+    const c = p / (Math.PI * 2);
+    const sway = Math.sin(p) * 1.2;   // weight shifting from side to side
+
+    for (const side of [1, -1]) {
+      const hand = onHold(c + (side > 0 ? 0 : 0.5));
+      const foot = onHold(c + (side > 0 ? 0.58 : 0.08), 0.45);
+      bend(sway, HIP,
+           side * (3 + foot.up * 3 + foot.arc * 2), -0.5 - foot.up * 8,
+           LEG * 0.5, side, -0.2);
+      bend(sway * 0.6, SHO,
+           side * (7 - hand.up * 2 + hand.arc * 2), SHO - 2 - hand.up * 10,
+           ARM * 0.5, side, 0.5);
+    }
+
+    line(sway, HIP, sway * 0.6, SHO);
+    head(HEAD_Y, sway * 0.6);
+  }
+
+  // Where one limb is in its climbing cycle `c`: `up` from 0 (low) to 1
+  // (high), and `arc`, how far out it swings on the way. A quick reach up
+  // to the next hold, then on it, going down relative to the body as the
+  // body goes up past it. A foot pushes its leg straight in the first
+  // `push` of that and then stands on it, so the legs read as stepping
+  // rather than squatting.
+  function onHold(c, push = 1) {
+    const k = c - Math.floor(c);
+    if (k < SCALE_REACH) {
+      const s = k / SCALE_REACH;
+      return { up: s * s * (3 - 2 * s), arc: Math.sin(Math.PI * s) };
+    }
+    const t = (k - SCALE_REACH) / (1 - SCALE_REACH) / push;
+    return { up: Math.max(0, 1 - t), arc: 0 };
   }
 
   function poseClimb(p) {
@@ -612,6 +654,21 @@
     line(jx, jy, bx, by);
   }
 
+  // The same, with the joint bent toward (prefX, prefY): out to the side
+  // for a figure seen from behind, where "in front" is into the page.
+  function bend(ax, ay, bx, by, len, prefX, prefY) {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const d = Math.hypot(dx, dy) || 0.01;
+    const half = Math.min(d, len * 2) / 2;
+    const out = Math.sqrt(Math.max(0, len * len - half * half));
+    const flip = (-dy * prefX + dx * prefY) < 0 ? -1 : 1;
+    const jx = ax + (dx / d) * half - (dy / d) * out * flip;
+    const jy = ay + (dy / d) * half + (dx / d) * out * flip;
+    line(ax, ay, jx, jy);
+    line(jx, jy, bx, by);
+  }
+
   /* ------------------------------------------------------------ the update */
   // The pointer often rests on top of a card, somewhere the figure can
   // never stand. On a card it heads for the top-left corner to sit on. Anything else it can't stand in (the hero
@@ -650,15 +707,27 @@
   // Grab a block's near edge and start working up or down it. Returns false
   // when the figure is already where that would end, which would otherwise
   // finish instantly and re-trigger on the very next frame.
-  function grab(wall, goUp, now) {
-    const rawTo = goUp ? -3 : (wall.bottom - wall.top) + H + 3;
-    const toDy = Math.max(band.top + H + 6 - wall.top,
-                          Math.min(band.bottom - 6 - wall.top, rawTo));
-    const fromDy = buddy.y - wall.top;
-    if (Math.abs(toDy - fromDy) < 5) return false;
-
+  function grab(list, wall, goUp, now) {
     const fromLeft = buddy.x < (wall.left + wall.right) * 0.5;
     const edgeX = fromLeft ? wall.left - HALF_W - 2 : wall.right + HALF_W + 2;
+
+    // Off the end of the wall, and on past anything else in line with it.
+    // The gap between two columns of cards is too narrow to stand in, so
+    // stopping just past this card would leave it in the next row's stretch
+    // of the same gap: pushed back up out of it, it would grab this edge
+    // again and slide straight back down, over and over. It keeps going
+    // until it comes out somewhere it can stand, or turns off into a row
+    // gap on the way (see the climb and slide step).
+    let endY = goUp ? wall.top - 3 : wall.bottom + H + 3;
+    for (let i = 0; i < 20; i++) {
+      const r = blockAt(list, edgeX, endY, H);
+      if (!r) break;
+      endY = goUp ? r.top - 3 : r.bottom + H + 3;
+    }
+
+    const toDy = Math.max(band.top + H + 6, Math.min(band.bottom - 6, endY)) - wall.top;
+    const fromDy = buddy.y - wall.top;
+    if (Math.abs(toDy - fromDy) < 5) return false;
 
     buddy.mode = goUp ? "climb" : "slide";
     buddy.facing = fromLeft ? 1 : -1;
@@ -810,7 +879,7 @@
 
     const leftBehind = dist > JET_GAP ||
                        chaseTime > JET_PATIENCE ||
-                       (Math.abs(scrollStep) > FAST_SCROLL && dist > 130);
+                       (Math.abs(scrollStep) > FAST_SCROLL * dt && dist > 130);
 
     if (buddy.mode === "jet" || leftBehind) {
       if (buddy.mode !== "jet") { buddy.mode = "jet"; buddy.t0 = now; }
@@ -839,6 +908,14 @@
         buddy.mode = "walk";
         buddy.grip = null;
       } else {
+        // The pointer has gone well past the other way, and the page is
+        // still: turn round on the edge rather than carry on to the far end
+        // first, which down the gap between two columns can be the height
+        // of two cards.
+        const wantUp = goal.y < buddy.y;
+        if (Math.abs(scrollStep) <= 1 && Math.abs(goal.y - buddy.y) > H &&
+            wantUp !== (buddy.mode === "climb") && grab(list, r, wantUp, now)) return;
+
         // Anchored to the block, so a scroll carries the figure along with
         // whatever it is holding on to while it works its way up or down.
         const speed = buddy.mode === "climb" ? CLIMB_SPEED : SLIDE_SPEED;
@@ -862,19 +939,38 @@
         // but leads where the pointer is: let go and go in flat. Without
         // this a climb or slide only ever ends above or below a whole
         // card, and the lanes between the card rows never get used.
+        // The mouth is found by its floor, within a step either way, so a
+        // slow frame's longer step can't carry it past: the window where
+        // the head is under the row above and the body still clears the
+        // row below is only seven pixels tall.
         const intoX = buddy.x + buddy.facing * (HALF_W + 4);
-        const atGap = buddy.mode !== "walk" &&
-                      Math.abs(goal.y - buddy.y) < H &&
-                      blockAt(list, intoX, buddy.y, H) &&
-                      !blockAt(list, intoX, buddy.y, CRAWL_H);
+        const mouth = buddy.mode === "walk" ? null : floorUnder(list, intoX, buddy.y);
+        const atGap = mouth !== null &&
+                      Math.abs(mouth - buddy.y) <= Math.max(8, speed * dt) &&
+                      Math.abs(goal.y - mouth) < H &&
+                      blockAt(list, intoX, mouth, H) &&
+                      !blockAt(list, buddy.x, mouth, CRAWL_H);
 
-        if (!atGap) {
+        // Level with the pointer, out in the open where it can stand: let
+        // go and walk the rest, rather than carry on to the end of the edge
+        // and have to come back.
+        const level = !atGap && buddy.mode !== "walk" &&
+                      Math.abs(g.toDy - g.dy) > 12 &&
+                      Math.abs(goal.y - buddy.y) <= Math.max(4, speed * dt);
+        const standX = level ? standNear(list, buddy.x, buddy.y) : null;
+
+        if (atGap) {
+          buddy.y = mouth;
+          buddy.mode = "crawl";
+          buddy.grip = null;
+        } else if (standX !== null) {
+          buddy.x = standX;
+          buddy.mode = "walk";
+          buddy.grip = null;
+        } else {
           buddy.phase += dt * (sliding ? 9 : 5.5);
           return;
         }
-
-        buddy.mode = "crawl";
-        buddy.grip = null;
       }
     }
 
@@ -904,7 +1000,8 @@
       if (!blockAt(list, buddy.x, buddy.y + stepY, H)) {
         buddy.mode = "scale";
         buddy.y = clampY(buddy.y + stepY, H);
-        buddy.phase += dt * 5;
+        // By distance, not time, so what is on a hold stays on it.
+        buddy.phase -= stepY * (Math.PI * 2) / SCALE_CYCLE;
         return;
       }
     }
@@ -922,8 +1019,21 @@
     let edgeWall = null;
 
     if (Math.abs(dy) > 3 && !sameGap) {
-      const probeY = buddy.y + Math.sign(dy) * Math.max(6, RISE_SPEED * dt);
-      edgeWall = blockAt(list, buddy.x, probeY, H);
+      // What it would move into going that way: the strip under its feet
+      // going down, over its head going up. Down in a row gap, a probe of
+      // its whole standing height finds the row above first, and it would
+      // slide down that only to land back in the same gap, forever.
+      const reach = Math.max(6, RISE_SPEED * dt);
+      edgeWall = dy > 0 ? blockAt(list, buddy.x, buddy.y + reach, reach)
+                        : blockAt(list, buddy.x, buddy.y - H, reach);
+
+      // Only worth going up or down its side if the pointer is past it. A
+      // pointer level with some part of it (on the top of the card beside
+      // it, say, in the row gap it opens onto) is reached going sideways,
+      // and climbing to the far end would only overshoot it.
+      if (edgeWall && (dy < 0 ? goal.y >= edgeWall.top : goal.y <= edgeWall.bottom)) {
+        edgeWall = null;
+      }
       if (edgeWall) {
         aimX = buddy.x < (edgeWall.left + edgeWall.right) * 0.5
              ? edgeWall.left - HALF_W - 2
@@ -965,7 +1075,7 @@
         buddy.y = crawlY;
       } else {
         // No way through at any height: take the edge.
-        if (grab(standBlocked, goUp, now)) return;
+        if (grab(list, standBlocked, goUp, now)) return;
         buddy.mode = crawling ? "crawl" : "walk";
       }
     } else if (crawling && !blockAt(list, buddy.x, buddy.y, H)) {
@@ -997,7 +1107,7 @@
     }
 
     // Arrived alongside the block that was overhead or underfoot.
-    if (edgeWall && Math.abs(buddy.x - aimX) < 4 && grab(edgeWall, goUp, now)) return;
+    if (edgeWall && Math.abs(buddy.x - aimX) < 4 && grab(list, edgeWall, goUp, now)) return;
 
     // Open air: drift toward the pointer's height. Not while it is down on
     // a floor, which would only lift it back off it.
@@ -1182,6 +1292,11 @@
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);   // cap after a tab switch
     last = now;
+
+    // The page's smooth wheel scroll (main.js) takes its step first, so the
+    // scroll read here is the one this frame is drawn at. Otherwise a figure
+    // riding a card would trail it by a frame the whole way.
+    if (window.smoothWheel) window.smoothWheel.tick(now);
 
     const sy = window.scrollY;
     scrollStep = sy - scrollY;

@@ -1,3 +1,116 @@
+/* ==========================================================================
+   Smooth wheel scrolling. The page glides to wherever the wheel sends it,
+   at a capped speed. Left native, a fast spin of the wheel stacks notch on
+   notch and the page takes off; here one wheel event moves it at most STEP,
+   and the target never runs more than LEAD ahead of the page, which caps
+   the speed at RATE * LEAD however hard the wheel is flicked. Anything that
+   scrolls on its own (the sidebar, the manual reader, a 3D viewer's zoom)
+   keeps the wheel while it has room to move.
+
+   Exposed as window.smoothWheel so the cursor buddy can take this frame's
+   step before it reads the scroll position.
+   ========================================================================== */
+window.smoothWheel = (() => {
+  const RATE = 14;    // 1/s: how quickly the page closes on its target
+  const STEP = 120;   // px: the most one wheel event can add
+  const LEAD = 200;   // px: the most the target can be ahead of the page
+  const LINE = 33;    // px per line, for wheels that report lines (3 lines ≈ one notch)
+
+  const idle = { tick() {} };
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return idle;
+
+  let pos = 0;        // kept as a float: the browser may round what it reports
+  let target = 0;
+  let running = false;
+  let lastTick = -1;
+  let lastTime = 0;
+
+  const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // The visitor can't scroll the page itself: a viewer overlay is open, or
+  // the About page fits on one screen.
+  function pageLocked() {
+    const html = getComputedStyle(document.documentElement).overflowY;
+    const body = getComputedStyle(document.body).overflowY;
+    return /hidden|clip/.test(html) || (html === "visible" && /hidden|clip/.test(body));
+  }
+
+  // Whether something between the pointer and the page scrolls on its own
+  // in this direction, and so should have the wheel instead.
+  function nestedTakes(el, dy) {
+    for (let node = el; node && node !== document.body && node !== document.documentElement;
+         node = node.parentElement) {
+      if (node.scrollHeight <= node.clientHeight + 1) continue;
+      const style = getComputedStyle(node);
+      if (!/auto|scroll|overlay/.test(style.overflowY)) continue;
+      if (style.overscrollBehaviorY !== "auto") return true;
+      const room = dy > 0
+        ? node.scrollHeight - node.clientHeight - node.scrollTop
+        : node.scrollTop;
+      if (room > 1) return true;
+    }
+    return false;
+  }
+
+  function stop() {
+    running = false;
+  }
+
+  function tick(now) {
+    if (!running || now === lastTick) return;
+    const dt = lastTime ? clamp((now - lastTime) / 1000, 0, 0.05) : 1 / 60;
+    lastTick = now;
+    lastTime = now;
+
+    // Something else moved the page (a link's own smooth scroll, the
+    // scrollbar, the keyboard): let it have the page.
+    if (Math.abs(window.scrollY - pos) > 3) { stop(); return; }
+
+    target = clamp(target, 0, Math.max(0, maxScroll()));
+    const gap = target - pos;
+    if (Math.abs(gap) < 0.5) {
+      pos = target;
+      stop();
+    } else {
+      pos += gap * (1 - Math.exp(-RATE * dt));
+    }
+    window.scrollTo({ top: pos, behavior: "instant" });
+  }
+
+  function loop(now) {
+    tick(now);
+    if (running) requestAnimationFrame(loop);
+  }
+
+  window.addEventListener("wheel", (e) => {
+    if (e.defaultPrevented || e.ctrlKey || e.shiftKey) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+    const unit = e.deltaMode === 1 ? LINE : e.deltaMode === 2 ? window.innerHeight : 1;
+    const dy = clamp(e.deltaY * unit, -STEP, STEP);
+    const over = e.target instanceof Element ? e.target : null;
+    if (!dy || maxScroll() <= 0 || pageLocked() || nestedTakes(over, dy)) return;
+
+    e.preventDefault();
+    if (!running) {
+      pos = target = window.scrollY;
+      running = true;
+      lastTime = 0;
+      requestAnimationFrame(loop);
+    }
+    target = clamp(target + dy, pos - LEAD, pos + LEAD);
+  }, { passive: false });
+
+  // Anything else that takes the page (a click on a link, a drag on the
+  // scrollbar, a key) stops the glide before it can fight it.
+  ["mousedown", "keydown", "touchstart"].forEach((ev) => {
+    window.addEventListener(ev, stop, { passive: true });
+  });
+
+  return { tick };
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector(".site-nav");
@@ -286,10 +399,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ------------------------------------------------------------------
-     Galleries (the About photo column, and the Other strip on the home
-     page, which runs sideways — data-gallery="x"): each scrolls on its
-     own, and creeps along like a ticker whenever nobody is scrolling it,
-     so it reads as scrollable at a glance. The list is duplicated once
+     Galleries (the About photo column, and the Other strip at the foot
+     of the projects page, which runs sideways — data-gallery="x"): each
+     scrolls on its own, and creeps along like a ticker whenever nobody
+     is scrolling it and it is on screen, so it reads as scrollable at a
+     glance. It waits until it is in view to start, so a strip far down
+     the page still opens on its first photo. The list is duplicated once
      and the scroll position wraps by exactly one copy's length, which
      makes the loop seamless.
      ------------------------------------------------------------------ */
@@ -336,6 +451,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!sideways || e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) pause();
     }, { passive: true });
 
+    // On screen: a good part of it in view, not just an edge.
+    let inView = !("IntersectionObserver" in window);
+    if (!inView) {
+      new IntersectionObserver(([entry]) => {
+        inView = entry.intersectionRatio >= 0.35;
+      }, { threshold: [0, 0.35] }).observe(gallery);
+    }
+
     // The position is kept here as a float and written out whole. Some
     // browsers round a scroll offset to the device pixel, and 0.35 px
     // steps would round away to nothing on a 1x screen.
@@ -345,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const len = period();
       if (len > 0) {
         if (Math.abs(gallery[axis] - at) > 2) at = gallery[axis]; // scrolled by hand
-        if (!paused) at += SPEED;
+        if (!paused && inView) at += SPEED;
         // Wrap in both directions so scrolling back stays seamless too.
         if (at >= len) at -= len;
         else if (at < 0.5) at += len;
