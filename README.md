@@ -14,7 +14,7 @@ assets/js/main.js          card outlines, gallery ticker, cursor caption, anchor
 assets/js/buddy.js         home page only: the stick figure that chases the pointer
 assets/img/projects/       project images
 assets/img/about/          about-page photos
-assets/img/other/          Other Projects strip images (placeholder SVGs for now)
+assets/img/other/          Other Projects strip photos
 ```
 
 Three HTML pages, each with the same header and footer. The project cards on the
@@ -28,7 +28,7 @@ Fontshare — a freely licensed stand-in for PP Neue Montreal). Colours, spacing
 and the header height all come from the custom properties in the `:root` block
 at the top of `style.css`; change them there rather than in individual rules.
 
-Two interactions are worth knowing about before editing:
+A few interactions are worth knowing about before editing:
 
 - **Project card hover outline.** Each card carries an empty
   `<svg class="work-card-outline"><path></svg>`. `main.js` measures the card,
@@ -52,7 +52,10 @@ Two interactions are worth knowing about before editing:
   climbs with its back to us when it is going straight up or down in the
   open; and jetpacks when a scroll or a losing chase leaves it behind.
 
-  It sits on arrival, but never part way up a block's side. When the
+  It sits on arrival, but never part way up a block's side. Sat down, it
+  keeps its place on the page rather than the screen, so a scroll carries
+  it off with the page (and it gets up the moment it would pass under the
+  header or off the screen). When the
   pointer rests on a project card, it hops onto that card's top-left
   corner and sits with its legs over the edge, riding along as the page
   scrolls. On the hero text it aims for the nearest corner instead. The first time it sits, a
@@ -60,9 +63,10 @@ Two interactions are worth knowing about before editing:
   it is clicked; if it gets up first, the bubble shows again next sit). Clicking it (or the bubble) while it sits startles it, and that
   click is swallowed so it does not also follow whatever link it is
   sitting on. Once it has been clicked, the first time it then stays sat
-  for five seconds it holds up three signs in turn ("YOU SHOULD",
-  "PROBABLY", "HIRE ME ;)"), once per page load. The wording and timings
-  are the `SIGNS` list near the top of `buddy.js`.
+  for one second it holds up three signs in turn ("YOU SHOULD",
+  "PROBABLY", "HIRE ME ;)"), and again every fifth time after that it sits
+  for a second (`SIGN_EVERY`). The wording and timings are the `SIGNS`
+  list near the top of `buddy.js`.
 
   The current state is mirrored onto the canvas as `data-mode`. It does not
   run under `prefers-reduced-motion`, or without a fine pointer to chase.
@@ -72,7 +76,8 @@ Two interactions are worth knowing about before editing:
   `main.js` clones the list once and wraps the scroll position by one copy's
   length, so a slow idle "ticker" scroll loops seamlessly. Any scroll input
   pauses the ticker for 1.4 s. Hovering an image hides the pointer and shows
-  the image's `data-caption` in a box that follows it.
+  the image's `data-caption` in a box that follows it. Captions, hover or
+  printed, are sentence case and end with a full stop.
 
 ## Local preview
 
@@ -114,7 +119,8 @@ as photos load), write the `alt`, and put the hover text in `data-caption`.
 
 Each project is a `<figure class="other-shot">` at the end of `projects/index.html`. Put a photo in
 `assets/img/other/`, point the `img` `src` at it, fix the `alt`, and edit
-`data-caption`. Any shape works: the strip crops every image to 4:3. Keep at
+`data-caption`. Any shape works: the strip crops every image to 4:3, but
+cropping to 4:3 yourself (as the current photos are) lets you pick the framing. Keep at
 least four shots, or the strip can end up narrower than its column and the
 loop stops.
 
@@ -130,3 +136,4 @@ circle that fits the square (the corners are cut off), and save it over
 
 `style.css` and `main.js` are linked with a `?v=` query in all three pages. Bump it
 in every page whenever you change either file, or GitHub Pages will serve the old one.
+`buddy.js` is only on the home page, with its own `?v=` there.

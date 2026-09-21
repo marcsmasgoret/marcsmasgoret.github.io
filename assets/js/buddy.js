@@ -21,13 +21,16 @@
    It is confined to the page between the header and the footer, so it
    never walks over the nav or the footer columns.
 
-   It sits when it arrives. If the pointer is resting on a project card, it
+   It sits when it arrives, and stays sat where it is on the page, not on
+   the screen: a scroll carries it off with the page, and it gets up once
+   the pointer is elsewhere. If the pointer is resting on a project card, it
    hops up onto that card's top-left corner and sits with its legs over the
    edge, riding along as the page scrolls. On the hero text, where it can
    never stand, it settles on the nearest corner instead. Clicking it while
    it sits startles it, and the first time it sits it says so. Once it has
-   been clicked, the first time it then sits still for five seconds it
-   holds up a few signs with an opinion on the matter.
+   been clicked, the first time it then sits still for a second it holds up
+   a few signs with an opinion on the matter, and it makes the point again
+   every fifth time after that it sits for a second.
    ========================================================================== */
 (() => {
   const canvas = document.getElementById("cursor-buddy");
@@ -115,8 +118,10 @@
   const HINT_FADE_MS = 250;     // fading out over the last of that
 
   // Having been clicked once, sat this long without a break, it holds up
-  // these one at a time, putting each away before the next.
-  const SIGN_AFTER_MS = 5000;
+  // these one at a time, putting each away before the next. After that, a
+  // sit this long counts toward the next time, which is every SIGN_EVERY-th.
+  const SIGN_AFTER_MS = 1000;
+  const SIGN_EVERY = 5;
   const SIGNS = [
     { text: "YOU SHOULD", hold: 2300 },
     { text: "PROBABLY", hold: 2100 },
@@ -265,11 +270,14 @@
   let hintDone = false;
   let hintBox = null;   // where it was last drawn, so a click on it counts
 
-  // The signs: once only, and only once it has been clicked. Getting up
-  // before the last one shows calls them off until the next long sit.
+  // The signs: first once it has been clicked, then again every
+  // SIGN_EVERY long sits after each full run. Getting up before the last
+  // one shows calls a run off, and it tries again the next long sit.
   let clickedOnce = false;
-  let signStart = 0;    // when the current run of signs began, 0 if none
-  let signDone = false;
+  let signOwed = false;   // a run is due the next time it sits long enough
+  let longSits = 0;       // long sits since the last full run
+  let sitCounted = false; // this sit has already been counted
+  let signStart = 0;      // when the current run of signs began, 0 if none
   let signHand = null;  // where the pose put the hand on the pole, in pose space
 
   // Reaching for the bubble takes the pointer well away from the figure,
@@ -304,6 +312,13 @@
   let scrollY = window.scrollY;
   let scrollStep = 0;
   let chaseTime = 0;
+
+  // Resting (sat down, or waiting on all fours in a gap between rows), it
+  // keeps its place on the page rather than on the screen. The pointer's
+  // position is on the screen, so without this a scroll would leave the
+  // two exactly as far apart as before, and it would ride along under the
+  // pointer over whatever the page brought past.
+  let resting = false;
 
   // Clicking it while it is sitting startles it. The canvas never takes
   // pointer events, so this hit-tests by hand on the way down and swallows
@@ -340,6 +355,7 @@
     buddy.startleY = buddy.y;
     chaseTime = 0;
     hintDone = true;
+    if (!clickedOnce) signOwed = true;
     clickedOnce = true;
   }, true);
 
@@ -661,6 +677,8 @@
 
   function step(dt, now) {
     measureBand();
+    if (resting) buddy.y -= scrollStep;
+    resting = false;
     const list = rects();
     const goal = reachable(list);
     goal.y = clampY(goal.y, H);
@@ -749,10 +767,16 @@
     // --- caught up: sit, and stay sitting until the pointer moves off -----
     if (buddy.mode === "sit") {
       chaseTime = 0;
-      if (readyToGetUp((dist > LEAVE_DIST || goal.seat) && !pointerOnHint(), now)) {
+      // Carried up under the header or down off the screen by a scroll: up
+      // at once, and the on-foot step brings it back inside the band.
+      const outside = buddy.y - H < band.top || buddy.y > band.bottom;
+      if (outside) buddy.awaySince = 0;
+      if (outside || readyToGetUp((dist > LEAVE_DIST || goal.seat) && !pointerOnHint(), now)) {
         buddy.mode = "walk";
         buddy.t0 = now;
+        return;
       }
+      resting = true;
       return;
     }
 
@@ -773,6 +797,7 @@
       }
 
       // Too low to sit up in (a gap between rows): wait there on all fours.
+      resting = true;
       if (buddy.mode === "crawl" && blockAt(list, buddy.x, buddy.y, H)) return;
 
       buddy.mode = "sit";
@@ -1176,17 +1201,29 @@
     } else if (seatedAt) {
       seatedAt = 0;
       hintShown = 0;
+      sitCounted = false;
     }
 
-    // The signs start once it has sat long enough after being clicked, and
-    // are done for good once they've run, or once it gets up with the last
-    // one already shown. Getting up any earlier calls them off for now.
-    if (seated && clickedOnce && !signDone && !signStart &&
-        now - seatedAt >= SIGN_AFTER_MS) signStart = now;
+    // Each sit that lasts SIGN_AFTER_MS counts once. The one that makes a
+    // run due starts it, as does any long sit while one is still owed.
+    if (seated && !sitCounted && now - seatedAt >= SIGN_AFTER_MS) {
+      sitCounted = true;
+      if (clickedOnce && !signOwed && ++longSits >= SIGN_EVERY) signOwed = true;
+      if (signOwed) signStart = now;
+    }
+
+    // A run is over once the signs have all been up, or once it gets up
+    // with the last one already shown, and the count starts again. Getting
+    // up any earlier calls it off, still owed.
     if (signStart) {
       const t = now - signStart;
-      if (t >= SIGNS_MS || (!seated && t >= LAST_SIGN_AT)) signDone = true;
-      if (signDone || !seated) signStart = 0;
+      if (t >= SIGNS_MS || (!seated && t >= LAST_SIGN_AT)) {
+        signOwed = false;
+        longSits = 0;
+        signStart = 0;
+      } else if (!seated) {
+        signStart = 0;
+      }
     }
 
     draw(now);
