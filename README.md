@@ -56,8 +56,8 @@ Two interactions are worth knowing about before editing:
   pointer rests on a project card, it hops onto that card's top-left
   corner and sits with its legs over the edge, riding along as the page
   scrolls. On the hero text it aims for the nearest corner instead. The first time it sits, a
-  "Click me!" bubble pops up (until it is clicked or has been up about
-  2.5 s). Clicking it (or the bubble) while it sits startles it, and that
+  "Click me!" bubble pops up for 5 s, then fades out for good (sooner if
+  it is clicked; if it gets up first, the bubble shows again next sit). Clicking it (or the bubble) while it sits startles it, and that
   click is swallowed so it does not also follow whatever link it is
   sitting on. Once it has been clicked, the first time it then stays sat
   for five seconds it holds up three signs in turn ("YOU SHOULD",

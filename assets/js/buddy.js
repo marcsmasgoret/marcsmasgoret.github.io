@@ -111,7 +111,8 @@
   const STARTLE_MS = 620;
 
   const HINT_DELAY = 350;       // sat this long before "Click me!" shows
-  const HINT_READ_MS = 2500;    // and once it has been up this long, it's done
+  const HINT_SHOW_MS = 5000;    // then it stays up this long, and goes for good
+  const HINT_FADE_MS = 250;     // fading out over the last of that
 
   // Having been clicked once, sat this long without a break, it holds up
   // these one at a time, putting each away before the next.
@@ -255,11 +256,12 @@
     startleY: 0,
   };
 
-  // The "Click me!" bubble: up the first time it sits, until it has been
-  // clicked or has been on screen long enough to have been read. A sit
-  // too brief to read it doesn't use it up.
+  // The "Click me!" bubble: up the first time it sits, for HINT_SHOW_MS,
+  // then gone for good, even if it is still sitting. A click retires it
+  // early. Getting up before the time is out takes the bubble with it, and
+  // it starts over, in full, the next time it sits.
   let seatedAt = 0;
-  let hintShown = 0;    // ms on screen so far
+  let hintShown = 0;    // ms on screen during this sit
   let hintDone = false;
   let hintBox = null;   // where it was last drawn, so a click on it counts
 
@@ -1079,11 +1081,12 @@
     const tipX = headX + (toRight ? 3 : -3);
     const tipY = headTop - 3;
 
-    // Ease out with a little overshoot.
+    // Ease out with a little overshoot, and fade out at the end.
     const p = Math.min(1, age / 240) - 1;
     const k = 1 + 2.70158 * p * p * p + 1.70158 * p * p;
 
     ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, (HINT_SHOW_MS - hintShown) / HINT_FADE_MS));
     ctx.translate(tipX, tipY);
     ctx.scale(k, k);
     ctx.translate(-tipX, -tipY);
@@ -1162,15 +1165,17 @@
     step(dt, now);
 
     // The hint's clock: how long this sit has lasted, and how long the
-    // bubble has been up in all. Getting up after it has been up long
-    // enough to read retires it.
+    // bubble has been up during it. A full showing retires it.
     const seated = buddy.mode === "sit" || buddy.mode === "ledge";
     if (seated) {
       if (!seatedAt) seatedAt = now;
-      if (!hintDone && now - seatedAt > HINT_DELAY) hintShown += dt * 1000;
+      if (!hintDone && now - seatedAt > HINT_DELAY) {
+        hintShown += dt * 1000;
+        if (hintShown >= HINT_SHOW_MS) hintDone = true;
+      }
     } else if (seatedAt) {
       seatedAt = 0;
-      if (hintShown >= HINT_READ_MS) hintDone = true;
+      hintShown = 0;
     }
 
     // The signs start once it has sat long enough after being clicked, and
