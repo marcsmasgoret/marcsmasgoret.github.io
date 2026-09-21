@@ -6,13 +6,15 @@ Personal portfolio site — plain HTML/CSS/JS, no build tools, hosted on GitHub 
 
 ```
 index.html                 home page (name, one-line intro, 3-across project grid)
-projects/index.html        all projects, one page, full write-up per project stacked top to bottom
-about/index.html           about page (sticky bio column, scrolling photo column)
+projects/index.html        all projects, one page, full write-up per project stacked top to bottom,
+                           ending with the Other Projects strip
+about/index.html           about page (bio with round portrait, scrolling photo column)
 assets/css/style.css       shared styles
 assets/js/main.js          card outlines, gallery ticker, cursor caption, anchor pinning, project sidebar
 assets/js/buddy.js         home page only: the stick figure that chases the pointer
 assets/img/projects/       project images
-assets/img/about/          about-page photos (placeholders for now)
+assets/img/about/          about-page photos
+assets/img/other/          Other Projects strip images (placeholder SVGs for now)
 ```
 
 Three HTML pages, each with the same header and footer. The project cards on the
@@ -43,26 +45,34 @@ Two interactions are worth knowing about before editing:
   while its glyphs stop hundreds of pixels short, which would leave an
   invisible wall out to the right of the hero copy.
 
-  It walks; drops to a crawl where a gap is too short to stand in, ducking
-  so its body tucks under the ceiling (the gaps between card rows are only
-  a few pixels taller than the crawl, so it would otherwise never fit);
+  It walks; drops to all fours where a gap is too short to stand in,
+  crawling along the top of the card underneath (the gaps between card
+  rows are only a few pixels taller than the crawl);
   grabs a block's near edge and climbs or slides it when one is in the way;
   climbs with its back to us when it is going straight up or down in the
   open; and jetpacks when a scroll or a losing chase leaves it behind.
 
   It sits on arrival, but never part way up a block's side. When the
-  pointer rests inside a block it aims for that block's nearest corner,
-  skipping corners that are themselves inside something else. Clicking it
-  while it sits startles it, and that click is swallowed so it does not
-  also follow whatever link it is sitting on.
+  pointer rests on a project card, it hops onto that card's top-left
+  corner and sits with its legs over the edge, riding along as the page
+  scrolls. On the hero text it aims for the nearest corner instead. The first time it sits, a
+  "Click me!" bubble pops up (until it is clicked or has been up about
+  2.5 s). Clicking it (or the bubble) while it sits startles it, and that
+  click is swallowed so it does not also follow whatever link it is
+  sitting on. Once it has been clicked, the first time it then stays sat
+  for five seconds it holds up three signs in turn ("YOU SHOULD",
+  "PROBABLY", "HIRE ME ;)"), once per page load. The wording and timings
+  are the `SIGNS` list near the top of `buddy.js`.
 
   The current state is mirrored onto the canvas as `data-mode`. It does not
   run under `prefers-reduced-motion`, or without a fine pointer to chase.
-- **About gallery.** The photo column is its own scroll container. `main.js`
-  clones the list once and wraps the scroll position at the halfway mark, so a
-  slow idle "ticker" scroll loops seamlessly. Any scroll input pauses the
-  ticker for 1.4 s. Hovering a photo shows its `data-caption` in a box that
-  follows the pointer.
+- **Galleries.** The About photo column and the Other Projects strip at the
+  end of the Projects page (`data-gallery="x"`, sideways) are each their own
+  scroll container.
+  `main.js` clones the list once and wraps the scroll position by one copy's
+  length, so a slow idle "ticker" scroll loops seamlessly. Any scroll input
+  pauses the ticker for 1.4 s. Hovering an image hides the pointer and shows
+  the image's `data-caption` in a box that follows it.
 
 ## Local preview
 
@@ -99,6 +109,22 @@ will show the picture on its side), and save as JPEG around quality 80.
 Then update its `<figure class="about-shot">` in `about/index.html`: point `src` at the
 new file, set `width`/`height` to the real pixel size (this keeps the scroll from jumping
 as photos load), write the `alt`, and put the hover text in `data-caption`.
+
+## Swapping the Other Projects images
+
+Each project is a `<figure class="other-shot">` at the end of `projects/index.html`. Put a photo in
+`assets/img/other/`, point the `img` `src` at it, fix the `alt`, and edit
+`data-caption`. Any shape works: the strip crops every image to 4:3. Keep at
+least four shots, or the strip can end up narrower than its column and the
+loop stops.
+
+## Swapping the portrait
+
+The round photo beside the About heading is `assets/img/about/portrait.jpg`, a
+500px square cut from the original in `Files/About me/`. To replace it, crop a
+new square with the face centred and the head, shoulders and chest inside the
+circle that fits the square (the corners are cut off), and save it over
+`portrait.jpg`.
 
 ## Cache busting
 

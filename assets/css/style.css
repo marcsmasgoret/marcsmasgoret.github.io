@@ -2080,7 +2080,7 @@ body.viewer-open {
    -------------------------------------------------------------------------- */
 .site-footer {
   border-top: 1px solid var(--border);
-  padding: 64px 0 40px;
+  padding: 48px 0 40px;
 }
 
 .footer-inner {
@@ -2139,7 +2139,11 @@ body.viewer-open {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
   gap: 80px;
-  padding: 72px 0 90px;
+  /* Top and bottom only: the shorthand would zero the side padding that
+     .wrap-wide gives every page, which left the bio flush against the
+     window edge and cut off the email button as it grew on hover. */
+  padding-top: 72px;
+  padding-bottom: 90px;
   align-items: start;
 }
 
@@ -2154,6 +2158,29 @@ body.viewer-open {
   line-height: 1;
   letter-spacing: -0.035em;
   font-weight: 500;
+}
+
+/* The heading with a round portrait beside it. The photo is framed wide
+   (head, shoulders and chest), so the circle runs a little larger than the
+   heading's cap height to keep the face readable. */
+.about-title {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 26px);
+  margin: 0 0 22px;
+}
+
+.about-intro .about-title h1 { margin: 0; }
+
+.about-portrait {
+  flex: none;
+  width: clamp(76px, 8vw, 118px);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
 }
 
 .about-lede {
@@ -2205,7 +2232,6 @@ body.viewer-open {
   overscroll-behavior: contain;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  cursor: ns-resize;
 }
 
 .about-gallery::-webkit-scrollbar { width: 0; height: 0; }
@@ -2244,7 +2270,8 @@ body.about-page { overflow: hidden; }
 
 .about-page .about-layout {
   height: 100%;
-  padding: 48px 0 44px;
+  padding-top: 48px;
+  padding-bottom: 44px;
   align-items: stretch;
 }
 
@@ -2254,9 +2281,14 @@ body.about-page { overflow: hidden; }
   /* On a short window the bio is the one thing that can outgrow its half
      of the screen, so it takes the overflow rather than getting clipped
      by the page that no longer scrolls. */
-  max-height: 100%;
+  max-height: calc(100% + 24px);
   overflow-y: auto;
   scrollbar-width: none;
+  /* A scroll container clips on both axes, which cut the edges off the
+     email button as it scales up on hover. The padding gives it room to
+     grow; the matching negative margin keeps the text where it was. */
+  padding: 12px;
+  margin: -12px;
 }
 
 .about-page .about-intro::-webkit-scrollbar { width: 0; }
@@ -2267,12 +2299,13 @@ body.about-page { overflow: hidden; }
   .about-layout {
     grid-template-columns: minmax(0, 1fr);
     gap: 40px;
-    padding: 44px 0 64px;
+    padding-top: 44px;
+    padding-bottom: 64px;
   }
 
   .about-intro { position: static; }
 
-  .about-gallery { height: 70vh; cursor: default; }
+  .about-gallery { height: 70vh; }
 
   /* Stacked, it no longer fits on one screen, so give the page back. */
   body.about-page { overflow: auto; }
@@ -2280,12 +2313,18 @@ body.about-page { overflow: hidden; }
 
   .about-page .about-layout {
     height: auto;
-    padding: 44px 0 64px;
+    padding-top: 44px;
+    padding-bottom: 64px;
     align-items: start;
   }
 
   .about-page .about-gallery { height: 70vh; }
 }
+
+/* Over a gallery the caption stands in for the pointer, so the pointer
+   itself is hidden. main.js sets the class only once the caption exists,
+   so without scripting the normal cursor stays. */
+.has-cursor-caption [data-gallery] { cursor: none; }
 
 /* The caption that rides along with the pointer over a gallery image. */
 .cursor-caption {
@@ -2308,6 +2347,56 @@ body.about-page { overflow: hidden; }
 
 @media (hover: none) {
   .cursor-caption { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Other projects — the last entry on the Projects page: a strip that ticks
+   sideways on its own, like the About photo column turned on its side
+   -------------------------------------------------------------------------- */
+/* Its own horizontal scroller. A vertical wheel over it still scrolls the
+   page, since it has nowhere to go on that axis. */
+.other-strip {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-radius: 12px;
+}
+
+.other-strip::-webkit-scrollbar { width: 0; height: 0; }
+
+.other-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+}
+
+/* Fixed height and a 4:3 crop, so any photo dropped in later lines up with
+   the rest. Four of them are always wider than the strip, which the
+   seamless loop in main.js needs. */
+.other-shot {
+  flex: none;
+  height: 260px;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.other-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.other-strip:hover .other-shot img { opacity: 0.6; }
+.other-strip .other-shot:hover img { opacity: 1; }
+
+@media (max-width: 640px) {
+  .other-shot { height: 200px; }
 }
 
 /* --------------------------------------------------------------------------

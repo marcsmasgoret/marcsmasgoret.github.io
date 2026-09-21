@@ -286,20 +286,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ------------------------------------------------------------------
-     About gallery: scrolls on its own, and creeps along like a ticker
-     whenever nobody is scrolling it, so it reads as scrollable at a
-     glance. The list is duplicated once and the scroll position wraps at
-     the halfway mark, which makes the loop seamless.
+     Galleries (the About photo column, and the Other strip on the home
+     page, which runs sideways — data-gallery="x"): each scrolls on its
+     own, and creeps along like a ticker whenever nobody is scrolling it,
+     so it reads as scrollable at a glance. The list is duplicated once
+     and the scroll position wraps by exactly one copy's length, which
+     makes the loop seamless.
      ------------------------------------------------------------------ */
-  const gallery = document.querySelector("[data-gallery]");
-  const track = gallery && gallery.querySelector("[data-gallery-track]");
+  document.querySelectorAll("[data-gallery]").forEach((gallery) => {
+    const track = gallery.querySelector("[data-gallery-track]");
+    if (!track || reduceMotion) return;
 
-  if (gallery && track && !reduceMotion) {
-    Array.from(track.children).forEach((node) => {
+    const sideways = gallery.dataset.gallery === "x";
+    const axis = sideways ? "scrollLeft" : "scrollTop";
+
+    const originals = Array.from(track.children);
+    const copies = originals.map((node) => {
       const copy = node.cloneNode(true);
       copy.setAttribute("aria-hidden", "true");
       track.appendChild(copy);
+      return copy;
     });
+
+    // One copy's length, gap included: where the first duplicate starts
+    // relative to the first original. Half the track would come up one
+    // gap short and jump by half a gap at every wrap.
+    const period = () => sideways
+      ? copies[0].offsetLeft - originals[0].offsetLeft
+      : copies[0].offsetTop - originals[0].offsetTop;
 
     const SPEED = 0.35;      // px per frame at 60fps
     const IDLE_DELAY = 1400; // ms of quiet before the ticker picks back up
@@ -312,27 +326,40 @@ document.addEventListener("DOMContentLoaded", () => {
       resumeTimer = setTimeout(() => { paused = false; }, IDLE_DELAY);
     };
 
-    ["wheel", "touchstart", "touchmove", "pointerdown", "keydown"].forEach((ev) => {
+    ["touchstart", "touchmove", "pointerdown", "keydown"].forEach((ev) => {
       gallery.addEventListener(ev, pause, { passive: true });
     });
 
+    // A plain vertical wheel over the sideways strip scrolls the page, not
+    // the strip, so only a sideways one counts as taking over.
+    gallery.addEventListener("wheel", (e) => {
+      if (!sideways || e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) pause();
+    }, { passive: true });
+
+    // The position is kept here as a float and written out whole. Some
+    // browsers round a scroll offset to the device pixel, and 0.35 px
+    // steps would round away to nothing on a 1x screen.
+    let at = 1;
+
     const step = () => {
-      const half = track.scrollHeight / 2;
-      if (half > 0) {
-        if (!paused) gallery.scrollTop += SPEED;
-        // Wrap in both directions so scrolling up stays seamless too.
-        if (gallery.scrollTop >= half) gallery.scrollTop -= half;
-        else if (gallery.scrollTop < 0.5) gallery.scrollTop += half;
+      const len = period();
+      if (len > 0) {
+        if (Math.abs(gallery[axis] - at) > 2) at = gallery[axis]; // scrolled by hand
+        if (!paused) at += SPEED;
+        // Wrap in both directions so scrolling back stays seamless too.
+        if (at >= len) at -= len;
+        else if (at < 0.5) at += len;
+        gallery[axis] = at;
       }
       requestAnimationFrame(step);
     };
 
-    // Start just inside the first copy so an upward scroll has somewhere to go.
+    // Start just inside the first copy so a backward scroll has somewhere to go.
     requestAnimationFrame(() => {
-      gallery.scrollTop = 1;
+      gallery[axis] = at;
       requestAnimationFrame(step);
     });
-  }
+  });
 
   /* ------------------------------------------------------------------
      Caption that follows the pointer across the gallery images.
@@ -344,6 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bubble.className = "cursor-caption";
     bubble.setAttribute("aria-hidden", "true");
     document.body.appendChild(bubble);
+
+    // The caption takes the pointer's place over a gallery; CSS hides the
+    // pointer there only once this is set.
+    document.documentElement.classList.add("has-cursor-caption");
 
     const OFFSET_X = 16;
     const OFFSET_Y = 18;

@@ -12,17 +12,22 @@
        per line.
 
    Movement: it walks side to side; drops to a crawl where a gap is too
-   short to stand in (the gaps between card rows); climbs or slides a
-   block's near edge when one is in the way; climbs with its back to us
-   when it is going straight up or down in open air; and flies on a
-   jetpack when a scroll or a losing chase leaves it behind.
+   short to stand in (the gaps between card rows), on all fours along the
+   top of whatever is underneath; climbs or slides a block's near edge
+   when one is in the way; climbs with its back to us when it is going
+   straight up or down in open air; and flies on a jetpack when a scroll
+   or a losing chase leaves it behind.
 
    It is confined to the page between the header and the footer, so it
    never walks over the nav or the footer columns.
 
-   It sits when it arrives. If the pointer is resting inside a block, where
-   it can never stand, it settles on that block's nearest corner rather
-   than anywhere along its sides. Clicking it while it sits startles it.
+   It sits when it arrives. If the pointer is resting on a project card, it
+   hops up onto that card's top-left corner and sits with its legs over the
+   edge, riding along as the page scrolls. On the hero text, where it can
+   never stand, it settles on the nearest corner instead. Clicking it while
+   it sits startles it, and the first time it sits it says so. Once it has
+   been clicked, the first time it then sits still for five seconds it
+   holds up a few signs with an opinion on the matter.
    ========================================================================== */
 (() => {
   const canvas = document.getElementById("cursor-buddy");
@@ -83,9 +88,18 @@
   const SLIDE_SPEED = 280;
   const JET_SPEED = 660;
 
-  const CATCH_DIST = 30;        // close enough to sit
-  const LEAVE_DIST = 54;        // and far enough to get back up
+  const SETTLE_SPEED = 160;     // getting down onto the floor of a gap
+
+  const CATCH_DIST = 14;        // close enough to sit
+  const LEAVE_DIST = 40;        // and far enough to get back up
+  const GETUP_MS = 400;         // ...for this long, so passing by doesn't count
   const JET_DONE = 70;
+
+  // Sat on a card's corner, the seat is this far in from the left edge:
+  // just on the flat of the top, clear of the 16px rounded corner, which
+  // the thighs then follow down so the shins hang over it.
+  const SEAT_IN = 15;
+  const HOP_ARC = 10;
 
   const FAST_SCROLL = 48;       // px of scroll in one frame
   const JET_GAP = 1300;         // hopeless even to start walking
@@ -96,8 +110,24 @@
   const DROP_MS = 720;
   const STARTLE_MS = 620;
 
+  const HINT_DELAY = 350;       // sat this long before "Click me!" shows
+  const HINT_READ_MS = 2500;    // and once it has been up this long, it's done
+
+  // Having been clicked once, sat this long without a break, it holds up
+  // these one at a time, putting each away before the next.
+  const SIGN_AFTER_MS = 5000;
+  const SIGNS = [
+    { text: "YOU SHOULD", hold: 2300 },
+    { text: "PROBABLY", hold: 2100 },
+    { text: "HIRE ME ;)", hold: 3400 },
+  ];
+  const SIGN_UP_MS = 240;
+  const SIGN_DOWN_MS = 200;
+  const SIGN_GAP_MS = 320;
+
   /* ------------------------------------------------------------- obstacles */
   let sources = [];
+  let seats = [];
 
   function collectBlocks() {
     sources = [];
@@ -109,6 +139,10 @@
       range.selectNodeContents(el);
       sources.push({ range });
     });
+
+    // What it sits on the corner of: each project card.
+    seats = [];
+    document.querySelectorAll(".work-card").forEach((el) => seats.push({ el }));
   }
 
   collectBlocks();
@@ -149,6 +183,40 @@
     return null;
   }
 
+  // The floor of a gap: the top of whatever is directly underneath, near
+  // the height it is at now, with room above it to crawl.
+  function floorUnder(list, x, y) {
+    let best = null;
+    for (const r of list) {
+      if (x + HALF_W <= r.left || x - HALF_W >= r.right) continue;
+      const fy = r.top - 1;
+      if (Math.abs(fy - y) > 34 || blockAt(list, x, fy, CRAWL_H)) continue;
+      if (best === null || Math.abs(fy - y) < Math.abs(best - y)) best = fy;
+    }
+    return best;
+  }
+
+  /* ----------------------------------------------------------------- seats */
+  // A seat's box, or null once it has scrolled out of view.
+  function seatRect(seat) {
+    const r = seat.el.getBoundingClientRect();
+    if (r.width < 24 || r.bottom < 0 || r.top > vh) return null;
+    return r;
+  }
+
+  // The card the pointer is on. Widened by half a gap each side, so the
+  // pointer never falls between two cards. One whose top is up under the
+  // header doesn't count: there's no room to sit there.
+  function seatUnderPointer() {
+    for (const seat of seats) {
+      const r = seatRect(seat);
+      if (!r || r.top - 24 < band.top) continue;
+      if (target.x >= r.left - 11 && target.x <= r.right + 11 &&
+          target.y >= r.top && target.y <= r.bottom) return { seat, r };
+    }
+    return null;
+  }
+
   /* ------------------------------------------------------------ the band
      The strip of page the figure is allowed into: below the header, above
      the footer. Both are measured fresh each frame, since the header is
@@ -172,7 +240,7 @@
 
   /* ----------------------------------------------------------------- state */
   const buddy = {
-    mode: "perch",   // perch drop walk crawl scale climb slide jet sit startle
+    mode: "perch",   // perch drop walk crawl scale climb slide jet sit hop ledge startle
     x: vw / 2,
     y: 200,
     facing: 1,
@@ -181,8 +249,48 @@
     dropFrom: null,
     dropTo: null,
     grip: null,      // { id, dx, dy, toDy } while climbing or sliding
+    seat: null,      // the card it is hopping onto or sat on the corner of
+    hopMs: 0,
+    awaySince: 0,    // while sat: when the pointer went elsewhere
     startleY: 0,
   };
+
+  // The "Click me!" bubble: up the first time it sits, until it has been
+  // clicked or has been on screen long enough to have been read. A sit
+  // too brief to read it doesn't use it up.
+  let seatedAt = 0;
+  let hintShown = 0;    // ms on screen so far
+  let hintDone = false;
+  let hintBox = null;   // where it was last drawn, so a click on it counts
+
+  // The signs: once only, and only once it has been clicked. Getting up
+  // before the last one shows calls them off until the next long sit.
+  let clickedOnce = false;
+  let signStart = 0;    // when the current run of signs began, 0 if none
+  let signDone = false;
+  let signHand = null;  // where the pose put the hand on the pole, in pose space
+
+  // Reaching for the bubble takes the pointer well away from the figure,
+  // so while it is up, the pointer on it (or anywhere between it and the
+  // seat) counts as being on the figure: otherwise it would get up and
+  // walk off before the click landed.
+  function pointerOnHint() {
+    if (!hintBox) return false;
+    const left = Math.min(hintBox.x, buddy.x - HALF_W) - 6;
+    const right = Math.max(hintBox.x + hintBox.w, buddy.x + HALF_W) + 6;
+    return target.x >= left && target.x <= right &&
+           target.y >= hintBox.y - 6 && target.y <= buddy.y + 4;
+  }
+
+  // Sat down, it only gets up once the pointer has been away for a moment,
+  // so a pointer on its way to the figure or its bubble doesn't send it off.
+  function readyToGetUp(away, now) {
+    if (!away) { buddy.awaySince = 0; return false; }
+    if (!buddy.awaySince) buddy.awaySince = now;
+    if (now - buddy.awaySince <= GETUP_MS) return false;
+    buddy.awaySince = 0;   // cleared for the next time it sits
+    return true;
+  }
 
   const target = { x: vw / 2, y: vh / 2 };
 
@@ -199,23 +307,38 @@
   // pointer events, so this hit-tests by hand on the way down and swallows
   // the click only when the figure itself was hit.
   document.addEventListener("click", (e) => {
-    if (buddy.mode !== "sit" && buddy.mode !== "perch") return;
+    const m = buddy.mode;
+    if (m !== "sit" && m !== "perch" && m !== "ledge") return;
 
-    const top = buddy.mode === "perch"
-      ? buddy.y + TORSO + HEAD_OFF - HEAD_R
-      : buddy.y - H;
-    const bottom = buddy.mode === "perch" ? buddy.y + LEG : buddy.y;
-    if (Math.abs(e.clientX - buddy.x) > HALF_W + 8) return;
-    if (e.clientY < top - 8 || e.clientY > bottom + 8) return;
+    // The bubble asks to be clicked, so a click on it counts too.
+    const onHint = hintBox &&
+      e.clientX >= hintBox.x && e.clientX <= hintBox.x + hintBox.w &&
+      e.clientY >= hintBox.y && e.clientY <= hintBox.y + hintBox.h;
+
+    if (!onHint) {
+      const top = m === "perch" ? buddy.y + TORSO + HEAD_OFF - HEAD_R
+                : m === "ledge" ? buddy.y - 22
+                : buddy.y - H;
+      const bottom = m === "perch" ? buddy.y + LEG
+                   : m === "ledge" ? buddy.y + 10
+                   : buddy.y;
+      if (Math.abs(e.clientX - buddy.x) > HALF_W + 8) return;
+      if (e.clientY < top - 8 || e.clientY > bottom + 8) return;
+    }
 
     e.preventDefault();
     e.stopPropagation();
 
-    if (buddy.mode === "perch") buddy.y += LEG;   // seat-based -> feet-based
+    // A ledge seat is already on the card's top edge, which is where its
+    // feet land; only the logo perch is measured from the seat.
+    if (m === "perch") buddy.y += LEG;   // seat-based -> feet-based
     buddy.mode = "startle";
+    buddy.seat = null;
     buddy.t0 = performance.now();
     buddy.startleY = buddy.y;
     chaseTime = 0;
+    hintDone = true;
+    clickedOnce = true;
   }, true);
 
   /* ------------------------------------------------------------- the poses */
@@ -262,20 +385,35 @@
     head(HEAD_Y);
   }
 
-  // Flat on its front, pulling itself along — the only way through a gap
-  // shorter than it is. Everything is kept inside CRAWL_H.
+  // On all fours — the only way through a gap shorter than it is. The
+  // origin is on the floor, and the hands and knees come down onto it, so
+  // it crawls along the top of whatever is underneath. Opposite hand and
+  // knee move together, and whichever pair is coming forward lifts; the
+  // pair going back is planted and pushing. The body stays inside CRAWL_H.
   function poseCrawl(p) {
-    const t = Math.sin(p);
-    const hipX = -7, hipY = -5;
-    const shoX = 5, shoY = -6.5;
+    const s = Math.sin(p);
+    const c = Math.cos(p);
+    const bob = Math.abs(c) * 0.6;
+    const hipX = -6, hipY = -8.5 - bob;
+    const shoX = 5, shoY = -9.5 - bob;
 
     line(hipX, hipY, shoX, shoY);
-    head(shoY - 1.5, shoX + 6.5);
+    head(shoY - 1.2, shoX + 5.8);
 
-    limb(shoX, shoY, 1.75 + t * 0.45, ARM * 0.45, 2.05 + t * 0.35, ARM * 0.45);
-    limb(shoX, shoY, 1.75 - t * 0.45, ARM * 0.45, 2.05 - t * 0.35, ARM * 0.45);
-    limb(hipX, hipY, -1.55 + t * 0.5, LEG * 0.45, -1.1 + t * 0.45, LEG * 0.45);
-    limb(hipX, hipY, -1.95 - t * 0.5, LEG * 0.45, -1.7 - t * 0.45, LEG * 0.45);
+    const reach = 3.5;
+    const liftA = Math.max(0, c);
+    const liftB = Math.max(0, -c);
+
+    line(shoX, shoY, shoX + 1 + s * reach, -liftA * 2.5);
+    line(shoX, shoY, shoX + 1 - s * reach, -liftB * 2.5);
+
+    // Knee on the floor, shin trailing back along it to a raised toe.
+    const knee = (kx, lift) => {
+      line(hipX, hipY, kx, -lift * 2);
+      line(kx, -lift * 2, kx - 8, -1.5 - lift);
+    };
+    knee(hipX + 1 + s * reach, liftA);
+    knee(hipX + 1 - s * reach, liftB);
   }
 
   // Going straight up or down with nothing to hold: seen from behind, both
@@ -389,23 +527,82 @@
     head(sho + HEAD_OFF);
   }
 
-  function poseSit(now) {
+  // Sat on a card's top-left corner: thighs running down the curve of the
+  // rounded corner, shins swinging over it, one hand planted behind and
+  // one on a thigh, hunched forward to watch. The origin is the seat, on
+  // the card's top edge. The hunch also keeps the head clear of the row
+  // above when it sits in the gap between two rows.
+  function poseLedge(now, up = 0) {
+    const swing = Math.sin(now / 430) * 0.3;
+    limb(0, 0, 1.2, LEG * 0.5, 0.15 + swing, LEG * 0.5);
+    limb(0, 0, 1.1, LEG * 0.5, -0.05 - swing * 0.5, LEG * 0.5);
+
+    const lean = 0.3;
+    const sx = -Math.sin(lean) * TORSO;   // TORSO is negative: upward
+    const sy = Math.cos(lean) * TORSO;
+    const hx = sx - Math.sin(lean) * HEAD_OFF;
+    const hy = sy + Math.cos(lean) * HEAD_OFF;
+    line(0, 0, sx, sy);
+    head(hy, hx);
+
+    seatedArms(sx, sy, [[-0.55, -0.72], [0.1, 0.32]], hx, hy, up);
+  }
+
+  function poseSit(now, up = 0) {
     const breathe = Math.sin(now / 620) * 0.7;
     const hip = -H * 0.27 + breathe;
     const sho = hip + TORSO;
     limb(0, hip, 1.45, LEG * 0.52, 0.12, LEG * 0.48);
     limb(0, hip, 1.2, LEG * 0.52, 0.0, LEG * 0.48);
     line(0, hip, 0, sho);
-    limb(0, sho, 0.5, ARM * 0.5, 1.0, ARM * 0.5);
-    limb(0, sho, -0.45, ARM * 0.5, -0.05, ARM * 0.5);
+    seatedArms(0, sho, [[0.5, 1.0], [-0.45, -0.05]], 0, sho + HEAD_OFF, up);
     head(sho + HEAD_OFF);
+  }
+
+  // A sitting pose's arms: as posed, or raised by `up` (0 to 1) toward a
+  // pole held out in front of the face, one hand under the other. Far
+  // enough forward that the arms and pole read clear of the head. Where
+  // the upper hand ends up is left in signHand for the sign.
+  function seatedArms(sx, sy, arms, headX, headY, up) {
+    if (!up) {
+      arms.forEach(([a1, a2]) => limb(sx, sy, a1, ARM * 0.5, a2, ARM * 0.5));
+      return;
+    }
+    const gx = headX + 9;
+    const gy = headY - 3;
+    arms.forEach(([a1, a2], i) => {
+      const rx = sx + (Math.sin(a1) + Math.sin(a2)) * ARM * 0.5;
+      const ry = sy + (Math.cos(a1) + Math.cos(a2)) * ARM * 0.5;
+      const x = rx + (gx - rx) * up;
+      const y = ry + (gy + i * 3 - ry) * up;
+      reach(sx, sy, x, y, ARM * 0.5);
+      if (i === 0) signHand = { x, y };
+    });
+  }
+
+  // A two-part limb from (ax, ay) to a given hand position, the elbow
+  // falling out in front. Past full reach it just runs straight.
+  function reach(ax, ay, bx, by, len) {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const d = Math.hypot(dx, dy) || 0.01;
+    const half = Math.min(d, len * 2) / 2;
+    const out = Math.sqrt(Math.max(0, len * len - half * half));
+    const jx = ax + (dx / d) * half - (dy / d) * out;
+    const jy = ay + (dy / d) * half + (dx / d) * out;
+    line(ax, ay, jx, jy);
+    line(jx, jy, bx, by);
   }
 
   /* ------------------------------------------------------------ the update */
   // The pointer often rests on top of a card, somewhere the figure can
-  // never stand. Aim for that block's nearest corner — never a point along
+  // never stand. On a card it heads for the top-left corner to sit on. Anything else it can't stand in (the hero
+  // text) it aims for that block's nearest corner — never a point along
   // one of its sides, which is not somewhere to sit.
   function reachable(list) {
+    const on = seatUnderPointer();
+    if (on) return { x: on.r.left + SEAT_IN, y: on.r.top - 1, seat: on.seat };
+
     const r = blockAt(list, target.x, target.y, 1);
     if (!r) return { x: target.x, y: target.y };
 
@@ -450,6 +647,14 @@
     buddy.t0 = now;
     buddy.grip = { id: wall.id, dx: edgeX - wall.left, dy: fromDy, toDy };
     return true;
+  }
+
+  // Off a card's corner and back on its feet. If there is no headroom
+  // there (a gap between rows), the on-foot step puts it on all fours.
+  function getUp(now) {
+    buddy.mode = "walk";
+    buddy.seat = null;
+    buddy.t0 = now;
   }
 
   function step(dt, now) {
@@ -506,16 +711,68 @@
       return;
     }
 
+    // --- hopping up onto a card's corner ----------------------------------
+    if (buddy.mode === "hop") {
+      const r = seatRect(buddy.seat);
+      if (!r) { getUp(now); return; }
+      // Aimed at where the corner is now, so a scroll mid-hop still lands
+      // it there.
+      const t = Math.min(1, (now - buddy.t0) / buddy.hopMs);
+      const toX = r.left + SEAT_IN;
+      const toY = r.top - 1;
+      buddy.x = buddy.dropFrom.x + (toX - buddy.dropFrom.x) * t;
+      buddy.y = buddy.dropFrom.y + (toY - buddy.dropFrom.y) * t
+              - Math.sin(Math.PI * t) * HOP_ARC;
+      if (t >= 1) { buddy.mode = "ledge"; buddy.facing = -1; buddy.t0 = now; }
+      return;
+    }
+
+    // --- sat on a card's corner, riding along with it -----------------------
+    if (buddy.mode === "ledge") {
+      chaseTime = 0;
+      const r = seatRect(buddy.seat);
+      if (r) {
+        buddy.x = r.left + SEAT_IN;
+        buddy.y = r.top - 1;
+      }
+      // It stays while the pointer is on this card, or has come off it
+      // onto the figure or its bubble (to click it).
+      const stay = pointerOnHint() || (goal.seat
+        ? goal.seat.el === buddy.seat.el
+        : Math.hypot(goal.x - buddy.x, goal.y - buddy.y) < LEAVE_DIST);
+      if (!r || readyToGetUp(!stay, now)) getUp(now);
+      return;
+    }
+
     // --- caught up: sit, and stay sitting until the pointer moves off -----
     if (buddy.mode === "sit") {
       chaseTime = 0;
-      if (dist > LEAVE_DIST) { buddy.mode = "walk"; buddy.t0 = now; }
+      if (readyToGetUp((dist > LEAVE_DIST || goal.seat) && !pointerOnHint(), now)) {
+        buddy.mode = "walk";
+        buddy.t0 = now;
+      }
       return;
     }
 
     // Only ever sit having finished a climb or slide, never part way up the
     // side of a block.
     if (dist < CATCH_DIST && buddy.mode !== "climb" && buddy.mode !== "slide") {
+      chaseTime = 0;
+
+      // On a card: hop up onto its corner rather than sit where it is.
+      if (goal.seat) {
+        buddy.mode = "hop";
+        buddy.seat = goal.seat;
+        buddy.t0 = now;
+        buddy.hopMs = 170 + dist * 4;
+        buddy.dropFrom = { x: buddy.x, y: buddy.y };
+        if (Math.abs(goal.x - buddy.x) > 2) buddy.facing = goal.x > buddy.x ? 1 : -1;
+        return;
+      }
+
+      // Too low to sit up in (a gap between rows): wait there on all fours.
+      if (buddy.mode === "crawl" && blockAt(list, buddy.x, buddy.y, H)) return;
+
       buddy.mode = "sit";
       buddy.t0 = now;
       return;
@@ -625,13 +882,19 @@
       }
     }
 
+    // Down on the floor of a gap the pointer is in too: there is nothing to
+    // climb, it just crawls along to it. Without this the row above counts
+    // as a block overhead, and it would head off to climb it.
+    const floorHere = buddy.mode === "crawl" ? floorUnder(list, buddy.x, buddy.y) : null;
+    const sameGap = floorHere !== null && Math.abs(goal.y - floorHere) < CRAWL_H + 10;
+
     // A block directly above or below is as much in the way as one beside
     // it, but the figure cannot start climbing from the middle of a card's
     // face — it has to reach the near side first, so the walk aims there.
     let aimX = goal.x;
     let edgeWall = null;
 
-    if (Math.abs(dy) > 3) {
+    if (Math.abs(dy) > 3 && !sameGap) {
       const probeY = buddy.y + Math.sign(dy) * Math.max(6, RISE_SPEED * dt);
       edgeWall = blockAt(list, buddy.x, probeY, H);
       if (edgeWall) {
@@ -650,12 +913,16 @@
     const standBlocked = blockAt(list, nextX, buddy.y, H);
 
     if (standBlocked) {
-      // Too low to stand in. Try it flat where it is, and failing that
-      // duck so the body tucks just under whatever the head is hitting —
-      // the gaps between card rows are only a few pixels taller than the
-      // crawl, so it will almost never already be at a height that fits.
+      // Too low to stand in: get down on all fours. Where the gap has a
+      // floor — the top of the card below, between two rows — it gets down
+      // onto that (the settle below), rather than hanging from the
+      // underside of the row above. Failing that, flat where it is; and
+      // failing that, duck so the body tucks just under whatever the head
+      // is hitting.
+      const floor = floorUnder(list, nextX, buddy.y);
       let crawlY = null;
-      if (!blockAt(list, nextX, buddy.y, CRAWL_H)) {
+      if ((floor !== null && !blockAt(list, buddy.x, floor, CRAWL_H)) ||
+          !blockAt(list, nextX, buddy.y, CRAWL_H)) {
         crawlY = buddy.y;
       } else {
         const duck = standBlocked.bottom + CRAWL_H;
@@ -681,6 +948,21 @@
 
     const bodyH = buddy.mode === "crawl" ? CRAWL_H : H;
 
+    // On all fours, it keeps to the floor: it gets down onto the top of
+    // whatever is underneath before going on, and follows it along. The
+    // way ahead may only open up once it is down, so the step forward
+    // below waits on this.
+    let floorY = null;
+    if (buddy.mode === "crawl") {
+      floorY = floorUnder(list, nextX, buddy.y);
+      if (floorY === null) floorY = floorUnder(list, buddy.x, buddy.y);
+      if (floorY !== null) {
+        const gap = floorY - buddy.y;
+        const settle = Math.sign(gap) * Math.min(Math.abs(gap), SETTLE_SPEED * dt);
+        if (!blockAt(list, buddy.x, buddy.y + settle, CRAWL_H)) buddy.y += settle;
+      }
+    }
+
     if (!blockAt(list, nextX, buddy.y, bodyH)) {
       buddy.x = nextX;
       if (Math.abs(stepX) > 0.4) buddy.facing = stepX > 0 ? 1 : -1;
@@ -690,27 +972,149 @@
     // Arrived alongside the block that was overhead or underfoot.
     if (edgeWall && Math.abs(buddy.x - aimX) < 4 && grab(edgeWall, goUp, now)) return;
 
-    // Open air: drift toward the pointer's height.
-    if (!edgeWall && Math.abs(dy) > 1) {
+    // Open air: drift toward the pointer's height. Not while it is down on
+    // a floor, which would only lift it back off it.
+    if (!edgeWall && floorY === null && Math.abs(dy) > 1) {
       const stepY = Math.sign(dy) * Math.min(Math.abs(dy), RISE_SPEED * dt);
       if (!blockAt(list, buddy.x, buddy.y + stepY, bodyH)) buddy.y += stepY;
     }
 
     // If it ends up overlapping anything anyway (a resize, a late image),
-    // push it out the short way rather than leaving it stuck inside.
+    // push it out the short way rather than leaving it stuck inside —
+    // unless there is room to crawl where it is (it has just got up off a
+    // card's corner in a gap between rows, say), in which case it gets
+    // down rather than jumping out of the gap.
     const stuck = blockAt(list, buddy.x, buddy.y, bodyH);
-    if (stuck) {
+    if (stuck && bodyH === H && !blockAt(list, buddy.x, buddy.y, CRAWL_H)) {
+      buddy.mode = "crawl";
+    } else if (stuck) {
       const up = buddy.y - (stuck.top - 3);
       const down = (stuck.bottom + bodyH + 3) - buddy.y;
       buddy.y = up < down ? stuck.top - 3 : stuck.bottom + bodyH + 3;
     }
 
     buddy.x = Math.max(HALF_W + 4, Math.min(vw - HALF_W - 4, buddy.x));
-    buddy.y = clampY(buddy.y, bodyH + 4);
+    buddy.y = clampY(buddy.y, (buddy.mode === "crawl" ? CRAWL_H : H) + 4);
+  }
+
+  /* ----------------------------------------------------------- the signs */
+  // Which sign is up `t` ms into the routine, and how far up (0 to 1).
+  // Null between signs and once the routine is over.
+  function signAt(t) {
+    for (const sign of SIGNS) {
+      const len = SIGN_UP_MS + sign.hold + SIGN_DOWN_MS;
+      if (t < len) {
+        const k = t < SIGN_UP_MS ? t / SIGN_UP_MS
+                : t < SIGN_UP_MS + sign.hold ? 1
+                : 1 - (t - SIGN_UP_MS - sign.hold) / SIGN_DOWN_MS;
+        return { text: sign.text, up: k * k * (3 - 2 * k) };
+      }
+      t -= len + SIGN_GAP_MS;
+      if (t < 0) return null;
+    }
+    return null;
+  }
+
+  const slotMs = (sign) => SIGN_UP_MS + sign.hold + SIGN_DOWN_MS + SIGN_GAP_MS;
+  const SIGNS_MS = SIGNS.reduce((n, sign) => n + slotMs(sign), 0);
+  const LAST_SIGN_AT = SIGNS_MS - slotMs(SIGNS[SIGNS.length - 1]);
+
+  // A placard on a pole, from the hand the pose left in signHand. Drawn
+  // unmirrored so it reads the right way round whichever way it faces,
+  // and nudged sideways, pole and all, to stay on screen.
+  function drawSign(sign) {
+    if (!signHand) return;
+    const hx = buddy.x + buddy.facing * signHand.x;
+    const hy = buddy.y + signHand.y;
+
+    ctx.save();
+    ctx.font = "700 11px Switzer, 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    const w = Math.ceil(ctx.measureText(sign.text).width) + 14;
+    const h = 19;
+    const poleTop = hy - 12;
+    const bx = Math.max(4, Math.min(vw - 4 - w, hx - w / 2));
+
+    ctx.globalAlpha = Math.min(1, sign.up * 1.6);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    line(hx, hy + 5, hx, poleTop);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, poleTop - h, w, h, 3);
+    else ctx.rect(bx, poleTop - h, w, h);
+    ctx.fill();
+
+    ctx.fillStyle = "#050506";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(sign.text, bx + w / 2, poleTop - h / 2 + 0.5);
+    ctx.restore();
+  }
+
+  /* ------------------------------------------------------------ the hint */
+  // "Click me!" in a speech bubble over its head, popping in from the tail.
+  // Drawn unmirrored, so the text reads the right way round either way it
+  // faces, and to whichever side of the head has room.
+  function drawHint(now) {
+    hintBox = null;
+    const seated = buddy.mode === "sit" || buddy.mode === "ledge";
+    if (hintDone || !seated || !seatedAt) return;
+    const age = now - seatedAt - HINT_DELAY;
+    if (age < 0) return;
+
+    const ledge = buddy.mode === "ledge";
+    const headX = ledge ? buddy.x + buddy.facing * 4.7 : buddy.x;
+    const headTop = ledge ? buddy.y - 21 : buddy.y - 32;
+
+    const text = "Click me!";
+    ctx.font = "600 13px Switzer, 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    const w = Math.ceil(ctx.measureText(text).width) + 20;
+    const h = 26;
+
+    const toRight = headX + 8 + w <= vw - 4;
+    const x = toRight ? headX + 6 : headX - 6 - w;
+    const y = Math.max(4, headTop - 10 - h + Math.sin(now / 480) * 1.5);
+    const tipX = headX + (toRight ? 3 : -3);
+    const tipY = headTop - 3;
+
+    // Ease out with a little overshoot.
+    const p = Math.min(1, age / 240) - 1;
+    const k = 1 + 2.70158 * p * p * p + 1.70158 * p * p;
+
+    ctx.save();
+    ctx.translate(tipX, tipY);
+    ctx.scale(k, k);
+    ctx.translate(-tipX, -tipY);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, 8);
+    else ctx.rect(x, y, w, h);
+    ctx.fill();
+
+    const baseX = toRight ? x + 12 : x + w - 12;
+    ctx.beginPath();
+    ctx.moveTo(baseX - 5, y + h - 1);
+    ctx.lineTo(baseX + 5, y + h - 1);
+    ctx.lineTo(tipX, tipY);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#050506";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, x + 10, y + h / 2 + 0.5);
+    ctx.restore();
+
+    hintBox = { x, y, w, h };
   }
 
   /* ------------------------------------------------------------ the render */
   function draw(now) {
+    const sign = signStart ? signAt(now - signStart) : null;
+    const up = sign ? sign.up : 0;
+
     ctx.clearRect(0, 0, vw, vh);
     ctx.save();
     ctx.translate(buddy.x, buddy.y);
@@ -729,11 +1133,19 @@
       case "climb":   poseClimb(buddy.phase); break;
       case "slide":   poseSlide(buddy.phase); break;
       case "jet":     poseJet(buddy.phase); break;
-      case "sit":     poseSit(now); break;
+      case "sit":     poseSit(now, up); break;
+      case "hop":     poseJump(Math.min(1, (now - buddy.t0) / buddy.hopMs)); break;
+      case "ledge":   poseLedge(now, up); break;
       default:        poseWalk(buddy.phase);
     }
 
     ctx.restore();
+    if (sign) drawSign(sign);
+    drawHint(now);
+
+    // Mirrored onto the element like the mode, below.
+    const shown = sign ? sign.text : "";
+    if (canvas.dataset.sign !== shown) canvas.dataset.sign = shown;
   }
 
   /* -------------------------------------------------------------- the loop */
@@ -748,6 +1160,30 @@
     scrollY = sy;
 
     step(dt, now);
+
+    // The hint's clock: how long this sit has lasted, and how long the
+    // bubble has been up in all. Getting up after it has been up long
+    // enough to read retires it.
+    const seated = buddy.mode === "sit" || buddy.mode === "ledge";
+    if (seated) {
+      if (!seatedAt) seatedAt = now;
+      if (!hintDone && now - seatedAt > HINT_DELAY) hintShown += dt * 1000;
+    } else if (seatedAt) {
+      seatedAt = 0;
+      if (hintShown >= HINT_READ_MS) hintDone = true;
+    }
+
+    // The signs start once it has sat long enough after being clicked, and
+    // are done for good once they've run, or once it gets up with the last
+    // one already shown. Getting up any earlier calls them off for now.
+    if (seated && clickedOnce && !signDone && !signStart &&
+        now - seatedAt >= SIGN_AFTER_MS) signStart = now;
+    if (signStart) {
+      const t = now - signStart;
+      if (t >= SIGNS_MS || (!seated && t >= LAST_SIGN_AT)) signDone = true;
+      if (signDone || !seated) signStart = 0;
+    }
+
     draw(now);
 
     // Mirrored onto the element so the current state is inspectable from
