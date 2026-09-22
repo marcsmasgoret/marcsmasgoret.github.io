@@ -8,7 +8,8 @@
    keeps the wheel while it has room to move.
 
    Exposed as window.smoothWheel so the cursor buddy can take this frame's
-   step before it reads the scroll position.
+   step before it reads the scroll position, and so the galleries can glide
+   with the same feel (RATE, LEAD, wheelPx).
    ========================================================================== */
 window.smoothWheel = (() => {
   const RATE = 14;    // 1/s: how quickly the page closes on its target
@@ -16,7 +17,16 @@ window.smoothWheel = (() => {
   const LEAD = 200;   // px: the most the target can be ahead of the page
   const LINE = 33;    // px per line, for wheels that report lines (3 lines ≈ one notch)
 
-  const idle = { tick() {} };
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // One wheel event's delta (deltaY or deltaX) in px, capped at STEP. A
+  // wheel that reports pages moves `page` px per page.
+  const wheelPx = (e, delta, page) => {
+    const unit = e.deltaMode === 1 ? LINE : e.deltaMode === 2 ? page : 1;
+    return clamp(delta * unit, -STEP, STEP);
+  };
+
+  const idle = { tick() {}, RATE, LEAD, wheelPx };
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return idle;
 
   let pos = 0;        // kept as a float: the browser may round what it reports
@@ -26,7 +36,6 @@ window.smoothWheel = (() => {
   let lastTime = 0;
 
   const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
   // The visitor can't scroll the page itself: a viewer overlay is open, or
   // the About page fits on one screen.
@@ -87,8 +96,7 @@ window.smoothWheel = (() => {
     if (e.defaultPrevented || e.ctrlKey || e.shiftKey) return;
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
-    const unit = e.deltaMode === 1 ? LINE : e.deltaMode === 2 ? window.innerHeight : 1;
-    const dy = clamp(e.deltaY * unit, -STEP, STEP);
+    const dy = wheelPx(e, e.deltaY, window.innerHeight);
     const over = e.target instanceof Element ? e.target : null;
     if (!dy || maxScroll() <= 0 || pageLocked() || nestedTakes(over, dy)) return;
 
@@ -108,7 +116,7 @@ window.smoothWheel = (() => {
     window.addEventListener(ev, stop, { passive: true });
   });
 
-  return { tick };
+  return { tick, RATE, LEAD, wheelPx };
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -406,7 +414,8 @@ document.addEventListener("DOMContentLoaded", () => {
      glance. It waits until it is in view to start, so a strip far down
      the page still opens on its first photo. The list is duplicated once
      and the scroll position wraps by exactly one copy's length, which
-     makes the loop seamless.
+     makes the loop seamless. The wheel glides a gallery the way
+     smoothWheel glides the page, with the same rate and speed cap.
      ------------------------------------------------------------------ */
   document.querySelectorAll("[data-gallery]").forEach((gallery) => {
     const track = gallery.querySelector("[data-gallery-track]");
@@ -445,11 +454,29 @@ document.addEventListener("DOMContentLoaded", () => {
       gallery.addEventListener(ev, pause, { passive: true });
     });
 
+    // Where the wheel is sending the gallery, or null when it isn't. Each
+    // wheel event moves it and the ticker's step closes on it, as
+    // smoothWheel does for the page.
+    const { RATE, LEAD, wheelPx } = window.smoothWheel;
+    let glideTo = null;
+    let lastTime = 0;
+
     // A plain vertical wheel over the sideways strip scrolls the page, not
-    // the strip, so only a sideways one counts as taking over.
+    // the strip, so only a sideways one (or shift + wheel) moves the strip.
     gallery.addEventListener("wheel", (e) => {
-      if (!sideways || e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) pause();
-    }, { passive: true });
+      if (e.ctrlKey) return;
+      const across = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      const delta = sideways
+        ? (across ? e.deltaX : e.shiftKey ? e.deltaY : 0)
+        : (across ? 0 : e.deltaY);
+      if (!delta) return;
+
+      e.preventDefault();
+      pause();
+      const px = wheelPx(e, delta, sideways ? gallery.clientWidth : gallery.clientHeight);
+      const from = glideTo === null ? at : glideTo;
+      glideTo = Math.max(at - LEAD, Math.min(at + LEAD, from + px));
+    }, { passive: false });
 
     // On screen: a good part of it in view, not just an edge.
     let inView = !("IntersectionObserver" in window);
@@ -464,14 +491,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // steps would round away to nothing on a 1x screen.
     let at = 1;
 
-    const step = () => {
+    const step = (now) => {
+      const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 1 / 60;
+      lastTime = now;
       const len = period();
       if (len > 0) {
-        if (Math.abs(gallery[axis] - at) > 2) at = gallery[axis]; // scrolled by hand
-        if (!paused && inView) at += SPEED;
-        // Wrap in both directions so scrolling back stays seamless too.
-        if (at >= len) at -= len;
-        else if (at < 0.5) at += len;
+        if (Math.abs(gallery[axis] - at) > 2) { // scrolled by hand
+          at = gallery[axis];
+          glideTo = null;
+        }
+        if (glideTo !== null) {
+          const gap = glideTo - at;
+          if (Math.abs(gap) < 0.5) {
+            at = glideTo;
+            glideTo = null;
+          } else {
+            at += gap * (1 - Math.exp(-RATE * dt));
+          }
+        } else if (!paused && inView) {
+          at += SPEED;
+        }
+        // Wrap in both directions so scrolling back stays seamless too. The
+        // glide's target wraps with it, so a glide carries across the seam.
+        const wrap = at >= len ? -len : at < 0.5 ? len : 0;
+        at += wrap;
+        if (glideTo !== null) glideTo += wrap;
         gallery[axis] = at;
       }
       requestAnimationFrame(step);

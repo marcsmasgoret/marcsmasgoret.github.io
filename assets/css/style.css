@@ -1796,7 +1796,11 @@ body.viewer-open {
 .nav-main a:hover { color: var(--text); }
 
 /* The rule under the current page grows out from the left, matching the
-   short underline under "Home" in the reference header. */
+   short underline under "Home" in the reference header. It is a keyframe
+   animation rather than a transition: main.js adds .active on
+   DOMContentLoaded, and on a light page like About that lands before the
+   first style pass, so a transition had no starting state and the rule
+   just appeared. An animation plays whenever the class arrives. */
 .nav-main a::after {
   content: "";
   position: absolute;
@@ -1807,12 +1811,22 @@ body.viewer-open {
   background: var(--text);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.35s var(--ease-draw);
 }
 
 .nav-main a.active { color: var(--text); }
 
-.nav-main a.active::after { transform: scaleX(1); }
+.nav-main a.active::after {
+  transform: scaleX(1);
+  animation: nav-rule-draw 0.35s var(--ease-draw);
+}
+
+@keyframes nav-rule-draw {
+  from { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-main a.active::after { animation: none; }
+}
 
 .site-monogram {
   justify-self: center;
