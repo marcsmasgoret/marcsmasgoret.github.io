@@ -9,7 +9,10 @@
        while its glyphs stop far short of it, so measuring the element
        would leave an invisible wall out to the right of the hero copy.
        Text obstacles are measured off the rendered text instead, one box
-       per line.
+       per line, and each box is that line's ink rather than the box the
+       browser gives the line: that one runs the font's full ascent and
+       descent, which over the display-size title is a band of empty air
+       above the capitals two-thirds the figure's height.
 
    Movement: it walks side to side; drops to a crawl where a gap is too
    short to stand in (the gaps between card rows), on all fours along the
@@ -83,6 +86,13 @@
   const PAD_X = 2;
   const PAD_Y = 0;
 
+  // Going up or down an edge, something further along that sticks out past
+  // it by no more than this is cleared by stepping the path out, sideways
+  // at SIDESTEP_SPEED; anything sticking out further is walked round (see
+  // grab).
+  const JUT = 12;
+  const SIDESTEP_SPEED = 120;   // px/s
+
   const WALK_SPEED = 190;       // px/s
   const CRAWL_SPEED = 120;
   const RISE_SPEED = 85;        // vertical drift while walking open ground
@@ -96,6 +106,10 @@
   const SETTLE_SPEED = 160;     // getting down onto the floor of a gap
 
   const CATCH_DIST = 14;        // close enough to sit
+  // ...or, heading for the corner of something to sit on, this close. Sat
+  // down CATCH_DIST short of it, coming down from above, it would sit in
+  // the air over the letters of the title instead of on them.
+  const SNUG_DIST = 3;
   const LEAVE_DIST = 40;        // and far enough to get back up
   const GETUP_MS = 400;         // ...for this long, so passing by doesn't count
   const JET_DONE = 70;
@@ -111,7 +125,8 @@
   const JET_PATIENCE = 3.2;     // seconds of chasing without arriving
   const JET_CHASING = 260;      // ...while still this far away
 
-  const PERCH_MS = 1100;
+  const PERCH_MS = 1600;
+  const PERCH_IN = 5;           // seat's distance in from the logo's right edge
   const DROP_MS = 720;
   const STARTLE_MS = 620;
 
@@ -145,7 +160,7 @@
     document.querySelectorAll(".home-title, .home-sub").forEach((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
-      sources.push({ range });
+      sources.push({ range, ink: measureInk(el, range) });
     });
 
     // What it sits on the corner of: each project card.
@@ -153,11 +168,66 @@
     document.querySelectorAll(".work-card").forEach((el) => seats.push({ el }));
   }
 
+  // Where the glyphs of each line of `el` actually are, as offsets from the
+  // left and bottom of the box the browser gives that line (which is the
+  // font's content area: the baseline sits the font's descent above its
+  // bottom). Each line is measured on a canvas in the element's own font,
+  // with the words the layout put on it. Null for a line the canvas can't
+  // measure, which then keeps its plain box.
+  const inkCtx = document.createElement("canvas").getContext("2d");
+
+  function measureInk(el, range) {
+    const style = getComputedStyle(el);
+    inkCtx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    inkCtx.letterSpacing = style.letterSpacing === "normal" ? "0px" : style.letterSpacing;
+    const lineH = parseFloat(style.lineHeight);
+
+    const words = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      for (const m of node.textContent.matchAll(/\S+/g)) {
+        const wr = document.createRange();
+        wr.setStart(node, m.index);
+        wr.setEnd(node, m.index + m[0].length);
+        const box = wr.getBoundingClientRect();
+        words.push({ text: m[0], x: (box.left + box.right) / 2, y: (box.top + box.bottom) / 2 });
+      }
+    }
+
+    const out = [];
+    for (const f of range.getClientRects()) {
+      if (f.width < 4 || f.height < 4) continue;
+      const text = words
+        .filter((w) => w.y > f.top && w.y < f.bottom && w.x > f.left && w.x < f.right)
+        .map((w) => w.text)
+        .join(" ");
+      const m = inkCtx.measureText(text);
+      const base = -m.fontBoundingBoxDescent;
+      // Without canvas letter-spacing the width comes out wrong, and so
+      // would the right-hand end: then the line keeps its own sides.
+      const sides = Math.abs(m.width - f.width) < 3;
+      out.push(text && Number.isFinite(base) ? {
+        left: sides ? -m.actualBoundingBoxLeft : 0,
+        right: sides ? m.actualBoundingBoxRight : f.width,
+        top: base - m.actualBoundingBoxAscent,
+        bottom: base + m.actualBoundingBoxDescent,
+        lead: lineH > f.height ? (lineH - f.height) / 2 : 0,
+      } : null);
+    }
+    return out;
+  }
+
   collectBlocks();
   window.addEventListener("load", collectBlocks);
+  // Lines rewrap on a resize, and the web font changes every measurement
+  // when it lands.
+  window.addEventListener("resize", collectBlocks);
+  if (document.fonts) document.fonts.ready.then(collectBlocks);
 
   // Read fresh every frame: boxes move with every scroll, and reading them
   // back to back costs one layout pass because nothing writes in between.
+  // A line of text also carries its `zone`, the whole of its line box, for
+  // telling whether the pointer is on it.
   function rects() {
     const out = [];
     sources.forEach((src, si) => {
@@ -165,20 +235,55 @@
         ? src.range.getClientRects()
         : [src.el.getBoundingClientRect()];
 
+      let line = 0;
       for (let bi = 0; bi < boxes.length; bi++) {
         const r = boxes[bi];
         if (r.width < 4 || r.height < 4) continue;
+        const ink = src.ink && src.ink[line++];
         if (r.bottom < -80 || r.top > vh + 80) continue;
-        out.push({
+        const box = {
           id: `${si}:${bi}`,
           left: r.left - PAD_X,
           right: r.right + PAD_X,
           top: r.top - PAD_Y,
           bottom: r.bottom + PAD_Y,
-        });
+        };
+        if (ink) {
+          box.zone = { ...box, top: r.top - ink.lead, bottom: r.bottom + ink.lead };
+          box.left = r.left + ink.left - PAD_X;
+          box.right = r.left + ink.right + PAD_X;
+          box.top = r.bottom + ink.top - PAD_Y;
+          box.bottom = r.bottom + ink.bottom + PAD_Y;
+        }
+        out.push(box);
       }
     });
+    fillTextGaps(out);
     return out;
+  }
+
+  // The space between one line of text and the next is too short to stand
+  // in, and a crawl would fit only between the title and the lede, where
+  // the figure ducked in off either end and stuck fast. So wherever a line
+  // sits over the next, the gap between them is filled in, and the text
+  // reads as one stepped block. The two lines' zones meet halfway across
+  // it, so a pointer resting in the gap is on one line or the other.
+  function fillTextGaps(out) {
+    const lines = out.filter((b) => b.zone);
+    for (const a of lines) {
+      for (const b of lines) {
+        const gap = b.top - a.bottom;
+        if (gap <= 0 || gap >= H) continue;
+        const left = Math.max(a.left, b.left);
+        const right = Math.min(a.right, b.right);
+        if (right - left < 1) continue;
+        // Only the next line down, not one further below it.
+        if (lines.some((c) => c !== a && c !== b && c.top >= a.bottom && c.bottom <= b.top &&
+                              c.left < right && c.right > left)) continue;
+        out.push({ id: `${a.id}|${b.id}`, fill: true, left, right, top: a.bottom, bottom: b.top });
+        if (a.zone.bottom < b.zone.top) a.zone.bottom = b.zone.top = (a.zone.bottom + b.zone.top) / 2;
+      }
+    }
   }
 
   function hits(r, x, y, h) {
@@ -265,7 +370,7 @@
     t0: performance.now(),
     dropFrom: null,
     dropTo: null,
-    grip: null,      // { id, dx, dy, toDy } while climbing or sliding
+    grip: null,      // { id, x, dx, dy, toDy } while climbing or sliding
     seat: null,      // the card it is hopping onto or sat on the corner of
     hopMs: 0,
     awaySince: 0,    // while sat: when the pointer went elsewhere
@@ -574,17 +679,26 @@
     ctx.globalAlpha = 1;
   }
 
-  // Perched on the logo: origin is the seat rather than the feet, so the
-  // legs hang down over the corner instead of stretching out in front.
+  // Perched on the logo's top right corner. The origin is the seat, on the
+  // top edge PERCH_IN from the corner: thighs run out along the top and
+  // over the corner, and the shins hang down clear of the logo's side.
+  // Hung straight down its face instead, white on the white mark, the legs
+  // vanished and the figure looked to be standing behind it. A hand is
+  // planted on the top behind, the other rests on a thigh.
   function posePerch(now) {
     const swing = Math.sin(now / 470) * 0.2;
-    limb(0, 0, 0.2 + swing, LEG * 0.52, 0.06 + swing * 0.6, LEG * 0.48);
-    limb(0, 0, 0.0 - swing, LEG * 0.52, -0.1 - swing * 0.6, LEG * 0.48);
-    const sho = TORSO;
-    line(0, 0, 0, sho);
-    limb(0, sho, -0.25, ARM * 0.5, -0.55, ARM * 0.5);
-    limb(0, sho, 0.3, ARM * 0.5, 0.62, ARM * 0.5);
-    head(sho + HEAD_OFF);
+    limb(0, 0, 1.52, LEG * 0.52, 0.1 + swing, LEG * 0.48);
+    limb(0, 0, 1.62, LEG * 0.52, -0.05 - swing * 0.6, LEG * 0.48);
+
+    const lean = 0.2;
+    const sx = -Math.sin(lean) * TORSO;   // TORSO is negative: upward
+    const sy = Math.cos(lean) * TORSO;
+    const hx = sx - Math.sin(lean) * HEAD_OFF;
+    const hy = sy + Math.cos(lean) * HEAD_OFF;
+    line(0, 0, sx, sy);
+    head(hy, hx);
+
+    seatedArms(sx, sy, [[-0.55, -0.72], [0.1, 0.32]], hx, hy, 0);
   }
 
   // Sat on a card's top-left corner: thighs running down the curve of the
@@ -678,7 +792,10 @@
     const on = seatUnderPointer();
     if (on) return { x: on.r.left + SEAT_IN, y: on.r.top - 1, seat: on.seat };
 
-    const r = blockAt(list, target.x, target.y, 1);
+    // On text, anywhere in a line's box counts, not just on its ink, or the
+    // pointer would fall through the space between two lines and above the
+    // capitals, and send the figure after a point it can never stand in.
+    const r = list.find((b) => !b.fill && hits(b.zone || b, target.x, target.y, 1));
     if (!r) return { x: target.x, y: target.y };
 
     const onTop = r.top - 3;
@@ -701,7 +818,9 @@
       const d = Math.hypot(c.x - buddy.x, c.y - buddy.y);
       if (d < bestD) { bestD = d; best = c; }
     }
-    return best;
+    // A corner it can stand on is somewhere to sit right on, not just near
+    // (see SNUG_DIST).
+    return { ...best, snug: open.length > 0 };
   }
 
   // Grab a block's near edge and start working up or down it. Returns false
@@ -709,7 +828,8 @@
   // finish instantly and re-trigger on the very next frame.
   function grab(list, wall, goUp, now) {
     const fromLeft = buddy.x < (wall.left + wall.right) * 0.5;
-    const edgeX = fromLeft ? wall.left - HALF_W - 2 : wall.right + HALF_W + 2;
+    const column = (r) => fromLeft ? r.left - HALF_W - 2 : r.right + HALF_W + 2;
+    let edgeX = column(wall);
 
     // Off the end of the wall, and on past anything else in line with it.
     // The gap between two columns of cards is too narrow to stand in, so
@@ -718,21 +838,62 @@
     // again and slide straight back down, over and over. It keeps going
     // until it comes out somewhere it can stand, or turns off into a row
     // gap on the way (see the climb and slide step).
+    //
+    // That card across the gap only clips the far side of the figure.
+    // Something reaching right across the path to the wall's side would be
+    // gone straight through: the end of a long line of text above or below
+    // a shorter one. One that sticks out only a little (the lede's first
+    // letters, a few pixels left of the title's) moves the path out to
+    // clear it; one that sticks out further is where the climb or slide
+    // stops, just short of it, for the figure to walk out round it.
+    //
+    // Each pass takes everything the figure would touch on the whole way
+    // from where it is, not just at the end: two lines of text can both be
+    // in the way at once, and stopping short of only the one found first
+    // can leave it inside the other.
+    const home = edgeX;
     let endY = goUp ? wall.top - 3 : wall.bottom + H + 3;
+    let short = false;
     for (let i = 0; i < 20; i++) {
-      const r = blockAt(list, edgeX, endY, H);
-      if (!r) break;
-      endY = goUp ? r.top - 3 : r.bottom + H + 3;
+      // Ahead of it only: not what it is standing on going up, or what is
+      // over its head going down.
+      const lo = goUp ? endY - H : buddy.y - H + 1;
+      const hi = goUp ? buddy.y - 1 : endY;
+      const inWay = list.filter((r) => r !== wall &&
+        edgeX + HALF_W > r.left && edgeX - HALF_W < r.right && r.bottom > lo && r.top < hi);
+      if (!inWay.length) break;
+
+      const across = inWay.filter((r) => fromLeft ? r.right > edgeX + HALF_W : r.left < edgeX - HALF_W);
+      const far = across.filter((r) => Math.abs(column(r) - home) > JUT);
+      if (far.length) {
+        endY = goUp ? Math.max(...far.map((r) => r.bottom)) + H + 3
+                    : Math.min(...far.map((r) => r.top)) - 3;
+        short = true;
+        break;
+      }
+      if (across.length) {
+        edgeX = fromLeft ? Math.min(...across.map(column)) : Math.max(...across.map(column));
+        continue;
+      }
+      const past = goUp ? Math.min(endY, ...inWay.map((r) => r.top - 3))
+                        : Math.max(endY, ...inWay.map((r) => r.bottom + H + 3));
+      if (past === endY) break;
+      endY = past;
     }
 
     const toDy = Math.max(band.top + H + 6, Math.min(band.bottom - 6, endY)) - wall.top;
     const fromDy = buddy.y - wall.top;
     if (Math.abs(toDy - fromDy) < 5) return false;
+    // Stopping short of an overhang it is already level with or past.
+    if (short && (goUp ? toDy > fromDy : toDy < fromDy)) return false;
 
+    // Straight onto the wall's edge, as ever (which also frees a figure
+    // that has blundered into the block); any step out from there to clear
+    // something further along is taken on the way.
     buddy.mode = goUp ? "climb" : "slide";
     buddy.facing = fromLeft ? 1 : -1;
     buddy.t0 = now;
-    buddy.grip = { id: wall.id, dx: edgeX - wall.left, dy: fromDy, toDy };
+    buddy.grip = { id: wall.id, x: home - wall.left, dx: edgeX - wall.left, dy: fromDy, toDy };
     return true;
   }
 
@@ -750,18 +911,23 @@
     resting = false;
     const list = rects();
     const goal = reachable(list);
-    goal.y = clampY(goal.y, H);
+    const clamped = clampY(goal.y, H);
+    // A corner moved to keep it inside the band may be nowhere to stand.
+    if (clamped !== goal.y) goal.snug = false;
+    goal.y = clamped;
     const dist = Math.hypot(goal.x - buddy.x, goal.y - buddy.y);
 
     // --- perched on the logo, waiting to jump off -------------------------
     if (buddy.mode === "perch") {
       // Measured on the mark itself, not the padded link, and seated on its
-      // top corner so the letters stay readable underneath.
+      // top corner so the letters stay readable underneath. A pixel above
+      // the top edge, so the thighs lie on it rather than across it.
       const mark = document.querySelector(".site-monogram .monogram-mark");
       if (mark) {
         const r = mark.getBoundingClientRect();
-        buddy.x = r.right - 3;
-        buddy.y = r.top + 1;
+        buddy.x = r.right - PERCH_IN;
+        buddy.y = r.top - 1;
+        buddy.facing = 1;
       }
       if (now - buddy.t0 > PERCH_MS) {
         buddy.mode = "drop";
@@ -851,7 +1017,8 @@
 
     // Only ever sit having finished a climb or slide, never part way up the
     // side of a block.
-    if (dist < CATCH_DIST && buddy.mode !== "climb" && buddy.mode !== "slide") {
+    const catchDist = goal.snug ? SNUG_DIST : CATCH_DIST;
+    if (dist < catchDist && buddy.mode !== "climb" && buddy.mode !== "slide") {
       chaseTime = 0;
 
       // On a card: hop up onto its corner rather than sit where it is.
@@ -932,7 +1099,12 @@
           g.dy += Math.sign(gap) * speed * dt;
         }
 
-        buddy.x = r.left + g.dx;
+        // Across onto the path grab() chose, where that steps out to clear
+        // something further along.
+        const side = g.dx - g.x;
+        g.x += Math.sign(side) * Math.min(Math.abs(side), SIDESTEP_SPEED * dt);
+
+        buddy.x = r.left + g.x;
         buddy.y = clampY(r.top + g.dy, H);
 
         // Working past the mouth of a gap that is too short to stand in
