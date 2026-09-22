@@ -439,7 +439,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ? copies[0].offsetLeft - originals[0].offsetLeft
       : copies[0].offsetTop - originals[0].offsetTop;
 
-    const SPEED = 0.35;      // px per frame at 60fps
+    // Per second, not per frame: a per-frame step ran 4x fast on a 240 Hz
+    // screen. 21 px/s is the original 0.35 px a frame at 60fps.
+    const SPEED = 21;        // px per second
     const IDLE_DELAY = 1400; // ms of quiet before the ticker picks back up
     let paused = false;
     let resumeTimer;
@@ -487,7 +489,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // The position is kept here as a float and written out whole. Some
-    // browsers round a scroll offset to the device pixel, and 0.35 px
+    // browsers round a scroll offset to the device pixel, and sub-pixel
     // steps would round away to nothing on a 1x screen.
     let at = 1;
 
@@ -509,7 +511,7 @@ document.addEventListener("DOMContentLoaded", () => {
             at += gap * (1 - Math.exp(-RATE * dt));
           }
         } else if (!paused && inView) {
-          at += SPEED;
+          at += SPEED * dt;
         }
         // Wrap in both directions so scrolling back stays seamless too. The
         // glide's target wraps with it, so a glide carries across the seam.
