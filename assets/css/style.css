@@ -1637,6 +1637,23 @@ body.viewer-open {
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
+/* Finished steps: a filled dot, and the rail from it down to the next dot
+   is filled in too, so the completed stretch reads as one solid line. */
+.roadmap li.is-done::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.roadmap li.is-done::after {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 12px;
+  bottom: -12px;
+  width: 2px;
+  background: var(--accent);
+}
+
 .roadmap-when {
   display: block;
   font-family: var(--font-mono);

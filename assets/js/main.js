@@ -276,10 +276,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // The season plan marks the step the programme is on. Each step carries the
-  // date it starts, so the marker walks down the list with the calendar rather
-  // than going stale between edits. The markup ships with the first step
-  // marked, which is what shows if scripting is off.
+  // The season plan marks the step the programme is on and fills in the ones
+  // already finished. Each step carries the date it starts, so the marker
+  // walks down the list with the calendar rather than going stale between
+  // edits. The markup ships with the current step marked, which is what shows
+  // if scripting is off.
   document.querySelectorAll(".roadmap").forEach((list) => {
     const steps = Array.from(list.querySelectorAll("li[data-from]"));
     if (!steps.length) return;
@@ -292,8 +293,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     if (!current) return;
 
-    steps.forEach((step) => {
+    const currentIndex = steps.indexOf(current);
+    steps.forEach((step, i) => {
       step.classList.remove("is-current");
+      step.classList.toggle("is-done", i < currentIndex);
       const marker = step.querySelector(".roadmap-now");
       if (marker) marker.remove();
     });
