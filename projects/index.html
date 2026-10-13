@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://api.fontshare.com" />
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css?v=39" />
+  <link rel="stylesheet" href="../assets/css/style.css?v=41" />
   <script>
     self.ModelViewerElement = self.ModelViewerElement || {};
     self.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
@@ -79,8 +79,8 @@
 
       <div class="media-row media-row-narrow">
         <div class="figure">
-          <img src="../assets/img/projects/baker-bot/hero-suit.jpg" alt="Baker Bot from behind, wearing a padded beige muscle suit over the torso and arms, waist-up on a workbench." loading="lazy" />
-          <p class="figure-caption">The finished robot in its padded muscle suit.</p>
+          <img src="../assets/img/projects/baker-bot/hero-wink.jpg" alt="Baker Bot on a workbench mid-wink, one hand raised with a finger pointing up, its clear-sided aluminum torso showing the control boards and LiFePO4 battery inside." loading="lazy" />
+          <p class="figure-caption">Full-body shot of the robot winking, mid-assembly.</p>
         </div>
         <div class="figure">
           <img src="../assets/img/projects/baker-bot/full-cad.jpg" alt="Full CAD render of the Baker Bot showing the head, torso frame, battery, control boards, and both red and blue arm assemblies." loading="lazy" />
@@ -342,6 +342,467 @@
 
 
   <!-- P.02 -->
+  <section class="project-hero" id="baja-split-drive-shaft">
+    <div class="wrap">
+      <h2>Split Drive Shaft (Western Baja SAE)</h2>
+      <div class="project-meta">
+        <div><strong>Role</strong>Mechanical Design &amp; Assembly</div>
+        <div><strong>Timeline</strong>March 2026 to Present</div>
+      </div>
+      <p class="lede">
+        A two-U-joint drive shaft for Western Baja SAE's four-wheel-drive
+        off-road car, with custom yokes I designed for the team to make
+        in-house. Splitting the shaft lets the engine sit about 6 inches
+        lower, bolted straight to the frame.
+      </p>
+    </div>
+  </section>
+
+  <section class="project-body">
+    <div class="wrap">
+
+      <div class="media-row media-row-baja-lead">
+        <div class="figure">
+          <img src="../assets/img/projects/baja/car-jump.jpg" alt="Western Baja SAE's mud-covered car in mid-air off the crest of a dirt jump, all four wheels off the ground, with its shadow on the track below and a wall of green trees behind." loading="lazy" />
+          <p class="figure-caption">The team's current car during the 4-hour endurance race.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baja/team-ohio-2026.jpg" alt="Around forty members of Western Baja SAE posed in the sun around their mud-caked car, with a driver in the seat and the dirt course and trees behind them." loading="lazy" />
+          <p class="figure-caption">The team at Baja SAE Ohio 2026.</p>
+        </div>
+      </div>
+
+      <h3>Overview</h3>
+      <p>
+        Western Baja SAE designs and races a single-seat off-road car in the
+        Baja SAE series, which runs endurance races, hill climbs, and
+        suspension courses over rough terrain. The car is four-wheel drive, so
+        power has to get from the gearbox at the back of the car to a front
+        differential at the front. In 2026 I competed with the team at Baja
+        SAE New York in June and Baja SAE Ohio in September.
+      </p>
+      <p>
+        With a one-piece shaft, the gearbox output and the front differential
+        have to line up in a straight line, which forces the engine to sit
+        high in the frame. My split drive shaft removes that constraint. The
+        shaft leaves the gearbox off to one side of the car, angles across
+        through a U-joint at each end, and arrives at the front differential
+        on the car's centreline. That frees the engine to drop about 6 inches
+        and mount directly to the lower frame, which makes the mounting
+        stronger, lowers the centre of gravity, and opens room to lower the
+        driver's seat too.
+      </p>
+      <p>
+        I packaged the shaft in the frame, set the joint geometry, and
+        designed the custom yokes. Then I ran the stress analysis and weight
+        optimization that settled the final design: an all-steel shaft,
+        now being finalized and built.
+      </p>
+
+      <h3>My Contributions</h3>
+      <ul class="contrib-list">
+        <li>Routed the driveline through the new frame, from the offset gearbox output to the front differential on the centreline.</li>
+        <li>Set up the two U-joints at equal operating angles of about 16.2&deg;, so the speed fluctuation from one joint is cancelled by the other.</li>
+        <li>Ran SolidWorks FEA on aluminum and steel yokes at the full gearbox torque, which ruled out aluminum and moved the whole shaft to steel.</li>
+        <li>Designed custom 4130 steel weld yokes around a purchased cross, and cut about 30% of each yoke's weight using the FEA safety-factor results.</li>
+        <li>Built a spreadsheet optimizer that sizes the tube's diameter and wall for minimum weight against both yielding and buckling, across aluminum, steel, and titanium.</li>
+        <li>Set the clearances between the yokes for shock and vibration, using the CAD assembly and 3D-printed models.</li>
+      </ul>
+
+      <h3>Routing the Shaft</h3>
+      <div class="text-figure-row text-figure-row-narrow">
+        <div class="text-figure-row-text">
+          <p>
+            Seen from underneath, the problem the shaft solves is clear. The
+            engine and gearbox sit at the back of the car, and the gearbox
+            output is off to one side. The front differential sits on the
+            centreline at the front. A straight shaft between the two would
+            need the engine raised to line them up.
+          </p>
+          <p>
+            Instead, a short section leaves the gearbox, a U-joint turns the
+            shaft onto an angled path, and a long section runs forward along
+            the floor of the frame. A second U-joint at the front turns it
+            back into line with the differential. The shaft stays low, below
+            the driver, and clear of the frame tubes along its full length.
+          </p>
+          <p>
+            Lowering the engine by about 6 inches is the main payoff. The
+            engine is one of the heaviest parts of the car, so dropping it
+            lowers the whole car's centre of gravity, which helps the car stay
+            stable on side slopes and through fast corners. Mounting the engine
+            straight to the lower frame members also gives it a stiffer, more
+            direct load path than a raised mount.
+          </p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baja/bottom-view.jpg" alt="Bottom view of the frame CAD: the engine and gearbox at the bottom of the image, with the drive shaft leaving from one side and angling across the frame to the front differential on the centreline at the top." loading="lazy" />
+          <p class="figure-caption">Bottom view of the shaft path, gearbox to front differential.</p>
+        </div>
+      </div>
+
+      <h3>Two Joints, Equal Angles</h3>
+      <p>
+        A single U-joint running at an angle does not turn at a constant
+        speed. Even if the input spins perfectly steadily, the output speeds
+        up and slows down twice every revolution, and the bigger the angle,
+        the bigger the swing. On a drive shaft that becomes vibration, and
+        extra load on the joints, the gearbox, and the differential.
+      </p>
+      <p>
+        The fix is to use two joints at equal angles. The first joint makes
+        the middle shaft speed up and slow down; the second joint, set at the
+        same angle and phased to mirror the first, adds exactly the opposite
+        variation. The two cancel out, so the front differential receives the
+        same smooth rotation that left the gearbox. That is why the geometry
+        is built around one joint at each end of the long section, both
+        running at the same angle.
+      </p>
+
+      <div class="callout">
+        <p class="eyebrow">Why Equal Angles Matter</p>
+        <ul>
+          <li>Operating angle at each joint: about 16.2&deg;.</li>
+          <li>For a single joint at that angle, the output speed swings between roughly 96% and 104% of the input speed (between cos&nbsp;16.2&deg; and 1&nbsp;/&nbsp;cos&nbsp;16.2&deg;), twice per revolution.</li>
+          <li>With a second joint at an equal angle, the two swings cancel, and the differential sees a constant speed.</li>
+        </ul>
+        <p>
+          The same ~4% swing that cancels at the differential still exists
+          inside the middle section of the shaft, so the shaft and yokes are
+          sized with margin for it.
+        </p>
+      </div>
+
+      <h3>From Two Metals to All Steel</h3>
+      <p>
+        The first design used two metals: a 4130 chromoly steel stub at the
+        gearbox, which carries the splines that engage the gearbox output,
+        and a 6061 aluminum tube for the long run forward, to save weight.
+        Each yoke is welded to its shaft, and steel can't be welded to
+        aluminum, so the yoke on the long section had to be aluminum as well.
+      </p>
+      <p>
+        The yokes are built around a purchased cross from All Balls Racing,
+        and choosing a small cross keeps the whole joint light. A small cross
+        means small yokes, though, and that's where aluminum ran into trouble.
+        I loaded both yoke designs in SolidWorks Simulation with the full
+        300&nbsp;N&middot;m (2,655&nbsp;lb&middot;in) from the gearbox. The
+        cross pushes on the two ears of the yoke as a pair of equal and
+        opposite forces, so each force is the torque divided by the distance
+        across the cross: 300&nbsp;N&middot;m over about 34&nbsp;mm, or
+        8,824&nbsp;N.
+      </p>
+      <p>
+        At the size the small cross allows, the 6061-T6 aluminum yoke went
+        past its 275&nbsp;MPa yield even unwelded, and not just where the
+        cross bears on it: the sides of the ears yielded too. Welding only
+        makes that worse, because the heat softens 6061 next to the weld well
+        below its normal strength, so aluminum was ruled out. The same yoke in 4130 steel held the load. With steel
+        yokes at both ends, the long section went to steel too, so the shaft
+        is now steel from end to end, with every yoke welded straight on.
+      </p>
+
+      <div class="media-row media-row-fea">
+        <div class="figure">
+          <img src="../assets/img/projects/baja/fea-aluminum.jpg?v=2" alt="SolidWorks von Mises stress plot of the 6061-T6 aluminum yoke against a 275 MPa yield strength: red, past yield, inside both bearing bores and in bands down the sides of the ears, with green through the rest of the ears and blue in the base." loading="lazy" />
+          <p class="figure-caption">6061-T6 aluminum yoke, unwelded, at 8,824&nbsp;N: red is past its 275&nbsp;MPa yield.</p>
+        </div>
+        <div class="figure">
+          <img src="../assets/img/projects/baja/fea-steel.jpg" alt="SolidWorks von Mises stress plot of the 4130 steel yoke: green and yellow through the ears, orange only on the inside faces of the bearing bores, and blue through the base, against a yield strength of 460 MPa." loading="lazy" />
+          <p class="figure-caption">4130 steel yoke under the same load, against a 460&nbsp;MPa yield.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p class="eyebrow">Reading the Plots</p>
+        <p>
+          In both yokes the highest stresses sit on the inside faces of the
+          bearing bores, exactly where the cross pushes on them. The model
+          applies that force over a small contact patch, and FEA reports
+          stress at a spot like that which keeps climbing as the mesh gets
+          finer, instead of settling on a real value. Those readings come
+          from how the load is modelled, not from the part, so I ignored
+          them. What decides whether a yoke holds is the stress just away
+          from the contact, through the ears and down into the base. In the
+          aluminum yoke that stress still passes yield on the sides of the
+          ears; in the steel yoke it stays below steel's 460&nbsp;MPa yield.
+        </p>
+      </div>
+
+      <h3>Lightening the Yokes</h3>
+      <div class="text-figure-row text-figure-row-2fr">
+        <div class="text-figure-row-text">
+          <p>
+            Steel is almost three times as dense as aluminum, so every bit of
+            material in a steel yoke costs weight. SolidWorks can plot the
+            factor of safety at every point in the part, and those plots
+            showed whole regions with extremely high factors of safety,
+            material that was carrying almost no load. I cut those regions
+            out in ways that are simple to machine, taking roughly 30% off
+            the weight of each yoke while leaving material everywhere the
+            load actually flows.
+          </p>
+          <p>
+            The joint also needs room to move. Shock loads and vibration make
+            the joint flex and rattle as it spins, so I added extra clearance
+            between the two yokes to make sure they can never collide, without
+            giving back the thickness the optimization had trimmed. I worked
+            out that clearance in the CAD assembly and checked it with
+            3D-printed models of the joint.
+          </p>
+        </div>
+        <div class="figure">
+          <model-viewer
+            src="../assets/models/baja-ujoint-steel.glb"
+            alt="Interactive 3D model of the steel U-joint: two lightened steel yokes held together by the purchased cross."
+            camera-controls
+            touch-action="pan-y"
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="18deg"
+            shadow-intensity="1"
+            environment-image="../assets/env/aircraft_workshop_1k.hdr"
+            exposure="1.15"
+            tone-mapping="neutral"
+            loading="lazy"
+            class="model-viewer-inline model-viewer-portrait">
+            <div slot="progress-bar"></div>
+            <span slot="poster">Loading 3D model…</span>
+          </model-viewer>
+          <p class="figure-caption">The steel U-joint in 3D: two lightened yokes and the cross. Drag to rotate, scroll to zoom.</p>
+        </div>
+      </div>
+
+      <h3>Optimizing the Shaft for Weight</h3>
+      <p>
+        Switching to steel settled the strength question but raised a weight
+        one: how much heavier would an all-steel shaft be? I wanted to compare
+        it with the mixed aluminum-and-steel shaft it replaced, with the
+        current car's drive shaft, and with titanium, which is lighter than
+        steel for the same strength but much more expensive and harder to
+        machine.
+      </p>
+      <p>
+        For that comparison to be fair, every option had to be at its own
+        lightest, so I built a spreadsheet that optimizes the tube for each
+        material. A tube carrying torque can fail in two ways. It can yield,
+        which calls for a thicker wall, and for a given torque a bigger
+        diameter needs less wall, so yielding on its own keeps pushing toward
+        bigger, thinner tubes. Or it can buckle, where a large tube with a
+        thin wall wrinkles and collapses as it twists. Buckling pushes the
+        other way, so between the two there is a real lightest tube.
+      </p>
+      <p>
+        For each material, the spreadsheet sweeps the outer diameter in
+        0.01&nbsp;inch steps. At every diameter it finds the thinnest wall
+        that passes both checks, each with a factor of safety of 2, and never
+        goes below the thinnest wall that can be made and welded in that
+        material. Then it picks the lightest. The yield check uses the shear
+        stress from the 300&nbsp;N&middot;m design torque, and the buckling
+        check uses the Timoshenko critical stress for a long, thin-walled
+        tube, with a 0.7 knockdown factor because real tubes buckle below the
+        ideal value.
+      </p>
+
+      <div class="callout">
+        <p class="eyebrow">What the Optimizer Found</p>
+        <ul class="result-list">
+          <li>Optimized steel tube: <strong>1.64&nbsp;in outer diameter with a 0.035&nbsp;in wall.</strong></li>
+          <li>The assembled all-steel shaft comes to <strong>3.94&nbsp;lb</strong>, about 6% lighter than the current car's 4.19&nbsp;lb shaft, even though it's all steel.</li>
+          <li>The mixed aluminum-and-steel shaft would have been 3.12&nbsp;lb, but its aluminum yokes failed the FEA.</li>
+          <li>Titanium would bring it down to 2.83&nbsp;lb, at roughly $440 against about $256 for steel, and it is much harder to machine.</li>
+        </ul>
+        <p>
+          These sizes are the optimization step. Next, each tube is rounded to
+          the closest-fitting standard tube size before anything is ordered.
+        </p>
+      </div>
+
+      <p>
+        The full spreadsheet is below, rebuilt to run in the browser. Every
+        input is editable: change the torque, the safety factors, or any
+        material property, and the optimum, the chart, and the design
+        comparison all update.
+      </p>
+      <div class="figure">
+        <button type="button" class="figure-clickable figure-clickable-wide" data-viewer-open="optimizer-viewer" data-cta="Open the Optimizer" aria-haspopup="dialog">
+          <img src="../assets/img/projects/baja/optimizer-preview.jpg" alt="Preview of the drive shaft optimizer spreadsheet: a chart of tube mass per inch against outer diameter for aluminum, steel, and titanium, each curve with its lightest point marked." loading="lazy" />
+        </button>
+        <p class="figure-caption figure-caption-center">Editable! Click to open the optimizer, then change any blue cell and watch everything recalculate.</p>
+      </div>
+
+      <h3>Where It Stands</h3>
+      <p>
+        The all-steel design is being finalized and built now. It goes on the
+        team's new car, which will be racing before the end of the school
+        year.
+      </p>
+
+      <h3>Other Work on the Team</h3>
+      <p>
+        Alongside the drive shaft, I've worked on other parts of the car,
+        including sprag bearing wheel hubs and a redesign of the wheel rims to
+        reduce weight.
+      </p>
+
+    </div>
+  </section>
+
+  <div class="ppt-viewer-overlay" id="optimizer-viewer" aria-hidden="true" role="dialog" aria-label="Driveshaft material optimization spreadsheet">
+    <div class="ppt-viewer-backdrop" data-viewer-close></div>
+    <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close optimizer">&times;</button>
+    <div class="ppt-viewer-panel xl-panel">
+      <div class="xl-app" data-optimizer></div>
+    </div>
+  </div>
+
+
+  <!-- P.03 -->
+  <section class="project-hero" id="seawater-splitting-catalysts">
+    <div class="wrap">
+      <h2>High-Entropy Alloy Catalysts for Seawater Splitting</h2>
+      <div class="project-meta">
+        <div><strong>Role</strong>Undergraduate Research Intern</div>
+        <div><strong>Timeline</strong>May to August 2026</div>
+      </div>
+      <p class="lede">
+        A noble-metal-free high-entropy alloy catalyst engineered for overall
+        alkaline seawater splitting, developed under Dr. Amir Mirzaei in
+        Western's Department of Physics.
+      </p>
+    </div>
+  </section>
+
+  <section class="project-body">
+    <div class="wrap">
+
+      <h3>Overview</h3>
+      <div class="text-figure-row">
+        <div class="text-figure-row-text">
+          <p>
+            About 95% of hydrogen production today still relies on fossil fuels,
+            and the catalysts that make green hydrogen viable through water
+            electrolysis are usually made from platinum, iridium, or ruthenium,
+            some of the rarest and most expensive metals on Earth. Scaling green
+            hydrogen means replacing them with catalysts made from abundant,
+            affordable elements, and doing it with seawater rather than
+            freshwater, since freshwater is a limited resource while seawater is
+            effectively infinite. My project, under Dr. Amir Mirzaei in the
+            Department of Physics, was to design and optimize exactly that: a
+            bifunctional catalyst for overall alkaline seawater splitting built
+            entirely from earth-abundant metals. In parallel, the lab also had me
+            working on high-entropy oxide semiconductors for photocatalytic
+            hydrogen evolution, a related but separate thread not covered in the
+            presentation below.
+          </p>
+          <p>
+            The catalyst is a high-entropy alloy (HEA), NiFeCoMoCr, electrodeposited
+            onto nickel foam for high surface area. HEAs combine five or more
+            elements into one alloy, which produces electronic and structural
+            properties, the "cocktail effect", that none of the individual metals
+            have on their own. I used AI and machine learning to process
+            literature and experimental datasets and narrow down which metal
+            combinations were most promising before committing lab time to them.
+            Once the composition was set, I ran a systematic, iterative
+            optimization of the fabrication process: testing nickel foam against
+            titanium oxide nanotubes and carbon paper as substrates, sweeping
+            electrodeposition pulse counts to tune coating thickness, and finally
+            applying a hydrothermal ammonium fluoride treatment to reconstruct the
+            surface and expose more active area. Each stage was evaluated by
+            electrodepositing samples and testing them with linear sweep
+            voltammetry, cyclic voltammetry, and Tafel analysis on a potentiostat,
+            narrowing in on nickel foam, 6,000 electrodeposition pulses, and a
+            mild 0.05M fluorination step as the best-performing combination.
+          </p>
+          <p>
+            I validated the optimized catalyst in simulated alkaline seawater
+            (1M KOH with 0.5M NaCl added to approximate natural seawater
+            chlorides) rather than just clean freshwater electrolyte, and it held
+            up: strong resistance to chloride-driven corrosion and a stable
+            potential over extended chronopotentiometry testing. Benchmarked
+            against five recent high-entropy alloy catalysts from the literature
+            and against noble-metal standards (RuO<sub>2</sub> and Pt/C), the
+            final catalyst matched the best oxygen-evolution performance and
+            exceeded every catalyst in the comparison, noble metals included, on
+            hydrogen evolution. I presented these results at Western's 2026 USRI
+            Research Conference, and they're now being carried forward for
+            publication, with an incoming student continuing the work in the lab.
+          </p>
+        </div>
+        <div class="figure-stack">
+          <div class="figure">
+            <img src="../assets/img/projects/seawater-hea/research-team.jpg" alt="Marc Masgoret with Dr. Amir Mirzaei and fellow members of his research group, sitting together at an outdoor table." loading="lazy" />
+            <p class="figure-caption">With Dr. Amir Mirzaei and fellow members of his research group.</p>
+          </div>
+
+          <div class="hp-video hp-video-compact">
+            <div class="hp-video-row">
+              <span class="hp-sign hp-sign-neg">&minus;</span>
+              <span class="hp-sign hp-sign-pos">+</span>
+            </div>
+            <video class="hp-video-media" autoplay loop muted playsinline poster="../assets/img/projects/seawater-hea/hydrogen-production-poster.jpg?v=2">
+              <source src="../assets/img/projects/seawater-hea/hydrogen-production.webm?v=2" type="video/webm" />
+              <source src="../assets/img/projects/seawater-hea/hydrogen-production.mp4?v=2" type="video/mp4" />
+            </video>
+            <div class="hp-video-row">
+              <span class="hp-label hp-label-hydrogen"><span class="hp-label-arrow">&uarr;</span>Hydrogen</span>
+              <span class="hp-label hp-label-oxygen"><span class="hp-label-arrow">&uarr;</span>Oxygen</span>
+            </div>
+            <p class="figure-caption hp-caption-left">
+              <em>Hydrogen and oxygen evolving off the electrodes during a
+              bench-scale electrolysis test.</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Presentation</h3>
+      <p>A short presentation covering my work in more depth.</p>
+      <div class="figure">
+        <button type="button" class="figure-clickable" data-viewer-open="ppt-viewer-seawater" aria-haspopup="dialog">
+          <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Title slide of the presentation: High-Entropy Alloy Development for Overall Seawater Splitting, by Marc Masgoret, supervised by Dr. Amir Mirzaei." loading="lazy" />
+        </button>
+        <p class="figure-caption figure-caption-center">Click to view the full presentation.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="ppt-viewer-overlay" id="ppt-viewer-seawater" aria-hidden="true" role="dialog" aria-label="High-Entropy Alloy Development for Overall Seawater Splitting, full presentation">
+    <div class="ppt-viewer-backdrop" data-viewer-close></div>
+    <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close presentation viewer">&times;</button>
+    <div class="ppt-viewer-panel">
+      <div class="ppt-viewer-scroll">
+        <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Slide 1" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-02.jpg" alt="Slide 2" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-03.jpg" alt="Slide 3" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-04.jpg" alt="Slide 4" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-05.jpg" alt="Slide 5" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-06.jpg" alt="Slide 6" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-07.jpg" alt="Slide 7" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-08.jpg" alt="Slide 8" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-09.jpg" alt="Slide 9" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-10.jpg" alt="Slide 10" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-11.jpg" alt="Slide 11" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-12.jpg" alt="Slide 12" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-13.jpg" alt="Slide 13" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-14.jpg" alt="Slide 14" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-15.jpg" alt="Slide 15" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-16.jpg" alt="Slide 16" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-17.jpg" alt="Slide 17" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-18.jpg" alt="Slide 18" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-19.jpg" alt="Slide 19" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-20.jpg" alt="Slide 20" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-21.jpg" alt="Slide 21" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-22.jpg" alt="Slide 22" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-23.jpg" alt="Slide 23" loading="lazy" />
+        <img src="../assets/img/projects/seawater-hea/slide-24.jpg" alt="Slide 24" loading="lazy" />
+      </div>
+    </div>
+  </div>
+
+
+  <!-- P.04 -->
   <section class="project-hero" id="mechatronics-sorting-system">
     <div class="wrap">
       <h2>Autonomous Collection &amp; Sorting Robot</h2>
@@ -762,358 +1223,6 @@
           View on GitHub
         </a>
       </div>
-
-    </div>
-  </section>
-
-
-  <!-- P.03 -->
-  <section class="project-hero" id="seawater-splitting-catalysts">
-    <div class="wrap">
-      <h2>High-Entropy Alloy Catalysts for Seawater Splitting</h2>
-      <div class="project-meta">
-        <div><strong>Role</strong>Undergraduate Research Intern</div>
-        <div><strong>Timeline</strong>May to August 2026</div>
-      </div>
-      <p class="lede">
-        A noble-metal-free high-entropy alloy catalyst engineered for overall
-        alkaline seawater splitting, developed under Dr. Amir Mirzaei in
-        Western's Department of Physics.
-      </p>
-    </div>
-  </section>
-
-  <section class="project-body">
-    <div class="wrap">
-
-      <h3>Overview</h3>
-      <div class="text-figure-row">
-        <div class="text-figure-row-text">
-          <p>
-            About 95% of hydrogen production today still relies on fossil fuels,
-            and the catalysts that make green hydrogen viable through water
-            electrolysis are usually made from platinum, iridium, or ruthenium,
-            some of the rarest and most expensive metals on Earth. Scaling green
-            hydrogen means replacing them with catalysts made from abundant,
-            affordable elements, and doing it with seawater rather than
-            freshwater, since freshwater is a limited resource while seawater is
-            effectively infinite. My project, under Dr. Amir Mirzaei in the
-            Department of Physics, was to design and optimize exactly that: a
-            bifunctional catalyst for overall alkaline seawater splitting built
-            entirely from earth-abundant metals. In parallel, the lab also had me
-            working on high-entropy oxide semiconductors for photocatalytic
-            hydrogen evolution, a related but separate thread not covered in the
-            presentation below.
-          </p>
-          <p>
-            The catalyst is a high-entropy alloy (HEA), NiFeCoMoCr, electrodeposited
-            onto nickel foam for high surface area. HEAs combine five or more
-            elements into one alloy, which produces electronic and structural
-            properties, the "cocktail effect", that none of the individual metals
-            have on their own. I used AI and machine learning to process
-            literature and experimental datasets and narrow down which metal
-            combinations were most promising before committing lab time to them.
-            Once the composition was set, I ran a systematic, iterative
-            optimization of the fabrication process: testing nickel foam against
-            titanium oxide nanotubes and carbon paper as substrates, sweeping
-            electrodeposition pulse counts to tune coating thickness, and finally
-            applying a hydrothermal ammonium fluoride treatment to reconstruct the
-            surface and expose more active area. Each stage was evaluated by
-            electrodepositing samples and testing them with linear sweep
-            voltammetry, cyclic voltammetry, and Tafel analysis on a potentiostat,
-            narrowing in on nickel foam, 6,000 electrodeposition pulses, and a
-            mild 0.05M fluorination step as the best-performing combination.
-          </p>
-          <p>
-            I validated the optimized catalyst in simulated alkaline seawater
-            (1M KOH with 0.5M NaCl added to approximate natural seawater
-            chlorides) rather than just clean freshwater electrolyte, and it held
-            up: strong resistance to chloride-driven corrosion and a stable
-            potential over extended chronopotentiometry testing. Benchmarked
-            against five recent high-entropy alloy catalysts from the literature
-            and against noble-metal standards (RuO<sub>2</sub> and Pt/C), the
-            final catalyst matched the best oxygen-evolution performance and
-            exceeded every catalyst in the comparison, noble metals included, on
-            hydrogen evolution. I presented these results at Western's 2026 USRI
-            Research Conference, and they're now being carried forward for
-            publication, with an incoming student continuing the work in the lab.
-          </p>
-        </div>
-        <div class="figure-stack">
-          <div class="figure">
-            <img src="../assets/img/projects/seawater-hea/research-team.jpg" alt="Marc Masgoret with Dr. Amir Mirzaei and fellow members of his research group, sitting together at an outdoor table." loading="lazy" />
-            <p class="figure-caption">With Dr. Amir Mirzaei and fellow members of his research group.</p>
-          </div>
-
-          <div class="hp-video hp-video-compact">
-            <div class="hp-video-row">
-              <span class="hp-sign hp-sign-neg">&minus;</span>
-              <span class="hp-sign hp-sign-pos">+</span>
-            </div>
-            <video class="hp-video-media" autoplay loop muted playsinline poster="../assets/img/projects/seawater-hea/hydrogen-production-poster.jpg?v=2">
-              <source src="../assets/img/projects/seawater-hea/hydrogen-production.webm?v=2" type="video/webm" />
-              <source src="../assets/img/projects/seawater-hea/hydrogen-production.mp4?v=2" type="video/mp4" />
-            </video>
-            <div class="hp-video-row">
-              <span class="hp-label hp-label-hydrogen"><span class="hp-label-arrow">&uarr;</span>Hydrogen</span>
-              <span class="hp-label hp-label-oxygen"><span class="hp-label-arrow">&uarr;</span>Oxygen</span>
-            </div>
-            <p class="figure-caption hp-caption-left">
-              <em>Hydrogen and oxygen evolving off the electrodes during a
-              bench-scale electrolysis test.</em>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <h3>Presentation</h3>
-      <p>A short presentation covering my work in more depth.</p>
-      <div class="figure">
-        <button type="button" class="figure-clickable" data-viewer-open="ppt-viewer-seawater" aria-haspopup="dialog">
-          <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Title slide of the presentation: High-Entropy Alloy Development for Overall Seawater Splitting, by Marc Masgoret, supervised by Dr. Amir Mirzaei." loading="lazy" />
-        </button>
-        <p class="figure-caption figure-caption-center">Click to view the full presentation.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="ppt-viewer-overlay" id="ppt-viewer-seawater" aria-hidden="true" role="dialog" aria-label="High-Entropy Alloy Development for Overall Seawater Splitting, full presentation">
-    <div class="ppt-viewer-backdrop" data-viewer-close></div>
-    <button type="button" class="ppt-viewer-close" data-viewer-close aria-label="Close presentation viewer">&times;</button>
-    <div class="ppt-viewer-panel">
-      <div class="ppt-viewer-scroll">
-        <img src="../assets/img/projects/seawater-hea/slide-01.jpg" alt="Slide 1" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-02.jpg" alt="Slide 2" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-03.jpg" alt="Slide 3" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-04.jpg" alt="Slide 4" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-05.jpg" alt="Slide 5" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-06.jpg" alt="Slide 6" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-07.jpg" alt="Slide 7" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-08.jpg" alt="Slide 8" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-09.jpg" alt="Slide 9" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-10.jpg" alt="Slide 10" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-11.jpg" alt="Slide 11" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-12.jpg" alt="Slide 12" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-13.jpg" alt="Slide 13" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-14.jpg" alt="Slide 14" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-15.jpg" alt="Slide 15" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-16.jpg" alt="Slide 16" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-17.jpg" alt="Slide 17" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-18.jpg" alt="Slide 18" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-19.jpg" alt="Slide 19" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-20.jpg" alt="Slide 20" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-21.jpg" alt="Slide 21" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-22.jpg" alt="Slide 22" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-23.jpg" alt="Slide 23" loading="lazy" />
-        <img src="../assets/img/projects/seawater-hea/slide-24.jpg" alt="Slide 24" loading="lazy" />
-      </div>
-    </div>
-  </div>
-
-
-  <!-- P.04 -->
-  <section class="project-hero" id="baja-split-drive-shaft">
-    <div class="wrap">
-      <h2>Split Drive Shaft (Western Baja SAE)</h2>
-      <div class="project-meta">
-        <div><strong>Role</strong>Mechanical Design &amp; Assembly</div>
-        <div><strong>Timeline</strong>March 2026 to Present</div>
-      </div>
-      <p class="lede">
-        A two-U-joint drive shaft for Western Baja SAE's four-wheel-drive
-        off-road car. Splitting the shaft lets the engine sit about 6 inches
-        lower, bolted straight to the frame. My own project, designed for the
-        team's 2027 car.
-      </p>
-    </div>
-  </section>
-
-  <section class="project-body">
-    <div class="wrap">
-
-      <div class="media-row media-row-baja">
-        <div class="figure">
-          <img src="../assets/img/projects/baja/car.jpg" alt="Western Baja SAE's car number 6 sliding through a dirt corner on a wooded course, kicking up mud, with the driver in a purple suit." loading="lazy" />
-          <p class="figure-caption">The team's current car at competition.</p>
-        </div>
-        <div class="figure">
-          <img src="../assets/img/projects/baja/full-cad-wide.jpg" alt="SolidWorks render of the new car's tube frame in teal with the green engine and gearbox low at the rear, and the split drive shaft running forward along the bottom of the frame to the front differential." loading="lazy" />
-          <p class="figure-caption">The new frame in CAD, engine dropped low at the rear.</p>
-        </div>
-      </div>
-
-      <h3>Overview</h3>
-      <p>
-        Western Baja SAE designs and races a single-seat off-road car in the
-        Baja SAE series, which runs endurance races, hill climbs, and
-        suspension courses over rough terrain. The car is four-wheel drive, so
-        power has to get from the gearbox at the back of the car to a front
-        differential at the front. In 2026 I competed with the team at Baja
-        SAE New York in June and Baja SAE Ohio in September.
-      </p>
-      <p>
-        With a one-piece shaft, the gearbox output and the front differential
-        have to line up in a straight line, which forces the engine to sit
-        high in the frame. My split drive shaft removes that constraint. The
-        shaft leaves the gearbox off to one side of the car, angles across
-        through a U-joint at each end, and arrives at the front differential
-        on the car's centreline. That frees the engine to drop about 6 inches
-        and mount directly to the lower frame, which makes the mounting
-        stronger, lowers the centre of gravity, and opens room to lower the
-        driver's seat too.
-      </p>
-      <p>
-        I packaged the shaft in the frame, set the joint geometry, designed
-        the custom yokes, and planned the validation and testing that has to
-        happen before it goes on the car.
-      </p>
-
-      <h3>My Contributions</h3>
-      <ul class="contrib-list">
-        <li>Routed the driveline through the new frame, from the offset gearbox output to the front differential on the centreline.</li>
-        <li>Set up the two U-joints at equal operating angles of about 16.2&deg;, so the speed fluctuation from one joint is cancelled by the other.</li>
-        <li>Designed custom steel and 6061 aluminum weld yokes around a purchased cross, to fit a 1 inch shaft that joins two different metals.</li>
-        <li>Ran the feasibility calculations covering torque, torsional stress, safety factor, and critical shaft speed.</li>
-        <li>Running SolidWorks stress analysis for off-road shock loads and weld-weakened aluminum.</li>
-        <li>Planning prototyping and physical testing before the part is manufactured for the car.</li>
-      </ul>
-
-      <h3>Routing the Shaft</h3>
-      <div class="text-figure-row text-figure-row-narrow">
-        <div class="text-figure-row-text">
-          <p>
-            Seen from underneath, the problem the shaft solves is clear. The
-            engine and gearbox sit at the back of the car, and the gearbox
-            output is off to one side. The front differential sits on the
-            centreline at the front. A straight shaft between the two would
-            need the engine raised to line them up.
-          </p>
-          <p>
-            Instead, a short steel stub leaves the gearbox, a U-joint turns
-            the shaft onto an angled path, and a long aluminum section runs
-            forward along the floor of the frame. A second U-joint at the front
-            turns it back into line with the differential. The shaft stays low,
-            below the driver, and clear of the frame tubes along its full
-            length.
-          </p>
-          <p>
-            Lowering the engine by about 6 inches is the main payoff. The
-            engine is one of the heaviest parts of the car, so dropping it
-            lowers the whole car's centre of gravity, which helps the car stay
-            stable on side slopes and through fast corners. Mounting the engine
-            straight to the lower frame members also gives it a stiffer, more
-            direct load path than a raised mount.
-          </p>
-        </div>
-        <div class="figure">
-          <img src="../assets/img/projects/baja/bottom-view.jpg" alt="Bottom view of the frame CAD: the engine and gearbox at the bottom of the image, with the drive shaft leaving from one side and angling across the frame to the front differential on the centreline at the top." loading="lazy" />
-          <p class="figure-caption">Bottom view of the shaft path, gearbox to front differential.</p>
-        </div>
-      </div>
-
-      <h3>Two Joints, Equal Angles</h3>
-      <p>
-        A single U-joint running at an angle does not turn at a constant
-        speed. Even if the input spins perfectly steadily, the output speeds
-        up and slows down twice every revolution, and the bigger the angle,
-        the bigger the swing. On a drive shaft that becomes vibration, and
-        extra load on the joints, the gearbox, and the differential.
-      </p>
-      <p>
-        The fix is to use two joints at equal angles. The first joint makes
-        the middle shaft speed up and slow down; the second joint, set at the
-        same angle and phased to mirror the first, adds exactly the opposite
-        variation. The two cancel out, so the front differential receives the
-        same smooth rotation that left the gearbox. That is why the geometry
-        is built around one joint at each end of the long section, both
-        running at the same angle.
-      </p>
-
-      <div class="callout">
-        <p class="eyebrow">Why Equal Angles Matter</p>
-        <ul>
-          <li>Operating angle at each joint: about 16.2&deg;.</li>
-          <li>For a single joint at that angle, the output speed swings between roughly 96% and 104% of the input speed (between cos&nbsp;16.2&deg; and 1&nbsp;/&nbsp;cos&nbsp;16.2&deg;), twice per revolution.</li>
-          <li>With a second joint at an equal angle, the two swings cancel, and the differential sees a constant speed.</li>
-        </ul>
-        <p>
-          The same ~4% swing that cancels at the differential still exists
-          inside the middle section of the shaft, which is one of the loads
-          the stress analysis has to account for.
-        </p>
-      </div>
-
-      <h3>Custom Yokes, Two Materials</h3>
-      <div class="text-figure-row text-figure-row-2fr">
-        <div class="text-figure-row-text">
-          <p>
-            The shaft joins two metals. The short stub leaving the gearbox is
-            4140 chromoly steel, because it carries the splines that engage the
-            gearbox output, and aluminum can't hold a spline under this kind of
-            load. The long main section is a 6061 aluminum tube, 1 inch in
-            diameter with a 1/8 inch wall, to save weight over the length of the
-            car.
-          </p>
-          <p>
-            Each yoke is welded to its shaft, and steel can't be welded to
-            aluminum, so each yoke has to be made from the same metal as the shaft
-            it joins: a steel yoke on the steel stub, and an aluminum yoke on the
-            aluminum tube. Off-the-shelf U-joints don't come in that combination at
-            a 1 inch size, so I designed the yokes myself around a purchased cross
-            from All Balls Racing. Buying the cross keeps the precision bearing
-            part off-the-shelf, while the custom yokes solve the size and
-            material problem.
-          </p>
-        </div>
-        <div class="figure">
-          <model-viewer
-            src="../assets/models/baja-ujoint.glb"
-            alt="Interactive 3D model of the drive shaft U-joint: a splined steel stub and steel yoke at one end, the cross in the middle, and an aluminum yoke welded onto the aluminum tube at the other."
-            camera-controls
-            touch-action="pan-y"
-            auto-rotate
-            auto-rotate-delay="0"
-            rotation-per-second="18deg"
-            shadow-intensity="1"
-            environment-image="../assets/env/aircraft_workshop_1k.hdr"
-            exposure="1.15"
-            tone-mapping="neutral"
-            loading="lazy"
-            class="model-viewer-inline model-viewer-portrait">
-            <div slot="progress-bar"></div>
-            <span slot="poster">Loading 3D model…</span>
-          </model-viewer>
-          <p class="figure-caption">The U-joint in 3D: steel stub and yoke, aluminum yoke and tube. Drag to rotate, scroll to zoom.</p>
-        </div>
-      </div>
-
-      <h3>Validation (In Progress)</h3>
-      <p>
-        The car can't drive without this shaft, so it has to be proven
-        before it goes on. My feasibility calculations show the design
-        works; I'm now checking it much harder in SolidWorks Simulation
-        before anything is manufactured. The things I'm considering in the
-        analysis:
-      </p>
-      <ul>
-        <li><strong>Shock loads, not just steady torque.</strong> Off-road driving hits the drive line with sudden torque spikes, such as landing a jump with the throttle open or a wheel suddenly biting after spinning. The shaft needs to survive those peaks, not just normal driving.</li>
-        <li><strong>Welded aluminum.</strong> Welding 6061 aluminum weakens the metal next to the weld, well below its normal strength. The weld joints between the yokes and the tube are a key area I'm checking.</li>
-        <li><strong>Fatigue.</strong> The shaft is loaded and unloaded every revolution, over a full endurance race, so it has to hold up to repeated loading, not just a single peak.</li>
-      </ul>
-      <p>
-        After the analysis, the plan is physical testing: 3D-printed yoke
-        prototypes paired with bought yokes to check clearances and work out
-        the assembly procedure, and a shock test on a welded aluminum sample
-        before committing to the final parts.
-      </p>
-
-      <h3>Other Work on the Team</h3>
-      <p>
-        Alongside the drive shaft, I've worked on other parts of the car,
-        including sprag bearing wheel hubs and a redesign of the wheel rims to
-        reduce weight.
-      </p>
 
     </div>
   </section>
@@ -1738,6 +1847,7 @@
     </div>
   </section>
 
+
   <!-- P.08 -->
   <section class="project-hero" id="other-projects">
     <div class="wrap">
@@ -1810,6 +1920,7 @@
     </div>
   </footer>
 
-  <script src="../assets/js/main.js?v=22"></script>
+  <script src="../assets/js/driveshaft-optimizer.js?v=2"></script>
+  <script src="../assets/js/main.js?v=23"></script>
 </body>
 </html>

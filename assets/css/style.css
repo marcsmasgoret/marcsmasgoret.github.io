@@ -2423,3 +2423,607 @@ body.about-page { overflow: hidden; }
   z-index: 45;
   pointer-events: none;
 }
+
+/* ==========================================================================
+   Baja drive shaft — FEA pair and the interactive optimizer workbook
+   ========================================================================== */
+
+/* Cropped jump shot beside the team photo: columns follow each image's
+   aspect ratio so both land on the same height. */
+.media-row-baja-lead {
+  grid-template-columns: 1.2976fr 1.5fr;
+}
+
+.media-row-baja-lead .figure:first-child img {
+  aspect-ratio: 1064 / 820;
+  object-fit: cover;
+}
+
+.media-row-baja-lead .figure:last-child img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+/* The two yoke FEA screenshots at a shared height. */
+.media-row-fea {
+  grid-template-columns: 1.1828fr 1.4642fr;
+}
+
+.media-row-fea .figure:first-child img { aspect-ratio: 1048 / 886; }
+.media-row-fea .figure:last-child img { aspect-ratio: 1126 / 769; }
+
+@media (max-width: 720px) {
+  .media-row-baja-lead,
+  .media-row-fea {
+    grid-template-columns: 1fr;
+  }
+}
+
+.result-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.result-list li { margin-bottom: 8px; }
+.result-list strong { font-weight: 600; }
+
+/* Clickable trigger with its own hover label instead of "View Presentation". */
+.figure-clickable[data-cta]::after {
+  content: attr(data-cta) " \2192";
+}
+
+.figure-clickable.figure-clickable-wide {
+  max-width: 760px;
+}
+
+/* The optimizer preview reads as a screenshot, so on hover its frame lights
+   up as well, to make it obvious the whole thing is a button. */
+.figure-clickable-wide img {
+  transition: opacity 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.figure-clickable-wide:hover img,
+.figure-clickable-wide:focus-visible img {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Optimizer overlay ---------------------------------------------------- */
+.xl-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: min(1240px, calc(100% - 48px));
+}
+
+.xl-app {
+  --xl-al: #3987e5;
+  --xl-st: #d95926;
+  --xl-ti: #199e70;
+  --xl-in-text: #86b6ef;
+  --xl-in-bg: rgba(57, 135, 229, 0.12);
+  --xl-in-border: rgba(57, 135, 229, 0.45);
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.xl-head,
+.xl-results,
+.xl-tabs { flex: none; }
+
+.xl-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 72px 14px 28px;
+}
+
+.xl-file {
+  margin: 0 0 4px;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.xl-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.xl-editable {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+}
+
+.xl-in-demo {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--xl-in-bg);
+  border: 1px solid var(--xl-in-border);
+  color: var(--xl-in-text);
+  font-weight: 600;
+}
+
+.xl-btn {
+  flex: none;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.xl-btn:hover,
+.xl-btn:focus-visible { background: var(--accent-soft); }
+
+.xl-btn-small { margin: 10px 0 0; padding: 6px 12px; }
+
+/* Headline numbers that follow every edit, whichever sheet is open. */
+.xl-results {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 28px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.xl-results > div {
+  padding: 9px 14px;
+  border-right: 1px solid var(--border);
+}
+
+.xl-results > div:last-child { border-right: none; }
+
+.xl-k {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.xl-v { font-weight: 600; font-size: 0.95rem; }
+.xl-v small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+
+.xl-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.xl-tab {
+  flex: none;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 9px 16px;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+
+.xl-tab:hover { color: var(--text); }
+
+.xl-tab[aria-selected="true"] {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--border);
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.xl-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px 28px 32px;
+  background: var(--surface-2);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+.xl-lede {
+  margin: 0 0 14px;
+  max-width: 780px;
+  color: var(--text-muted);
+}
+
+.xl-hint {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.xl-block { margin: 0 0 24px; }
+
+.xl-block h4,
+.xl-prose h4 {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.xl-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.xl-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.xl-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.xl-table th,
+.xl-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: right;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.xl-table thead th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-align: right;
+  white-space: normal;
+  vertical-align: bottom;
+  background: var(--surface);
+}
+
+.xl-table tbody th {
+  text-align: left;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.xl-table thead th:first-child { text-align: left; }
+.xl-table tbody tr:last-child > * { border-bottom: none; }
+
+.xl-kv td { text-align: left; }
+
+.xl-table td.xl-note {
+  text-align: left;
+  white-space: normal;
+  min-width: 220px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.xl-kv td.xl-note { min-width: 160px; }
+
+.xl-in {
+  width: 104px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--xl-in-text);
+  background: var(--xl-in-bg);
+  border: 1px solid var(--xl-in-border);
+  border-radius: 4px;
+  padding: 3px 6px;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.xl-in::-webkit-outer-spin-button,
+.xl-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.xl-in:hover { border-color: var(--xl-in-text); }
+
+.xl-in:focus {
+  outline: 2px solid var(--xl-in-text);
+  outline-offset: 1px;
+  color: #fff;
+}
+
+.xl-in.is-invalid { border-color: #d03b3b; }
+
+.xl-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.xl-kv .xl-sub { display: inline; margin: 0 0 0 10px; }
+
+.xl-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: -1px;
+}
+
+.xl-swatch-al { background: var(--xl-al); }
+.xl-swatch-st { background: var(--xl-st); }
+.xl-swatch-ti { background: var(--xl-ti); }
+
+.xl-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.xl-seg-btn {
+  font: inherit;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.xl-seg-btn:hover { color: var(--text); }
+.xl-seg-btn.is-on { color: var(--text); background: var(--accent-soft); }
+
+.xl-opt-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 0 0 12px;
+}
+
+.xl-opt-bar .xl-seg,
+.xl-opt-bar .xl-btn-small { margin: 0; }
+
+.xl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.xl-chips b { font-weight: 600; color: rgba(255, 255, 255, 0.82); margin-right: 4px; }
+
+/* The long sweep table scrolls with the sheet, header pinned on top. */
+.xl-sweep-wrap { overflow: visible; }
+
+.xl-sweep thead th {
+  position: sticky;
+  top: -20px; /* the sheet's top padding, so it pins flush to the edge */
+  z-index: 1;
+}
+
+.xl-sweep td:first-child { text-align: left; }
+.xl-strong { font-weight: 600; }
+
+/* Mass column carries the workbook's green-to-red colour scale; dark ink
+   keeps the value readable on every step of it. */
+.xl-table td.xl-scale {
+  color: #0b0b0b;
+  font-weight: 600;
+}
+.xl-table td.xl-na { text-align: left; color: var(--text-muted); font-style: italic; }
+
+.xl-table tr.is-best > * { background: rgba(12, 163, 12, 0.16); }
+.xl-table tr.is-base > * { background: rgba(236, 131, 90, 0.14); }
+
+.xl-gov {
+  display: inline-block;
+  font-size: 0.74rem;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.xl-tag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: 1px;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.xl-tag-final { background: rgba(12, 163, 12, 0.32); border: 1px solid rgba(12, 163, 12, 0.7); }
+.xl-tag-out { background: rgba(208, 59, 59, 0.28); border: 1px solid rgba(208, 59, 59, 0.7); }
+.xl-tag-base { background: rgba(236, 131, 90, 0.25); border: 1px solid rgba(236, 131, 90, 0.7); }
+
+.xl-hl { font-weight: 600; }
+
+.xl-summary tbody th { white-space: nowrap; }
+.xl-table tr.xl-ref > * { color: var(--text-muted); }
+
+.xl-tubes td { min-width: 70px; }
+
+.xl-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.xl-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.xl-card h5 {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.xl-card[data-design="B"] { border-color: rgba(12, 163, 12, 0.6); }
+
+.xl-table.xl-breakdown th { white-space: normal; }
+.xl-table tr.xl-total > * { font-weight: 600; color: var(--text); border-top: 1px solid var(--border); }
+
+.xl-verdict { margin: 10px 0 0; color: var(--text-muted); }
+.xl-verdict strong { color: var(--text); font-weight: 600; }
+
+.xl-prose { max-width: 760px; }
+.xl-prose h4 { margin-top: 22px; }
+.xl-prose h4:first-child { margin-top: 0; }
+.xl-prose p { margin: 0 0 10px; line-height: 1.6; color: rgba(255, 255, 255, 0.86); }
+
+/* Chart */
+.xl-chart {
+  margin: 0 0 20px;
+  padding: 14px 16px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.xl-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-bottom: 6px;
+}
+
+.xl-chart-title { font-weight: 600; }
+
+.xl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.xl-chart-box { position: relative; }
+
+.xl-chart svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.xl-grid { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; }
+.xl-grid.xl-axis { stroke: rgba(255, 255, 255, 0.3); }
+
+.xl-tick,
+.xl-axis-label { fill: var(--text-muted); font-size: 12px; font-family: var(--font-sans); }
+
+.xl-dlabel {
+  fill: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.xl-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.xl-line-al { stroke: var(--xl-al); }
+.xl-line-st { stroke: var(--xl-st); }
+.xl-line-ti { stroke: var(--xl-ti); }
+
+.xl-dot,
+.xl-hdot { stroke: var(--surface); stroke-width: 2; }
+.xl-dot-al { fill: var(--xl-al); }
+.xl-dot-st { fill: var(--xl-st); }
+.xl-dot-ti { fill: var(--xl-ti); }
+
+.xl-cross { stroke: rgba(255, 255, 255, 0.4); stroke-width: 1; stroke-dasharray: 3 3; }
+.xl-hit { fill: transparent; cursor: crosshair; touch-action: pan-y; }
+
+.xl-tip {
+  position: absolute;
+  top: 8px;
+  min-width: 230px;
+  padding: 10px 12px;
+  background: rgba(12, 12, 14, 0.96);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.xl-tip p { margin: 0 0 6px; color: var(--text-muted); font-size: 0.74rem; }
+
+.xl-tip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.xl-tip-row .xl-swatch { margin: 0; flex: none; }
+.xl-tip-row span { flex: 1 1 auto; }
+.xl-tip-row b { font-weight: 600; }
+
+.xl-tip small {
+  display: block;
+  padding-left: 18px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.xl-tip .is-empty { color: var(--text-muted); }
+
+@media (max-width: 860px) {
+  .xl-results { grid-template-columns: 1fr 1fr; }
+  .xl-results > div:nth-child(2) { border-right: none; }
+  .xl-results > div:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .xl-grid-2,
+  .xl-cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .xl-panel { width: 100%; border-radius: 0; border: none; }
+  .xl-head { flex-direction: column; align-items: flex-start; padding: 18px 64px 12px 16px; }
+  .xl-title { font-size: 1.15rem; }
+  .xl-results { margin: 0 16px 12px; }
+  .xl-tabs { padding: 0 16px; }
+  .xl-body { padding: 16px 16px 28px; }
+  .xl-sweep thead th { top: -16px; }
+}

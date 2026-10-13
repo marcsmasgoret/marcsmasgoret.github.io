@@ -685,25 +685,61 @@ document.addEventListener("DOMContentLoaded", () => {
     document.fonts.ready.then(alignToFirstProject);
   }
 
-  // Scrollspy: an "active line" sits just under the sticky header, and
+  // Scrollspy: an "active line" runs across the middle of the viewport, and
   // whichever project (then, within it, whichever heading) has most recently
   // scrolled past that line is the current one — the same "last thing that
   // happened" pattern the roadmap marker above uses for its own position.
+  // Using the middle rather than the top means a project that fills most of
+  // the screen is the one marked, even while the tail of the one above it
+  // still runs under the header.
   let ticking = false;
 
+  // A sidebar click marks its own target until the visitor scrolls by hand.
+  // Otherwise a short section near the end of a project, jumped to the top of
+  // the screen, would hand the highlight to the heading below it.
+  let clickedTarget = null;
+  const handScrollEvents = ["wheel", "touchstart", "keydown", "mousedown"];
+  const releaseClicked = () => {
+    if (!clickedTarget) return;
+    clickedTarget = null;
+    onScroll();
+  };
+  handScrollEvents.forEach((ev) => window.addEventListener(ev, releaseClicked, { passive: true }));
+
+  sidenav.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    clickedTarget = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    onScroll();
+  });
+
   function activeLine() {
-    const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 72;
-    return headerH + 40;
+    return window.innerHeight / 2;
   }
 
   function update() {
     ticking = false;
     const line = activeLine();
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
 
     let current = null;
-    items.forEach((item) => {
-      if (item.hero.getBoundingClientRect().top <= line) current = item;
-    });
+    let forcedSub = null;
+    if (clickedTarget) {
+      current = items.find((item) => item.hero === clickedTarget) || null;
+      if (!current) {
+        items.forEach((item) => {
+          const hit = item.subLinks.find((s) => s.heading === clickedTarget);
+          if (hit) { current = item; forcedSub = hit; }
+        });
+      }
+    }
+    if (!current) {
+      items.forEach((item) => {
+        if (item.hero.getBoundingClientRect().top <= line) current = item;
+      });
+      // The last project may be too short to ever reach the middle line.
+      if (atBottom) current = items[items.length - 1];
+    }
 
     items.forEach((item) => {
       const isActive = item === current;
@@ -718,9 +754,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // moment its project becomes active — otherwise the hero/lede/gallery
       // run before that first heading would read as "nowhere".
       let currentSub = item.subLinks[0] || null;
-      item.subLinks.forEach((s) => {
-        if (s.heading.getBoundingClientRect().top <= line) currentSub = s;
-      });
+      if (forcedSub) {
+        currentSub = forcedSub;
+      } else if (!(clickedTarget && clickedTarget === item.hero)) {
+        item.subLinks.forEach((s) => {
+          if (s.heading.getBoundingClientRect().top <= line) currentSub = s;
+        });
+      }
       item.subLinks.forEach((s) => s.link.classList.toggle("is-current", s === currentSub));
     });
   }
