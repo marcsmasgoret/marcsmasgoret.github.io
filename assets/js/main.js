@@ -778,3 +778,57 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", onScroll);
   update();
 });
+
+/* ------------------------------------------------------------------
+   Warm up the heavy embeds while the reader is still.
+   The 3D models and the YouTube player each take a moment to set up the
+   first time (close to a second for the arm), and lazy loading put that
+   moment mid-scroll, just as each one came into view. Once the page has
+   loaded, start them one at a time, only after the page has sat still
+   for a second, so each is ready before the reader reaches it.
+   ------------------------------------------------------------------ */
+window.addEventListener("load", () => {
+  const conn = navigator.connection;
+  if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
+
+  const queue = Array.from(document.querySelectorAll(
+    'model-viewer[loading="lazy"], iframe[loading="lazy"]'
+  ));
+  if (!queue.length) return;
+
+  const QUIET = 1000; // ms of no scrolling or input before the next one starts
+  let lastActive = performance.now();
+  ["scroll", "wheel", "touchmove", "keydown", "pointerdown"].forEach((ev) => {
+    window.addEventListener(ev, () => { lastActive = performance.now(); }, { passive: true });
+  });
+
+  const whenIdle = window.requestIdleCallback
+    ? (fn) => requestIdleCallback(fn, { timeout: 2000 })
+    : (fn) => setTimeout(fn, 200);
+
+  // Resolves once the element has loaded. An iframe that already loaded on
+  // its own fires nothing more, so a timeout keeps the queue moving.
+  const warm = (el) => new Promise((resolve) => {
+    if (el.loaded) { resolve(); return; }
+    el.addEventListener("load", resolve, { once: true });
+    el.addEventListener("error", resolve, { once: true });
+    setTimeout(resolve, 15000);
+    el.setAttribute("loading", "eager");
+  });
+
+  const next = () => {
+    if (!queue.length) return;
+    const wait = lastActive + QUIET - performance.now();
+    if (wait > 0) { setTimeout(next, wait); return; }
+    whenIdle(() => {
+      if (performance.now() - lastActive < QUIET) { next(); return; }
+      warm(queue.shift()).then(() => setTimeout(next, 300));
+    });
+  };
+
+  // model-viewer has to be defined before its `loaded` flag means anything.
+  const defined = queue.some((el) => el.localName === "model-viewer")
+    ? customElements.whenDefined("model-viewer")
+    : Promise.resolve();
+  defined.then(next);
+});

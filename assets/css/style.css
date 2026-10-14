@@ -1597,19 +1597,10 @@ body.viewer-open {
 
 .roadmap {
   position: relative;
+  isolation: isolate;
   list-style: none;
   margin: 16px 0 24px;
   padding: 0 0 0 30px;
-}
-
-.roadmap::before {
-  content: "";
-  position: absolute;
-  left: 7px;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  background: var(--border);
 }
 
 .roadmap li {
@@ -1619,40 +1610,49 @@ body.viewer-open {
 
 .roadmap li:last-child { padding-bottom: 0; }
 
+/* Dot: 18px across, centred 20px left of the text and level with the
+   date label (9px down, the middle of its line). */
 .roadmap li::before {
   content: "";
   position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
   left: -29px;
-  top: 5px;
-  width: 14px;
-  height: 14px;
+  top: 0;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--bg);
   border: 2px solid var(--text-muted);
 }
 
+/* Rail: each step draws the stretch from its own dot's centre to the next
+   one's, under the dots, so it stays centred and stops at the last step. */
+.roadmap li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: -21px;
+  top: 9px;
+  bottom: -9px;
+  width: 2px;
+  background: var(--border);
+}
+
 .roadmap li.is-current::before {
   background: var(--accent);
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
+  /* The halo is translucent; a solid ring of page colour under it keeps the
+     rail from showing through. */
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 0 0 4px var(--bg);
 }
 
-/* Finished steps: a filled dot, and the rail from it down to the next dot
-   is filled in too, so the completed stretch reads as one solid line. */
+/* Finished steps: filled dot, and a filled rail down to the next step. */
 .roadmap li.is-done::before {
   background: var(--accent);
   border-color: var(--accent);
 }
 
-.roadmap li.is-done::after {
-  content: "";
-  position: absolute;
-  left: -23px;
-  top: 12px;
-  bottom: -12px;
-  width: 2px;
-  background: var(--accent);
-}
+.roadmap li.is-done::after { background: var(--accent); }
 
 .roadmap-when {
   display: block;
