@@ -780,35 +780,56 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ------------------------------------------------------------------
-   Warm up the heavy embeds while the reader is still.
-   The 3D models and the YouTube player each take a moment to set up the
-   first time (close to a second for the arm), and lazy loading put that
-   moment mid-scroll, just as each one came into view. Once the page has
-   loaded, start them one at a time, only after the page has sat still
-   for a second, so each is ready before the reader reaches it.
+   Get the 3D models ready while the reader is still.
+   Building a model (unpacking it and handing it to the graphics card)
+   ties up the page for up to a second, and the page can't scroll while
+   that runs. Left alone, that happens just as each model comes into view,
+   mid-scroll. So each model file is downloaded quietly in the background
+   first (network only, which can't stutter anything), and only once it is
+   in hand and the page has sat still for a moment is the model built. The
+   build then starts at once, while the reader is reading, not scrolling.
    ------------------------------------------------------------------ */
 window.addEventListener("load", () => {
   const conn = navigator.connection;
   if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) return;
 
-  const queue = Array.from(document.querySelectorAll(
-    'model-viewer[loading="lazy"], iframe[loading="lazy"]'
-  ));
-  if (!queue.length) return;
+  const models = Array.from(document.querySelectorAll('model-viewer[loading="lazy"]'));
+  if (!models.length) return;
 
-  const QUIET = 1000; // ms of no scrolling or input before the next one starts
+  const QUIET = 1500; // ms of no scrolling or input before a build may start
   let lastActive = performance.now();
   ["scroll", "wheel", "touchmove", "keydown", "pointerdown"].forEach((ev) => {
     window.addEventListener(ev, () => { lastActive = performance.now(); }, { passive: true });
   });
+  const still = () => performance.now() - lastActive >= QUIET;
+
+  // One download at a time, in page order, so the first model is ready
+  // first. The browser cache keeps each file, and model-viewer's own
+  // request for it later is answered from there.
+  const downloads = new Map();
+  let line = Promise.resolve();
+  const download = (url) => {
+    if (!url) return Promise.resolve();
+    const href = new URL(url, document.baseURI).href;
+    if (!downloads.has(href)) {
+      line = line.then(() => fetch(href, { priority: "low" })
+        .then((res) => res.blob())
+        .catch(() => {}));
+      downloads.set(href, line);
+    }
+    return downloads.get(href);
+  };
+  const ready = new Map();
+  models.forEach((el) => {
+    download(el.getAttribute("environment-image"));
+    ready.set(el, download(el.getAttribute("src")));
+  });
 
   const whenIdle = window.requestIdleCallback
-    ? (fn) => requestIdleCallback(fn, { timeout: 2000 })
-    : (fn) => setTimeout(fn, 200);
+    ? (fn) => requestIdleCallback(fn, { timeout: 1000 })
+    : (fn) => setTimeout(fn, 100);
 
-  // Resolves once the element has loaded. An iframe that already loaded on
-  // its own fires nothing more, so a timeout keeps the queue moving.
-  const warm = (el) => new Promise((resolve) => {
+  const build = (el) => new Promise((resolve) => {
     if (el.loaded) { resolve(); return; }
     el.addEventListener("load", resolve, { once: true });
     el.addEventListener("error", resolve, { once: true });
@@ -817,18 +838,18 @@ window.addEventListener("load", () => {
   });
 
   const next = () => {
-    if (!queue.length) return;
-    const wait = lastActive + QUIET - performance.now();
-    if (wait > 0) { setTimeout(next, wait); return; }
-    whenIdle(() => {
-      if (performance.now() - lastActive < QUIET) { next(); return; }
-      warm(queue.shift()).then(() => setTimeout(next, 300));
+    const el = models[0];
+    if (!el) return;
+    ready.get(el).then(() => {
+      if (!still()) { setTimeout(next, lastActive + QUIET - performance.now()); return; }
+      whenIdle(() => {
+        if (!still()) { next(); return; }
+        models.shift();
+        build(el).then(() => setTimeout(next, 500));
+      });
     });
   };
 
   // model-viewer has to be defined before its `loaded` flag means anything.
-  const defined = queue.some((el) => el.localName === "model-viewer")
-    ? customElements.whenDefined("model-viewer")
-    : Promise.resolve();
-  defined.then(next);
+  customElements.whenDefined("model-viewer").then(next);
 });
